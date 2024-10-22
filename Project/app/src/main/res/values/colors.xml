@@ -6,5 +6,21 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <color name="lucky_background">#2D2D3A</color>
+    <color name="lucky_ui">#393948</color>
+    <color name="lucky_uiEmphasis">#3C3F5E</color>
+    <color name="lucky_uiAccent">#5669FF</color>
+    <color name="lucky_red_alert">#F2583E</color>
+    <color name="lucky_green_alert">#29D657</color>
+    <color name="lucky_grey">#888891</color>
+    <color name="lucky_white">#FFFFFFFF</color>
+
+    <selector xmlns:android="http://schemas.android.com/apk/res/android">
+        <!-- Checked state -->
+        <item android:state_checked="true" android:color="#5669FF" />
+        <!-- Unchecked state -->
+        <item android:state_checked="false" android:color="#888891" />
+    </selector>
+
 </resources>
