@@ -10,4 +10,23 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+
+
+
+    <string name="profile_name_text">John Doe</string>
+    <string name="profile_email_text">johndoe@gmail.com</string>
+    <string name="profile_phone_text">+1 (123) 456-7890</string>
+    <string name="event_description_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,</string>
+    <string name="event_rules_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,</string>
+    <string name="event_deadline_text">Sep 19, 2024</string>
+    <string name="geolocation_verification_text"><u>Location Verification Required</u></string>
+    <string name="event_name_text">EDM Festival</string>
+    <string name="event_countdown_text">Starts in: %1$sd: %2$sh: %3$ss</string>
+    <string name="event_price_text">$%1$</string>
+    <string name="create_event_name_text">EDM Festival</string>
+    <string name="create_event_details_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,</string>
+    <string name="create_event_rules_text">Only 18+ allowed</string>
+    <string name="create_event_deadline_text"> </string>
+    <string name="create_event_entrants_num_text"> </string>
+    <string name="create_event_attendees_num_text"> </string>
 </resources>
