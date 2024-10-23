@@ -8,13 +8,14 @@
     android:padding="32dp"
     android:background="@color/lucky_background">
 
-<!--Hide indicator if not admin-->
+<!--Hide indicator if not admin using android:visibility="visible"-->
 
     <ImageView
         android:id="@+id/profile_admin_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="144dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/profile_pic_view"
         app:layout_constraintEnd_toEndOf="@+id/profile_pic_view"
         app:layout_constraintStart_toStartOf="@+id/profile_pic_view"
