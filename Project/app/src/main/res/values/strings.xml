@@ -36,4 +36,13 @@
     <string name="admin_profile_list_object_name">Admin · John Doe</string>
     <string name="notification_text">EDM Fest: You\'re in!</string>
     <string name="notification_time_text">20 min ago</string>
+
+        <string-array name="dropdown_items">
+            <item>Entrants</item>
+            <item>Waiting</item>
+            <item>Selected</item>
+            <item>Cancelled</item>
+            <item>Attendees</item>
+        </string-array>
+
 </resources>
