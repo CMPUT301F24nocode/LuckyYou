@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lucky_background"
+    android:padding="32dp">
+
+    <!-- I don't know how to place the picture properly-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/event_picture"-->
+    <!--        android:layout_width="410dp"-->
+    <!--        android:layout_height="140dp"-->
+    <!--        android:layout_marginStart="-32dp"-->
+    <!--        android:layout_marginTop="-32dp"-->
+    <!--        android:layout_marginEnd="-32dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:srcCompat="@mipmap/event_foreground" />-->
+
+    <TextView
+        android:id="@+id/create_event_name_view"
+        style="@style/RoundedEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="@string/create_event_name_text"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Event Details"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_name_view" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Event Name"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_pic_view" />
+
+    <ImageButton
+        android:layout_marginStart="-16dp"
+
+        android:id="@+id/event_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back" />
+
+    <TextView
+        android:id="@+id/event_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="New Event"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/event_back_button"
+        app:layout_constraintStart_toEndOf="@+id/event_back_button"
+        app:layout_constraintTop_toTopOf="@+id/event_back_button" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Event Rules"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_details_view" />
+
+    <TextView
+        android:id="@+id/create_event_details_view"
+        style="@style/RoundedEditTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="@string/create_event_details_text"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/create_event_rules_view"
+        style="@style/RoundedEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="@string/create_event_rules_text"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+
+    <!--    Hide text if event does not use geolocation-->
+
+    <Button
+        android:id="@+id/create_event_next_button"
+        style="@style/ActiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/right_arrow"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Next"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_rules_view" />
+
+    <ImageView
+        android:id="@+id/create_event_pic_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rounded_corners"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_event"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_text"
+        app:tint="#404040"
+        app:tintMode="multiply" />
+
+    <ImageButton
+        android:id="@+id/create_event_pic_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/create_event_pic_view"
+        app:layout_constraintEnd_toEndOf="@+id/create_event_pic_view"
+        app:layout_constraintStart_toStartOf="@+id/create_event_pic_view"
+        app:layout_constraintTop_toTopOf="@+id/create_event_pic_view"
+        app:srcCompat="@drawable/eventcreationpic_icon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

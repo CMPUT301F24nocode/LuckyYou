@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="32dp"
+    android:clipToPadding="false"
+    android:background="@color/lucky_background">
+
+    <ImageView
+        android:id="@+id/event_picture"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-32dp"
+        android:layout_marginTop="-32dp"
+        android:layout_marginEnd="-32dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/placeholder_event"
+        app:tint="#404040"
+        app:tintMode="multiply" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Details"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_price_view" />
+
+    <TextView
+        android:id="@+id/event_name_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="@string/event_name_text"
+        android:textAlignment="center"
+        android:textColor="@color/lucky_white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_back_button" />
+
+    <ImageButton
+        android:id="@+id/event_back_button"
+        android:layout_marginStart="-16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back" />
+
+    <ImageButton
+        android:id="@+id/event_more_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00FFFFFF"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/more" />
+
+    <TextView
+        android:id="@+id/event_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Event"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/event_back_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Rules"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_description_view" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Deadline"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_rules_view" />
+
+    <TextView
+        android:id="@+id/event_description_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="@string/event_description_text"
+        android:textColor="@color/lucky_white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/event_rules_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="@string/event_rules_text"
+        android:textColor="@color/lucky_white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/event_deadline_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="@string/event_deadline_text"
+        android:textColor="@color/lucky_white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+<!--    Hide button if user cannot join the event-->
+
+    <Button
+        android:id="@+id/event_join_button"
+        style="@style/ActiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/joinevent_icon"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Join"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_deadline_view" />
+
+<!--    Hide text if event does not use geolocation using android:visibility="gone"-->
+
+    <TextView
+        android:id="@+id/geolocation_warning_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="@string/geolocation_verification_text"
+        android:textColor="@color/lucky_uiAccent"
+        android:textSize="16sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_join_button" />
+
+<!--    Hide button if user cannot leave the event-->
+
+<!--    <Button-->
+<!--        android:id="@+id/event_leave_button"-->
+<!--        style="@style/InactiveButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:drawableLeft="@drawable/joinevent_icon"-->
+<!--        android:drawablePadding="8dp"-->
+<!--        android:fontFamily="@font/airbnbcereal_w_bd"-->
+<!--        android:text="Leave"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:textSize="20sp"-->
+<!--        app:cornerRadius="30dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/event_deadline" />-->
+
+<!--    Hide buttons if user cannot accept or decline event-->
+
+<!--    <Button-->
+<!--        android:id="@+id/event_accept_button"-->
+<!--        style="@style/ActiveButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:backgroundTint="@color/lucky_green_alert"-->
+<!--        android:fontFamily="@font/airbnbcereal_w_bd"-->
+<!--        android:text="Accept"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:textSize="20sp"-->
+<!--        app:cornerRadius="30dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/event_deadline" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/event_decline_button"-->
+<!--        style="@style/ActiveButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:backgroundTint="@color/lucky_red_alert"-->
+<!--        android:fontFamily="@font/airbnbcereal_w_bd"-->
+<!--        android:text="Decline"-->
+<!--        android:textAlignment="center"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:textSize="20sp"-->
+<!--        app:cornerRadius="30dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/event_deadline" />-->
+
+    <TextView
+        android:id="@+id/event_countdown_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/extra_rounded_edittext"
+        android:backgroundTint="@color/lucky_uiAccent"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:paddingStart="16dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp"
+        android:text="@string/event_countdown_text"
+        android:textAlignment="center"
+        android:textColor="@color/lucky_white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_name_view" />
+
+    <TextView
+        android:id="@+id/event_price_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rounded_edittext"
+        android:backgroundTint="@color/lucky_uiAccent"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:paddingStart="16dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp"
+        android:text="@string/event_price_text"
+        android:textAlignment="center"
+        android:textColor="@color/lucky_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_countdown_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
