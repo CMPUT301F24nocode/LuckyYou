@@ -1,6 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/GenericText"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -51,14 +50,13 @@
 
         <TextView
             android:id="@+id/textView14"
-            style="@style/RoundedEditTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_no_border"
             android:fontFamily="@font/airbnbcereal_w_bd"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
             android:text="Waiting"
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
@@ -71,14 +69,13 @@
 
         <TextView
             android:id="@+id/textView17"
-            style="@style/RoundedEditTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_green_border"
             android:fontFamily="@font/airbnbcereal_w_bd"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
             android:text="Confirmed"
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
@@ -91,14 +88,13 @@
 
         <TextView
             android:id="@+id/textView16"
-            style="@style/RoundedEditTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_red_border"
             android:fontFamily="@font/airbnbcereal_w_bd"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="24dp"
             android:text="Denied"
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
@@ -108,7 +104,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
-
 
         <TextView
             android:id="@+id/textView15"

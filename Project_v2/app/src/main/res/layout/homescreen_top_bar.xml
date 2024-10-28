@@ -1,0 +1,44 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/top_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/rounded_homescreen_overlay">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePicture"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_profile_picture"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LuckyYou"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/notificationBell"
+        app:layout_constraintStart_toEndOf="@+id/profilePicture"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/notificationBell"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="Notifications"
+        android:src="@drawable/bell"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
