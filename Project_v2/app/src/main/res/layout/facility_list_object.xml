@@ -8,19 +8,20 @@
     android:backgroundTint="@color/lucky_uiEmphasis"
     android:layout_marginVertical="8dp">
 
+
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/facility_list_object_text"
         style="@style/GenericText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:drawablePadding="4dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="@string/admin_profile_list_object_name"
+        android:text="Butter Dome"
         android:textAlignment="viewEnd"
-        app:drawableLeftCompat="@drawable/entrant_icon"
+        app:drawableLeftCompat="@drawable/facility_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

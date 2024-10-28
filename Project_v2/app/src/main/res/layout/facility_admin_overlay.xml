@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_overlay"
+    android:backgroundTint="@color/lucky_uiEmphasis"
+    android:padding="32dp">
+
+    <Button
+        android:id="@+id/delete_facility_button"
+        style="@style/ActiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/lucky_red_alert"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:padding="12dp"
+        android:text="DELETE Facility"
+        android:textAllCaps="false"
+        android:visibility="visible"
+        app:cornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/delete_facility_image_button"
+        style="@style/ActiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/lucky_red_alert"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:padding="12dp"
+        android:text="DELETE Image"
+        android:textAllCaps="false"
+        android:visibility="visible"
+        app:cornerRadius="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_facility_button" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

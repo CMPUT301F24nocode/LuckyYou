@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lucky_background"
-    android:padding="32dp"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:padding="32dp">
 
     <ImageButton
         android:id="@+id/notification_back_button"
@@ -24,23 +24,34 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Notifications"
+        android:text="Browse Facilities"
         android:textColor="@color/lucky_white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/notification_back_button"
         app:layout_constraintStart_toEndOf="@+id/notification_back_button"
         app:layout_constraintTop_toTopOf="@+id/notification_back_button" />
 
+    <Button
+        android:id="@+id/create_facility_button"
+        style="@style/ActiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Create Facility"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notification_back_button" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notification_recylcerView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="-32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notification_back_button" />
-
+        app:layout_constraintTop_toBottomOf="@+id/create_facility_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

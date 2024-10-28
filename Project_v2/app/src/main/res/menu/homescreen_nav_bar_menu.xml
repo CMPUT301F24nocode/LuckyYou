@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText">
+
+    <item
+        android:id="@+id/nav_profile"
+        android:title="Profile" />
+
+    <item
+        android:id="@+id/nav_facilities"
+        android:title="Facilities" />
+
+    <item
+        android:id="@+id/nav_qrScanner"
+        android:title="QR Scanner" />
+
+    <item
+        android:id="@+id/nav_browseProfiles"
+        android:title="Browse Profiles" />
+
+    <item
+        android:id="@+id/nav_browseImages"
+        android:title="Browse Images" />
+</menu>
