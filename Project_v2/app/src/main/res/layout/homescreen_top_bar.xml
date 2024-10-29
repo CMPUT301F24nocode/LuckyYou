@@ -9,7 +9,7 @@
     android:background="@drawable/rounded_homescreen_overlay">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profilePicture"
+        android:id="@+id/homescreen_profile_pic"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:scaleType="centerCrop"
@@ -24,15 +24,15 @@
         android:layout_height="wrap_content"
         android:text="LuckyYou"
         android:textColor="@android:color/white"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/notificationBell"
-        app:layout_constraintStart_toEndOf="@+id/profilePicture"
+        app:layout_constraintEnd_toStartOf="@+id/homescreen_notification_bell"
+        app:layout_constraintStart_toEndOf="@+id/homescreen_profile_pic"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/notificationBell"
+        android:id="@+id/homescreen_notification_bell"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:contentDescription="Notifications"

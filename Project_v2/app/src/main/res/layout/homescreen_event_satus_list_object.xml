@@ -22,16 +22,14 @@
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/event_status_event_name_text"
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:fontFamily="@font/airbnbcereal_w_bd"
             android:text="@string/event_name_text"
             android:textAlignment="viewStart"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView14"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,11 +38,9 @@
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:fontFamily="@font/airbnbcereal_w_bd"
             android:text="@string/event_deadline_text"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,7 +48,6 @@
             android:id="@+id/textView14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_no_border"
             android:fontFamily="@font/airbnbcereal_w_bd"
             android:paddingHorizontal="24dp"
@@ -64,14 +59,12 @@
             app:layout_constraintBottom_toTopOf="@+id/textView15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
         <TextView
             android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_green_border"
             android:fontFamily="@font/airbnbcereal_w_bd"
             android:paddingHorizontal="24dp"
@@ -83,18 +76,16 @@
             app:layout_constraintBottom_toTopOf="@+id/textView15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
         <TextView
             android:id="@+id/textView16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:background="@drawable/rounded_red_border"
             android:fontFamily="@font/airbnbcereal_w_bd"
-            android:paddingVertical="8dp"
             android:paddingHorizontal="24dp"
+            android:paddingVertical="8dp"
             android:text="Denied"
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
@@ -102,8 +93,7 @@
             app:layout_constraintBottom_toTopOf="@+id/textView15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
         <TextView
             android:id="@+id/textView15"

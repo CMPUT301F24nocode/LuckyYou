@@ -22,7 +22,7 @@
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/available_event_event_name_text"
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
