@@ -45,6 +45,69 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
+        android:id="@+id/textView1"
+        style="@style/GenericText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="Event Date"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_deadline_view" />
+
+
+    <EditText
+        android:id="@+id/create_event_start_date"
+        style="@style/RoundedEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:hint="Sep 19, 2024"
+        android:inputType="date"
+        android:padding="8dp"
+        android:text="@string/create_event_deadline_text"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView1" />
+
+
+    <TextView
+        android:id="@+id/textView0"
+        style="@style/GenericText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="Price"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_start_date" />
+
+    <EditText
+        android:id="@+id/create_event_ticket_price"
+        style="@style/RoundedEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:hint="50"
+        android:inputType="number"
+        android:padding="8dp"
+        android:text="@string/create_event_deadline_text"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView0" />
+
+    <TextView
         android:id="@+id/textView4"
         style="@style/GenericText"
         android:layout_width="wrap_content"
@@ -65,7 +128,7 @@
         android:text="Number of Attendees"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_deadline_view" />
+        app:layout_constraintTop_toBottomOf="@+id/create_event_ticket_price" />
 
     <TextView
         android:id="@+id/textView8"
