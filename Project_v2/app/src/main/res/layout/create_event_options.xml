@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/lucky_background"
-    android:padding="32dp">
+    android:padding="24dp"
+    tools:ignore="Autofill, HardCodedText" >
 
     <EditText
         android:id="@+id/create_event_entrants_num_view"
@@ -43,29 +44,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <ImageButton
-        android:layout_marginStart="-16dp"
-        android:id="@+id/event_back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back" />
-
-    <TextView
-        android:id="@+id/event_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="New Event"
-        android:textColor="@color/lucky_white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/event_back_button"
-        app:layout_constraintStart_toEndOf="@+id/event_back_button"
-        app:layout_constraintTop_toTopOf="@+id/event_back_button" />
-
     <TextView
         android:id="@+id/textView4"
         style="@style/GenericText"
@@ -75,35 +53,36 @@
         android:text="Registration Deadline"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="73dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView9"
         style="@style/GenericText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
         android:text="Number of Attendees"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="176dp" />
+        app:layout_constraintTop_toBottomOf="@+id/create_event_deadline_view" />
 
     <TextView
         android:id="@+id/textView8"
         style="@style/GenericText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
         android:text="Enable Geolocation"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="384dp" />
+        app:layout_constraintTop_toBottomOf="@+id/create_event_entrants_num_view" />
 
     <CheckBox
         android:id="@+id/create_event_geolocation_checkbox_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/lucky_uiAccent"
         android:checked="false"
         app:layout_constraintBottom_toBottomOf="@+id/textView8"
         app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +92,6 @@
         android:id="@+id/create_event_notification_checkbox_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/lucky_uiAccent"
         android:checked="true"
         app:layout_constraintBottom_toBottomOf="@+id/textView7"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,22 +102,24 @@
         style="@style/GenericText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
         android:text="Send Notifications"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="453dp" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
         android:id="@+id/textView10"
         style="@style/GenericText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
         android:text="Number of Entrants (Optional)"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="280dp" />
+        app:layout_constraintTop_toBottomOf="@+id/create_event_attendees_num_view" />
 
     <EditText
         android:id="@+id/create_event_attendees_num_view"
@@ -164,6 +144,7 @@
         style="@style/ActiveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:drawableLeft="@drawable/createevent_icon"
         android:drawablePadding="8dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
