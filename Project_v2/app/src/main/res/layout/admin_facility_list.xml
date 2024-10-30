@@ -4,40 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lucky_background"
-    android:clipToPadding="false"
-    android:padding="32dp">
+    android:padding="24dp">
 
-    <ImageButton
-        android:id="@+id/admin_facility_list_back_button"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/notification_top_bar"
+        layout="@layout/top_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="-16dp"
-        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back" />
-
-    <TextView
-        android:id="@+id/admin_facility_list_banner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Browse Facilities"
-        android:textColor="@color/lucky_white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/admin_facility_list_back_button"
-        app:layout_constraintStart_toEndOf="@+id/admin_facility_list_back_button"
-        app:layout_constraintTop_toTopOf="@+id/admin_facility_list_back_button" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="-32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/admin_facility_list_back_button" />
+        app:layout_constraintTop_toBottomOf="@+id/notification_top_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

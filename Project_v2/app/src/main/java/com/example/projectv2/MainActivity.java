@@ -9,15 +9,18 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.view.View;
 import android.widget.ImageView;
 
 import com.example.projectv2.Controller.EventsPagerAdapter;
 import com.example.projectv2.View.AdminFacilityListActivity;
 import com.example.projectv2.View.AdminImageListActivity;
 import com.example.projectv2.View.AdminProfileListActivity;
+import com.example.projectv2.View.CreateEventActivity;
 import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -35,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
         ImageView profilePicture = findViewById(R.id.homescreen_profile_pic);
         ImageView notificationBell = findViewById(R.id.homescreen_notification_bell);
         NavigationView navigationView = findViewById(R.id.navigation_view);
-
         ViewPager2 viewPager = findViewById(R.id.viewPager2);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
+        FloatingActionButton fab = findViewById(R.id.homescreen_fab);
 
         profilePicture.setOnClickListener(view -> {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -49,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
 
         notificationBell.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        });
+
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
             startActivity(intent);
         });
 

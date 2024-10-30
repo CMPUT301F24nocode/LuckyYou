@@ -29,7 +29,8 @@
         <activity android:name=".View.AdminProfileListActivity" />
         <activity android:name=".View.AdminImageListActivity" />
         <activity android:name=".View.AdminFacilityListActivity" />
-        
+        <activity android:name=".View.CreateEventActivity" />
+
     </application>
 
 </manifest>

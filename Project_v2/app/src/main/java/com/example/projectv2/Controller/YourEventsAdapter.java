@@ -44,7 +44,7 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
 
         public ViewHolder(View view) {
             super(view);
-            eventName = view.findViewById(R.id.your_event_event_name_text);
+            eventName = view.findViewById(R.id.your_event_name_text);
         }
     }
 }

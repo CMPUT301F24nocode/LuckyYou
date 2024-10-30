@@ -2,7 +2,9 @@ package com.example.projectv2.View;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.Controller.NotificationAdapter;
 import com.example.projectv2.R;
@@ -22,7 +24,7 @@ import java.util.Map;
 public class NotificationActivity extends AppCompatActivity {
 
     private static final String TAG = "NotificationActivity"; // Tag for logging
-    private FirebaseFirestore db; // Firestore instance for database operations
+    private FirebaseFirestore db; // FireStore instance for database operations
     private List<Notification> notificationList; // List of notifications to display
     private NotificationAdapter adapter; // Adapter for managing notifications in RecyclerView
 
@@ -37,6 +39,8 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification);
 
+        topBarUtils.topBarSetup(this, "Notifications", View.INVISIBLE);
+
         RecyclerView recyclerView = findViewById(R.id.notification_recylcerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -49,7 +53,7 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads notifications for a specific user from Firestore and updates the RecyclerView.
+     * Loads notifications for a specific user from FireStore and updates the RecyclerView.
      * Retrieves notifications for the user based on their role (admin or organiser).
      *
      * @param userId The ID of the user whose notifications are to be loaded
@@ -90,9 +94,9 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     /**
-     * Maps a Firestore document's data to a Notification object.
+     * Maps a FireStore document's data to a Notification object.
      *
-     * @param notifData   The map containing notification data retrieved from Firestore
+     * @param notifData   The map containing notification data retrieved from FireStore
      * @param isAdmin     True if the notification is for admins, false otherwise
      * @param isOrganiser True if the notification is for organisers, false otherwise
      * @return A new Notification object with data populated from the map

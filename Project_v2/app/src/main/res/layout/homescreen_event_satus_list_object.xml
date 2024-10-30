@@ -22,7 +22,7 @@
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/event_status_event_name_text"
+            android:id="@+id/event_status_name_text"
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/event_status_date_text"
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/event_status_waiting_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_no_border"
@@ -55,14 +55,14 @@
             android:text="Waiting"
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/textView15"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/event_status_price_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintTop_toBottomOf="@+id/event_status_name_text" />
 
         <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/event_status_confirmed_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_green_border"
@@ -72,14 +72,14 @@
             android:text="Confirmed"
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/textView15"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/event_status_price_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintTop_toBottomOf="@+id/event_status_name_text" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/event_status_declined_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_red_border"
@@ -90,13 +90,13 @@
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
             android:visibility="invisible"
-            app:layout_constraintBottom_toTopOf="@+id/textView15"
+            app:layout_constraintBottom_toTopOf="@+id/event_status_price_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintTop_toBottomOf="@+id/event_status_name_text" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/event_status_price_text"
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -6,30 +6,17 @@
     android:layout_height="match_parent"
     android:background="@color/lucky_background"
     android:clipToPadding="false"
-    android:padding="32dp">
+    android:padding="24dp"
+    tools:ignore="HardcodedText" >
 
-    <ImageButton
-        android:id="@+id/notification_back_button"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/notification_top_bar"
+        layout="@layout/top_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="-16dp"
-        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back" />
-
-    <TextView
-        android:id="@+id/notification_banner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Browse Facilities"
-        android:textColor="@color/lucky_white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/notification_back_button"
-        app:layout_constraintStart_toEndOf="@+id/notification_back_button"
-        app:layout_constraintTop_toTopOf="@+id/notification_back_button" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/create_facility_button"
@@ -42,7 +29,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notification_back_button" />
+        app:layout_constraintTop_toBottomOf="@+id/notification_top_bar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

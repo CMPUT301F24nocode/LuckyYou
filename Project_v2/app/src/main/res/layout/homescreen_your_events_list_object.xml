@@ -22,7 +22,7 @@
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/your_event_event_name_text"
+            android:id="@+id/your_event_name_text"
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/your_event_date_text"
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/your_event_waiting_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_active_button_background"
@@ -55,13 +55,13 @@
             android:text="500 Waiting"
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/textView15"
+            app:layout_constraintBottom_toTopOf="@+id/your_event_price_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
+            app:layout_constraintTop_toBottomOf="@+id/your_event_name_text" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/your_event_price_text"
             style="@style/GenericText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -44,7 +44,7 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
 
         public ViewHolder(View view) {
             super(view);
-            eventName = view.findViewById(R.id.event_status_event_name_text);
+            eventName = view.findViewById(R.id.event_status_name_text);
         }
     }
 }

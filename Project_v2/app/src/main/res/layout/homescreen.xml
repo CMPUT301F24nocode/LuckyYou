@@ -56,6 +56,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/homescreen_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
