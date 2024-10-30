@@ -17,6 +17,8 @@ import com.example.projectv2.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        //Testing Other pages
+//        setContentView(R.layout.entrant_list);
     }
 
     @Override

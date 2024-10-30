@@ -2,22 +2,45 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="32dp"
     android:background="@color/lucky_background">
 
+<!--    it needs to be a circle, still working on that. can use a button if needed-->
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/signup_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:maxHeight="100dp"
+        android:maxWidth="100dp">
+
+
+        <ImageView
+            android:layout_width="147dp"
+            android:layout_height="wrap_content"
+
+
+            android:src="@drawable/app_logo" />
+    </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/signup_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="120dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
         android:text="Sign Up"
         android:textAlignment="center"
         android:textColor="@color/lucky_white"
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
