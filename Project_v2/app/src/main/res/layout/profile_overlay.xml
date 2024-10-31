@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rounded_overlay"
-    android:backgroundTint="@color/lucky_uiEmphasis"
-    android:padding="32dp">
+    android:background="@color/lucky_background"
+    android:padding="24dp"
+    tools:ignore="HardcodedText" >
 
     <TextView
         android:id="@+id/textView0"
         style="@style/GenericText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/airbnbcereal_w_bd"
         android:text="Organiser Notification"
         android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/profile_notification_organiser_checkbox_view"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,7 +24,6 @@
         android:id="@+id/profile_notification_organiser_checkbox_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/lucky_uiAccent"
         android:checked="true"
         app:layout_constraintBottom_toBottomOf="@+id/textView0"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,9 +35,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Admin Organiser"
+        android:text="Admin Notification"
         android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/profile_notification_admin_checkbox_view"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView0" />
 
@@ -45,7 +46,6 @@
         android:id="@+id/profile_notification_admin_checkbox_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/lucky_uiAccent"
         android:checked="true"
         app:layout_constraintBottom_toBottomOf="@+id/textView1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,10 +57,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
         android:text="Admin Mode"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/profile_admin_mode_checkbox_view"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView1"
         app:layout_constraintVertical_bias="0.0" />
@@ -69,7 +70,6 @@
         android:id="@+id/profile_admin_mode_checkbox_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/lucky_uiAccent"
         android:checked="false"
         app:layout_constraintBottom_toBottomOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
