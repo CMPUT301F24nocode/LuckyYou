@@ -29,7 +29,12 @@
         <activity android:name=".View.AdminProfileListActivity" />
         <activity android:name=".View.AdminImageListActivity" />
         <activity android:name=".View.AdminFacilityListActivity" />
-        <activity android:name=".View.CreateEventActivity" />
+        <activity android:name=".View.CreateEventActivity"
+            android:exported="true"
+            tools:ignore="MissingClass" />
+        <activity android:name=".View.CreateEventOptionsActivity"
+            android:exported="true"
+            tools:ignore="WrongManifestParent" />
 
     </application>
 
