@@ -1,4 +1,4 @@
-package com.example.dummy.View;
+package com.example.projectv2.View;
 
 import android.net.Uri;
 import android.os.Bundle;

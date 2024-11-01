@@ -1,4 +1,4 @@
-package com.example.dummy.View;
+package com.example.projectv2.View;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -9,8 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.dummy.R;
 
 public class EventCreatorActivity extends AppCompatActivity {
@@ -49,7 +51,7 @@ public class EventCreatorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Start EventOptionsActivity for result and include the image URI
-                Intent intent = new Intent(EventCreatorActivity.this, EventOptionsActivity.class);
+                Intent intent = new Intent(EventCreatorActivity.this, com.example.dummy.View.EventOptionsActivity.class);
                 intent.putExtra("name", eventNameView.getText().toString());
                 intent.putExtra("detail", eventDetailsView.getText().toString());
                 intent.putExtra("rules", eventRulesView.getText().toString());
