@@ -1,77 +1,103 @@
 package com.example.projectv2;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager2.widget.ViewPager2;
+
 import android.view.View;
+import android.widget.ImageView;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.projectv2.databinding.ActivityMainBinding;
-
-import android.view.Menu;
-import android.view.MenuItem;
+import com.example.projectv2.Controller.EventsPagerAdapter;
+import com.example.projectv2.View.AdminFacilityListActivity;
+import com.example.projectv2.View.AdminImageListActivity;
+import com.example.projectv2.View.AdminProfileListActivity;
+import com.example.projectv2.View.CreateEventActivity;
+import com.example.projectv2.View.FacilityListActivity;
+import com.example.projectv2.View.NotificationActivity;
+import com.example.projectv2.View.ProfileActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.homescreen);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        drawerLayout = findViewById(R.id.homescreen_drawer_layout);
+        ImageView profilePicture = findViewById(R.id.homescreen_profile_pic);
+        ImageView notificationBell = findViewById(R.id.homescreen_notification_bell);
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        ViewPager2 viewPager = findViewById(R.id.viewPager2);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        FloatingActionButton fab = findViewById(R.id.homescreen_fab);
 
-        setSupportActionBar(binding.toolbar);
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
+        profilePicture.setOnClickListener(view -> {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+        notificationBell.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        });
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+            startActivity(intent);
+        });
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        navigationView.setNavigationItemSelectedListener(item -> {
+            Intent intent = null;
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_profile) {
+                intent = new Intent(MainActivity.this, ProfileActivity.class);
+            } else if (itemId == R.id.nav_facilities) {
+                intent = new Intent(MainActivity.this, FacilityListActivity.class);
+            } else if (itemId == R.id.nav_browseProfiles) {
+                intent = new Intent(MainActivity.this, AdminProfileListActivity.class);
+            } else if (itemId == R.id.nav_browseImages) {
+                intent = new Intent(MainActivity.this, AdminImageListActivity.class);
+            } else if (itemId == R.id.nav_browseFacilities) {
+                intent = new Intent(MainActivity.this, AdminFacilityListActivity.class);
+            }
+
+            if (intent != null) {
+                startActivity(intent);
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
             return true;
-        }
+        });
 
-        return super.onOptionsItemSelected(item);
-    }
+        EventsPagerAdapter adapter = new EventsPagerAdapter(this);
+        viewPager.setAdapter(adapter);
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Available Events");
+                    break;
+                case 1:
+                    tab.setText("Event Status");
+                    break;
+                case 2:
+                    tab.setText("Your Events");
+                    break;
+            }
+        }).attach();
     }
 }
