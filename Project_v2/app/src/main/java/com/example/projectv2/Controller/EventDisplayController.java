@@ -5,13 +5,10 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.ListView;
 
-<<<<<<< HEAD
+
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.View.EventListAdapter;
-=======
-import com.example.dummy.Model.Event;
-import com.example.dummy.View.EventListAdapter;
->>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
+
 
 import java.util.ArrayList;
 

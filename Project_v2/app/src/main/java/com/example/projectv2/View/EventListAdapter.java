@@ -12,14 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-<<<<<<< HEAD
 
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
-=======
-import com.example.dummy.Model.Event;
-import com.example.dummy.R;
->>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
+
 
 import java.util.ArrayList;
 
