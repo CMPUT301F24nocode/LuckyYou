@@ -10,12 +10,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-<<<<<<< HEAD
+
 import com.example.projectv2.R;
 
-=======
-import com.example.dummy.R;
->>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
+
 
 public class EventLandingPageActivity extends AppCompatActivity {
 
