@@ -1,37 +1,51 @@
 package com.example.projectv2.Model;
 
+import android.net.Uri;
+
 public class Event {
-    private String eventId;
     private String name;
-    private String details;
-    private String date;
-    private String createdByDevice;
+    private String detail;
+    private String rules;
+    private String deadline;
+    private String startDate;
+    private String ticketPrice;
+    private Uri imageUri; // New field for image URI
 
-    // No-argument constructor for Firebase
-    public Event() {}
-
-    // Constructor with parameters
-    public Event(String eventId, String name, String details, String date, String createdByDevice) {
-        this.eventId = eventId;
+    public Event(String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri) {
         this.name = name;
-        this.details = details;
-        this.date = date;
-        this.createdByDevice = createdByDevice;
+        this.detail = detail;
+        this.rules = rules;
+        this.deadline = deadline;
+        this.startDate = startDate;
+        this.ticketPrice = ticketPrice;
+        this.imageUri = imageUri;
     }
 
-    // Getters and Setters
-    public String getEventId() { return eventId; }
-    public void setEventId(String eventId) { this.eventId = eventId; }
+    public String getName() {
+        return name;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getDetail() {
+        return detail;
+    }
 
-    public String getDetails() { return details; }
-    public void setDetails(String details) { this.details = details; }
+    public String getRules() {
+        return rules;
+    }
 
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public String getDeadline() {
+        return deadline;
+    }
 
-    public String getCreatedByDevice() { return createdByDevice; }
-    public void setCreatedByDevice(String createdByDevice) { this.createdByDevice = createdByDevice; }
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public Uri getImageUri() {
+        return imageUri; // Getter for image URI
+    }
 }
