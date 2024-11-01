@@ -11,11 +11,20 @@ import android.widget.ListView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+<<<<<<< HEAD
 
 import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Controller.EventDisplayController;
 import com.example.projectv2.MainActivity;
 import com.example.projectv2.Model.Event;
+=======
+import com.example.dummy.Controller.EventController;
+import com.example.dummy.Controller.EventDisplayController;
+import com.example.dummy.Model.Event;
+import com.example.dummy.View.EventCreatorActivity;
+import com.example.dummy.View.EventLandingPageActivity;
+import com.example.projectv2.MainActivity;
+>>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
 import com.example.projectv2.R;
 
 import java.util.ArrayList;
@@ -45,7 +54,11 @@ public class EventHomeActivity extends AppCompatActivity {
         // Set up the create button to open EventCreatorActivity
         Button createButton = findViewById(R.id.create_button);
         createButton.setOnClickListener(v -> {
+<<<<<<< HEAD
             Intent intent = new Intent(EventHomeActivity.this, EventCreatorActivity.class);
+=======
+            Intent intent = new Intent(MainActivity.this, EventCreatorActivity.class);
+>>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
             startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
         });
 
@@ -53,7 +66,11 @@ public class EventHomeActivity extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Event selectedEvent = eventDisplayController.getEventAt(position);
             // Prepare intent and pass event data to EventLandingPageActivity
+<<<<<<< HEAD
             Intent intent = new Intent(EventHomeActivity.this, EventLandingPageActivity.class);
+=======
+            Intent intent = new Intent(MainActivity.this, EventLandingPageActivity.class);
+>>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
             intent.putExtra("name", selectedEvent.getName());
             intent.putExtra("details", selectedEvent.getDetail());
             intent.putExtra("rules", selectedEvent.getRules());

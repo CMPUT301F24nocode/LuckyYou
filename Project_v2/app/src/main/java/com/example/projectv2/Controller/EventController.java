@@ -1,9 +1,20 @@
+// EventController.java
 package com.example.projectv2.Controller;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
 import com.example.projectv2.Model.Event;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
+
+import com.example.Model.Event;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -72,4 +83,8 @@ public class EventController {
                     }
                 });
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
