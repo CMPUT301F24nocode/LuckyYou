@@ -1,10 +1,9 @@
 package com.example.projectv2.View;
 
-<<<<<<< HEAD
-import static android.os.Build.VERSION_CODES.R;
 
-=======
->>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
+
+
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,17 +12,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-<<<<<<< HEAD
 import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Model.Event;
-=======
-
-import com.example.dummy.Controller.EventController;
-import com.example.dummy.Model.Event;
-import com.example.dummy.R;
->>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
+import com.example.projectv2.R;
 
 import java.util.ArrayList;
 
@@ -44,11 +36,11 @@ public class EventOptionsActivity extends AppCompatActivity {
         setContentView(R.layout.create_event_options); // Displays create_event_options.xml
 
         // Initialize UI components
-<<<<<<< HEAD
+
         eventDeadline = findViewById(R);
-=======
+
         eventDeadline = findViewById(R.id.create_event_deadline_view);
->>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
+
         eventAttendees = findViewById(R.id.create_event_attendees_num_view);
         eventEntrants = findViewById(R.id.create_event_entrants_num_view);
         eventStartDate = findViewById(R.id.create_event_start_date);  // Initialize new fields
@@ -128,4 +120,6 @@ public class EventOptionsActivity extends AppCompatActivity {
     private boolean isValidDate(String date) {
         return date.matches(DATE_PATTERN);
     }
+
+
 }

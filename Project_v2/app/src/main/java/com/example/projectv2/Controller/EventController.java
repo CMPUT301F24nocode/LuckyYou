@@ -10,15 +10,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
 
-import com.example.Model.Event;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.ArrayList;
 
 public class EventController {
     private FirebaseFirestore db;
@@ -26,6 +18,7 @@ public class EventController {
 
     public interface EventCallback {
         void onEventListLoaded(ArrayList<Event> events);
+
         void onError(Exception e);
     }
 
@@ -83,8 +76,4 @@ public class EventController {
                     }
                 });
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 7d99620b9d968853440909c5dd68a069821c534e
