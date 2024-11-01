@@ -29,6 +29,8 @@
         <activity android:name=".View.AdminProfileListActivity" />
         <activity android:name=".View.AdminImageListActivity" />
         <activity android:name=".View.AdminFacilityListActivity" />
+        <activity android:name=".View.SignUpActivity"
+            tools:ignore="Instantiatable" />
         <activity android:name=".View.CreateEventActivity"
             android:exported="true"
             tools:ignore="MissingClass" />
