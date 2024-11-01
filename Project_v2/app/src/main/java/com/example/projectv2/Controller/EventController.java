@@ -15,9 +15,6 @@ public class EventController {
 
     public interface EventCallback {
         void onEventListLoaded(ArrayList<Event> events);
-
-        void onEventCreated(String eventId);
-
         void onError(Exception e);
     }
 
@@ -26,9 +23,9 @@ public class EventController {
     }
 
     // Method to create an Event and store it in Firebase
-    public void createEvent(String owner, String name, String detail, String rules, String deadline, String attendees, String entrants, String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled, Uri selectedImageUri, String facility, EventCallback callback) {
+    public void createEvent(String name, String detail, String rules, String deadline, String attendees, String entrants, String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled, Uri selectedImageUri, EventCallback callback) {
         // Create a new Event object
-        Event newEvent = new Event(owner, name, detail, rules, deadline, startDate, ticketPrice, selectedImageUri, facility);
+        Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, selectedImageUri);
 
         // Add the new event to Firebase
         addEventToFirestore(newEvent, callback);
@@ -36,7 +33,7 @@ public class EventController {
 
     // Method to add an event to Firestore
     public void addEventToFirestore(Event event, EventCallback callback) {
-        db.collection("events")
+        db.collection("Events")
                 .add(event)
                 .addOnSuccessListener(documentReference -> {
                     Log.d("EventController", "Event added with ID: " + documentReference.getId());
@@ -51,23 +48,21 @@ public class EventController {
 
     // Fetch events from Firestore and notify callback
     public void fetchEvents(EventCallback callback) {
-        db.collection("events")
+        db.collection("Events")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         eventList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String owner = document.getString("owner");
                             String name = document.getString("name");
                             String detail = document.getString("detail");
                             String rules = document.getString("rules");
-                            String facility = document.getString("facility");
                             String deadline = document.getString("deadline");
                             String startDate = document.getString("startDate");
                             String ticketPrice = document.getString("ticketPrice");
                             Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
 
-                            Event event = new Event(owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
+                            Event event = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri);
                             eventList.add(event);
                         }
                         callback.onEventListLoaded(eventList);
