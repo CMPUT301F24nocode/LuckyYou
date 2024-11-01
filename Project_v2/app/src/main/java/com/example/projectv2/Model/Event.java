@@ -1,6 +1,8 @@
 package com.example.projectv2.Model;
 
-public class Event {
+import java.io.Serializable;
+
+public class Event implements Serializable {
     private String eventId;
     private String name;
     private String details;
