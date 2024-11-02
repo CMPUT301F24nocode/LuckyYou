@@ -12,14 +12,10 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-<<<<<<< HEAD
 import com.example.projectv2.R;
-=======
 
 
 import com.example.projectv2.R;
-
->>>>>>> f25918a6076f87611ebd5d39857307737358af62
 
 public class EventCreatorActivity extends AppCompatActivity {
 
@@ -57,10 +53,6 @@ public class EventCreatorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Start EventOptionsActivity for result and include the image URI
-<<<<<<< HEAD
-=======
-
->>>>>>> f25918a6076f87611ebd5d39857307737358af62
                 Intent intent = new Intent(EventCreatorActivity.this,CreateEventOptionsActivity.class);
 
                 intent.putExtra("name", eventNameView.getText().toString());

@@ -9,15 +9,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
-
-import com.example.projectv2.Model.Event;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.ArrayList;
 
 public class EventController {
     private FirebaseFirestore db;
@@ -43,7 +34,7 @@ public class EventController {
 
     // Method to add an event to Firestore
     public void addEventToFirestore(Event event, EventCallback callback) {
-        db.collection("Events")
+        db.collection("events")
                 .add(event)
                 .addOnSuccessListener(documentReference -> {
                     Log.d("EventController", "Event added with ID: " + documentReference.getId());
@@ -58,7 +49,7 @@ public class EventController {
 
     // Fetch events from Firestore and notify callback
     public void fetchEvents(EventCallback callback) {
-        db.collection("Events")
+        db.collection("events")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
