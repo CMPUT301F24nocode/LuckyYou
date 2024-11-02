@@ -50,12 +50,19 @@ public class SignUpActivity extends AppCompatActivity {
     private void signUpUser() {
         String deviceID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
         User newUser = new User(email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(), Long.parseLong(phoneNumber.getText().toString()),deviceID);
+        //code that we are using currently
         db.collection("Users").add(newUser).addOnSuccessListener(documentReference -> {
             Log.d("User", "DocumentSnapshot added with ID: " + documentReference.getId());
             //add any other code, like updating the list of users or something
         }).addOnFailureListener(e -> {
             Log.d("User", "Error adding document", e);
         });
+        //code that we will have actually
+//        db.collection("Users").document(newUser.getDeviceID()).set(newUser).addOnSuccessListener(aVoid -> {
+//            Log.d("User", "DocumentSnapshot added with ID: " + newUser.getDeviceID());
+//        }).addOnFailureListener(e -> {
+//            Log.d("User", "Error adding document", e);
+//        });
 
     }
 }
