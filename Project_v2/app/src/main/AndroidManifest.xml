@@ -29,7 +29,6 @@
         <activity android:name=".View.AdminProfileListActivity" />
         <activity android:name=".View.AdminImageListActivity" />
         <activity android:name=".View.AdminFacilityListActivity" />
-        <activity android:name=".View.CreateEventActivity" />
         <activity android:name=".View.CreateEventOptionsActivity" />
         <activity android:name=".View.EventCreatorActivity" />
         <activity android:name=".View.EventLandingPageActivity" />

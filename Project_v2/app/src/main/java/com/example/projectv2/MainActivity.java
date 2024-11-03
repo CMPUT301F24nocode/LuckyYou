@@ -1,34 +1,16 @@
 package com.example.projectv2;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import androidx.activity.EdgeToEdge;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager2.widget.ViewPager2;
 
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.projectv2.Controller.EventsPagerAdapter;
-import com.example.projectv2.View.AdminFacilityListActivity;
-import com.example.projectv2.View.AdminImageListActivity;
-import com.example.projectv2.View.AdminProfileListActivity;
-import com.example.projectv2.View.CreateEventActivity;
-import com.example.projectv2.View.FacilityListActivity;
-import com.example.projectv2.View.NotificationActivity;
-import com.example.projectv2.View.ProfileActivity;
 import com.example.projectv2.View.SignUpActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -108,27 +90,5 @@ public class MainActivity extends AppCompatActivity {
 //                    break;
 //            }
 //        }).attach();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_CREATE_EVENT && resultCode == RESULT_OK && data != null) {
-            // Retrieve data from EventOptionsActivity
-            String name = data.getStringExtra("name");
-            String detail = data.getStringExtra("detail");
-            String rules = data.getStringExtra("rules");
-            String deadline = data.getStringExtra("deadline");
-            String attendees = data.getStringExtra("attendees");
-            String entrants = data.getStringExtra("entrants");
-            String startDate = data.getStringExtra("startDate");
-            String ticketPrice = data.getStringExtra("ticketPrice");
-            boolean geolocationEnabled = data.getBooleanExtra("geolocationEnabled", false);
-            boolean notificationsEnabled = data.getBooleanExtra("notificationsEnabled", false);
-
-            // You can now use this data to update your event list, display a message, or perform other actions
-            Toast.makeText(this, "Event Created: " + name, Toast.LENGTH_SHORT).show();
-        }
     }
 }
