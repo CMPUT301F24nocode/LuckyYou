@@ -34,7 +34,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.event_list_object, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.homescreen_available_events_list_object, parent, false);
         }
 
         // Initialize ImageView and set image
@@ -46,10 +46,10 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         }
 
         // Initialize TextViews and populate with data
-        TextView eventNameTextView = convertView.findViewById(R.id.textView12);
-        TextView eventDeadlineTextView = convertView.findViewById(R.id.textView13);
-        TextView eventDetailTextView = convertView.findViewById(R.id.textView14);
-        TextView eventPriceTextView = convertView.findViewById(R.id.textView15);
+        TextView eventNameTextView = convertView.findViewById(R.id.available_event_name_text);
+        TextView eventDeadlineTextView = convertView.findViewById(R.id.available_event_date_text);
+        TextView eventDetailTextView = convertView.findViewById(R.id.available_event_description_text);
+        TextView eventPriceTextView = convertView.findViewById(R.id.available_event_price_text);
 
         if (event != null) {
             eventNameTextView.setText(event.getName());
