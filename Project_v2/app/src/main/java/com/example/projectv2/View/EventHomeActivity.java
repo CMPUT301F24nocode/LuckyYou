@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -52,13 +51,6 @@ public class EventHomeActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
         });
 
-        // Initialize Facility List Button and set click listener
-        Button facilityListButton = findViewById(R.id.facility_list_button);
-        facilityListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventHomeActivity.this, FacilityListActivity.class);
-            startActivity(intent);
-        });
-
         // Initialize NavigationView
         NavigationView navigationView = findViewById(R.id.navigation_view);
         setupNavigationDrawer(navigationView);
@@ -79,12 +71,6 @@ public class EventHomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onEventCreated(String eventId) {
-                // You can log this information or handle event creation here if needed
-                Log.d("EventHomeActivity", "Event created with ID: " + eventId);
-            }
-
-            @Override
             public void onError(Exception e) {
                 Log.e("EventHomeActivity", "Error fetching events", e);
             }
@@ -98,12 +84,10 @@ public class EventHomeActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODE_CREATE_EVENT && resultCode == RESULT_OK && data != null) {
             // Retrieve data from EventOptionsActivity
-            String owner = data.getStringExtra("owner");
             String name = data.getStringExtra("name");
             String detail = data.getStringExtra("detail");
             String rules = data.getStringExtra("rules");
             String deadline = data.getStringExtra("deadline");
-            String facility = data.getStringExtra("facility");
             String attendees = data.getStringExtra("attendees");
             String entrants = data.getStringExtra("entrants");
             String startDate = data.getStringExtra("startDate");
@@ -118,41 +102,21 @@ public class EventHomeActivity extends AppCompatActivity {
 
             // Display a message and create a new event
             Toast.makeText(this, "Event Created: " + name, Toast.LENGTH_SHORT).show();
+            Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri);
 
-            // Use the createEvent method from EventController
-            eventController.createEvent(
-                    owner,
-                    name,
-                    detail,
-                    rules,
-                    deadline,
-                    attendees,
-                    entrants,
-                    startDate,
-                    ticketPrice,
-                    geolocationEnabled,
-                    notificationsEnabled,
-                    imageUri,
-                    facility,
-                    new EventController.EventCallback() {
-                        @Override
-                        public void onEventListLoaded(ArrayList<Event> events) {
-                            Log.d("EventHomeActivity", "New event added. Updating event list with " + events.size() + " items.");
-                            adapter.updateEventList(events);
-                        }
+            // Add the new event to Firestore using EventController
+            eventController.addEventToFirestore(newEvent, new EventController.EventCallback() {
+                @Override
+                public void onEventListLoaded(ArrayList<Event> events) {
+                    Log.d("EventHomeActivity", "New event added. Updating event list with " + events.size() + " items.");
+                    adapter.updateEventList(events);
+                }
 
-                        @Override
-                        public void onEventCreated(String eventId) {
-                            // Handle the event creation success, e.g., log or show a message
-                            Log.d("EventHomeActivity", "Event created successfully with ID: " + eventId);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e("EventHomeActivity", "Error adding event", e);
-                        }
-                    }
-            );
+                @Override
+                public void onError(Exception e) {
+                    Log.e("EventHomeActivity", "Error adding event", e);
+                }
+            });
         }
     }
 }

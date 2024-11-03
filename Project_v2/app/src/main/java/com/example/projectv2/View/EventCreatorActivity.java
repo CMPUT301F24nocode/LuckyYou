@@ -2,17 +2,18 @@ package com.example.projectv2.View;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.MediaStore;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
 import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.MainActivity;
 import com.example.projectv2.R;
 
 public class EventCreatorActivity extends AppCompatActivity {
@@ -34,6 +35,18 @@ public class EventCreatorActivity extends AppCompatActivity {
         eventRulesView = findViewById(R.id.create_event_rules_view);
         eventImageView = findViewById(R.id.create_event_pic_view);
 
+        // Set up the Back button to return to MainActivity (homescreen)
+        ImageButton backButton = findViewById(R.id.event_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Go back to MainActivity
+                Intent intent = new Intent(EventCreatorActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish(); // Finish the current activity to prevent back stack issues
+            }
+        });
+
         // Set up the ImageButton to open the gallery for selecting an image
         ImageButton imageButton = findViewById(R.id.create_event_pic_button);
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +64,7 @@ public class EventCreatorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Start EventOptionsActivity for result and include the image URI
-                Intent intent = new Intent(EventCreatorActivity.this,CreateEventOptionsActivity.class);
+                Intent intent = new Intent(EventCreatorActivity.this, CreateEventOptionsActivity.class);
                 intent.putExtra("name", eventNameView.getText().toString());
                 intent.putExtra("detail", eventDetailsView.getText().toString());
                 intent.putExtra("rules", eventRulesView.getText().toString());
@@ -64,7 +77,6 @@ public class EventCreatorActivity extends AppCompatActivity {
             }
         });
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -46,6 +46,6 @@ public class Event {
     }
 
     public Uri getImageUri() {
-        return imageUri; // Getter for image URI
+        return imageUri;
     }
 }
