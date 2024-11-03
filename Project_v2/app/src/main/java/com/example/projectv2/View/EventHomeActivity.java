@@ -25,7 +25,6 @@ public class EventHomeActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
     private EventController eventController;
     private EventDisplayController eventDisplayController;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
