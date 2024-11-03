@@ -29,7 +29,7 @@ public class EventHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.home_page);
+        setContentView(R.layout.);
 
         // Initialize ListView and EventDisplayController
         ListView listView = findViewById(R.id.list_view);
