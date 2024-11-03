@@ -40,12 +40,12 @@
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Number of Attendees"
-        android:textSize="20sp"
         android:textColor="@color/lucky_white"
-        app:layout_constraintTop_toBottomOf="@id/create_event_deadline_view"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp"/>
+        app:layout_constraintTop_toBottomOf="@id/create_event_deadline_view" />
 
     <EditText
         android:id="@+id/create_event_attendees_num_view"
@@ -90,7 +90,61 @@
         app:layout_constraintTop_toBottomOf="@id/textView10" />
 
     <!-- Event Start Date -->
+
+
+    <EditText
+        android:id="@+id/number_of_attendees_edit"
+        style="@style/RoundedEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:hint="20"
+        android:inputType="date"
+        android:padding="8dp"
+        android:text="@string/create_event_deadline_text"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+
     <TextView
+        android:id="@+id/textView0"
+        style="@style/GenericText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:text="Ticket Price"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_start_date" />
+
+    <EditText
+        android:id="@+id/create_event_ticket_price"
+        style="@style/RoundedEditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:hint="50"
+        android:inputType="number"
+        android:padding="8dp"
+        android:text="@string/create_event_deadline_text"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView0" />
+
+    <TextView
+
+        style="@style/GenericText"
         android:id="@+id/textViewStartDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -119,43 +173,20 @@
         app:layout_constraintTop_toBottomOf="@id/textView4" />
 
     <!-- Ticket Price -->
-    <TextView
-        android:id="@+id/textViewTicketPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Event Ticket Price"
-        android:textColor="@color/lucky_white"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_start_date" />
 
-    <EditText
-        android:id="@+id/create_event_ticket_price"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="50"
-        android:inputType="number"
-        android:padding="8dp"
-        android:textColor="@color/lucky_white"
-        android:textColorHint="@color/lucky_grey"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewTicketPrice" />
 
     <!-- Enable Geolocation -->
+
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:text="Enable Geolocation"
-        android:textSize="20sp"
         android:textColor="@color/lucky_white"
-        app:layout_constraintTop_toBottomOf="@id/create_event_ticket_price"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp" />
+        app:layout_constraintTop_toBottomOf="@id/create_event_ticket_price" />
 
     <CheckBox
         android:id="@+id/create_event_geolocation_checkbox_view"

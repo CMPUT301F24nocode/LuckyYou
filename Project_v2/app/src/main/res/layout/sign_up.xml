@@ -2,24 +2,42 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".View.SignUpActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="32dp"
     android:background="@color/lucky_background">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/app_logo"
+        app:layout_constraintBottom_toTopOf="@+id/signup_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:maxHeight="96dp"
+        android:maxWidth="96dp"
+        app:layout_constrainedHeight="true"
+        android:layout_marginTop="30dp"
+        />
+
+
     <TextView
         android:id="@+id/signup_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="152dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
         android:text="Sign Up"
         android:textAlignment="center"
         android:textColor="@color/lucky_white"
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="10dp"/>
 
     <EditText
         android:id="@+id/signup_email"
@@ -29,7 +47,7 @@
         android:layout_marginTop="96dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:text="Email"
+        android:hint="Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_text" />
@@ -42,7 +60,7 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="First Name"
+        android:hint="First Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_email" />
@@ -55,7 +73,7 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Second Name"
+        android:hint="Second Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_firstname" />
@@ -68,7 +86,7 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:inputType="phone"
-        android:text="Phone Number (optional)"
+        android:hint="Phone Number (optional)"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_secondname" />
@@ -81,7 +99,7 @@
         android:drawableEnd="@drawable/right_arrow"
         android:fontFamily="@font/airbnbcereal_w_bd"
         android:padding="16dp"
-        android:text="SIGN UP"
+        android:hint="SIGN UP"
         android:textColor="@color/lucky_white"
         android:textSize="20sp"
         app:cornerRadius="30dp"

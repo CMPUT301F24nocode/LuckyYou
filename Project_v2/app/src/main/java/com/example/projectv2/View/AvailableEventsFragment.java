@@ -34,6 +34,7 @@ public class AvailableEventsFragment extends Fragment {
         AvailableEventsAdapter adapter = new AvailableEventsAdapter(getAvailableEventsList());
         recyclerView.setAdapter(adapter);
 
+
         return view;
     }
 
@@ -42,6 +43,8 @@ public class AvailableEventsFragment extends Fragment {
         events.add("Event 1");
         events.add("Event 2");
         events.add("Event 3");
+        events.add("Event 4");
+        events.add("Event 5");
         return events;
     }
 }
