@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/lucky_background"
-            app:layout_constraintBottom_toTopOf="@+id/viewPager2"
+            app:layout_constraintBottom_toTopOf="@+id/eventListView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include"
@@ -45,15 +45,16 @@
 
         </com.google.android.material.tabs.TabLayout>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager2"
+        <!-- Add the ListView for displaying events -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/eventRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+            app:layout_constraintBottom_toTopOf="@+id/homescreen_fab"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="8dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/homescreen_fab"
@@ -62,7 +63,7 @@
             android:layout_marginBottom="32dp"
             android:src="@drawable/plus_icon"
             app:backgroundTint="@color/lucky_uiAccent"
-            app:layout_constraintBottom_toBottomOf="@+id/viewPager2"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
