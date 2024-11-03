@@ -3,7 +3,9 @@ package com.example.projectv2.Controller;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.View.EventListAdapter;
@@ -17,7 +19,7 @@ public class EventDisplayController {
     public EventDisplayController(Context context, ListView listView, ArrayList<Event> initialEventList) {
         this.eventList = initialEventList != null ? initialEventList : new ArrayList<>();
         this.adapter = new EventListAdapter(context, eventList);
-        listView.setAdapter(adapter);
+        listView.setAdapter((ListAdapter) adapter);
         Log.d("EventDisplayController", "Adapter initialized with " + eventList.size() + " events.");
     }
 
