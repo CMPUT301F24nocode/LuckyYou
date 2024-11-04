@@ -45,7 +45,7 @@
 
         </com.google.android.material.tabs.TabLayout>
 
-        <!-- Add the ListView for displaying events -->
+        <!-- Add the RecyclerView for displaying events -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/eventRecyclerView"
             android:layout_width="match_parent"

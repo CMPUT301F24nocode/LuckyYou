@@ -44,6 +44,7 @@
     <string name="create_facility_name_text">Enter Facility Name</string>
     <string name="create_facility_details_text">Enter Facility Details</string>
 
+
     <string-array name="dropdown_items">
         <item>Entrants</item>
         <item>Waiting</item>
