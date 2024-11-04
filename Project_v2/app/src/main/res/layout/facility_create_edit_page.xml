@@ -7,20 +7,39 @@
     android:background="@color/lucky_background"
     android:padding="32dp">
 
+    <!--Facility Name-->
+
     <TextView
+        android:id="@+id/textView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Name"
+        android:textAlignment="textStart"
+        android:textColor="@color/lucky_white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_event_pic_view" />
+
+    <EditText
         android:id="@+id/facility_edit_name_view"
         style="@style/RoundedEditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
-        android:hint="@string/create_event_name_text"
+        android:hint="@string/create_facility_name_text"
         android:textColor="@color/lucky_white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <!--Facility Details-->
 
     <TextView
         android:id="@+id/textView5"
@@ -37,20 +56,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/facility_edit_name_view" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/facility_edit_description_view"
+        style="@style/RoundedEditTextStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Name"
-        android:textAlignment="textStart"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bk"
+        android:hint="@string/create_facility_details_text"
         android:textColor="@color/lucky_white"
-        android:textSize="20sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_event_pic_view" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <ImageButton
         android:layout_marginStart="-16dp"
@@ -74,21 +93,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/facility_edit_back_button"
         app:layout_constraintStart_toEndOf="@+id/facility_edit_back_button"
         app:layout_constraintTop_toTopOf="@+id/facility_edit_back_button" />
-
-    <TextView
-        android:id="@+id/facility_edit_description_view"
-        style="@style/RoundedEditTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:hint="@string/create_event_details_text"
-        android:textColor="@color/lucky_white"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
 
     <ImageView
