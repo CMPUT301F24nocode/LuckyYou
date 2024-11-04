@@ -1,6 +1,8 @@
 package com.example.projectv2.Controller;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +28,11 @@ public class EntrantListController {
         entrantListMap.put("Removed", emptyList);
         entrantListMap.put("EntrantList", emptyList);
 
-        // Add the map to the Firestore document
+        // Add or update the map in the Firestore document with merge option
         db.collection("events").document(eventId)
-                .update("entrantList", entrantListMap)
+                .set(new HashMap<String, Object>() {{
+                    put("entrantList", entrantListMap);
+                }}, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     System.out.println("Entrant list field with empty arrays added successfully!");
                 })
