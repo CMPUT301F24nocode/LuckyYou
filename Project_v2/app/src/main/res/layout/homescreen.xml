@@ -46,7 +46,7 @@
 
         </com.google.android.material.tabs.TabLayout>
 
-        <!-- Add the ListView for displaying events -->
+        <!-- Add the RecyclerView for displaying events -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/eventRecyclerView"
             android:layout_width="match_parent"
@@ -72,6 +72,7 @@
             android:id="@+id/facility_list_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
             android:text="Facility"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
