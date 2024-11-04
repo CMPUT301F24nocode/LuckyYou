@@ -10,7 +10,7 @@ public class FacilityCreateEditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.facility_create_edit_page);
+        setContentView(R.layout.facility_create_page);
 
         // Set up any required initialization logic here
     }

@@ -9,6 +9,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EventController {
     private FirebaseFirestore db;
@@ -16,6 +18,7 @@ public class EventController {
 
     public interface EventCallback {
         void onEventListLoaded(ArrayList<Event> events);
+        void onEventCreated(String eventId);
         void onError(Exception e);
     }
 
@@ -24,12 +27,31 @@ public class EventController {
     }
 
     // Method to create an Event and store it in Firebase
-    public void createEvent(String name, String detail, String rules, String deadline, String attendees, String entrants, String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled, Uri selectedImageUri, EventCallback callback) {
-        // Create a new Event object
-        Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, selectedImageUri);
+    public void createEvent(String name, String detail, String rules, String deadline, String attendees, String entrants,
+                            String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled,
+                            Uri imageUri, EventCallback callback) {
+        // Create an Event object or use a map to store event details
+        Map<String, Object> eventDetails = new HashMap<>();
+        eventDetails.put("name", name);
+        eventDetails.put("detail", detail);
+        eventDetails.put("rules", rules);
+        eventDetails.put("deadline", deadline);
+        eventDetails.put("attendees", attendees);
+        eventDetails.put("entrants", entrants);
+        eventDetails.put("startDate", startDate);
+        eventDetails.put("ticketPrice", ticketPrice);
+        eventDetails.put("geolocationEnabled", geolocationEnabled);
+        eventDetails.put("notificationsEnabled", notificationsEnabled);
+        eventDetails.put("imageUri", imageUri != null ? imageUri.toString() : null);
 
-        // Add the new event to Firebase
-        addEventToFirestore(newEvent, callback);
+        db.collection("events").add(eventDetails)
+                .addOnSuccessListener(documentReference -> {
+                    String eventId = documentReference.getId();
+                    callback.onEventCreated(eventId);
+                })
+                .addOnFailureListener(e -> {
+                    callback.onError(e);
+                });
     }
 
     // Method to add an event to Firestore

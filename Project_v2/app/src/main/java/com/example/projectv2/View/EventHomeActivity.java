@@ -1,5 +1,7 @@
 package com.example.projectv2.View;
 
+import static com.example.projectv2.Controller.EventController.*;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,11 +73,17 @@ public class EventHomeActivity extends AppCompatActivity {
     // Fetch events from Firebase Firestore
     private void fetchEventsFromFirebase() {
         Log.d("EventHomeActivity", "Starting Firebase fetch...");
-        eventController.fetchEvents(new EventController.EventCallback() {
+        eventController.fetchEvents(new EventCallback() {
             @Override
             public void onEventListLoaded(ArrayList<Event> events) {
                 Log.d("EventHomeActivity", "Fetched " + events.size() + " events from Firebase.");
                 adapter.updateEventList(events);
+            }
+
+            @Override
+            public void onEventCreated(String eventId) {
+                // No action needed here for fetching events; just log
+                Log.d("EventHomeActivity", "onEventCreated called with ID: " + eventId);
             }
 
             @Override
@@ -96,8 +104,7 @@ public class EventHomeActivity extends AppCompatActivity {
             String detail = data.getStringExtra("detail");
             String rules = data.getStringExtra("rules");
             String deadline = data.getStringExtra("deadline");
-            String attendees = data.getStringExtra("attendees");
-            String entrants = data.getStringExtra("entrants");
+
             String startDate = data.getStringExtra("startDate");
             String ticketPrice = data.getStringExtra("ticketPrice");
             boolean geolocationEnabled = data.getBooleanExtra("geolocationEnabled", false);
@@ -113,11 +120,19 @@ public class EventHomeActivity extends AppCompatActivity {
             Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri);
 
             // Add the new event to Firestore using EventController
-            eventController.addEventToFirestore(newEvent, new EventController.EventCallback() {
+            eventController.addEventToFirestore(newEvent, new EventCallback() {
                 @Override
                 public void onEventListLoaded(ArrayList<Event> events) {
                     Log.d("EventHomeActivity", "New event added. Updating event list with " + events.size() + " items.");
                     adapter.updateEventList(events);
+                }
+
+                /**
+                 * @param eventId
+                 */
+                @Override
+                public void onEventCreated(String eventId) {
+
                 }
 
                 @Override
