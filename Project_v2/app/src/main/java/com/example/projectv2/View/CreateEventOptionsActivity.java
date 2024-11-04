@@ -13,7 +13,7 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
     private EditText eventDeadline, eventAttendees, eventEntrants;
     private EditText eventStartDate, eventTicketPrice;
     private CheckBox geolocationCheckbox, notificationsCheckbox;
-    private String name, detail, rules;
+    private String name, detail, rules, facility;
     private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$";
 
     @Override
@@ -34,6 +34,7 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
         name = getIntent().getStringExtra("name");
         detail = getIntent().getStringExtra("detail");
         rules = getIntent().getStringExtra("rules");
+        facility = getIntent().getStringExtra("facility");
 
 
         Button createEventButton = findViewById(R.id.create_event_button);
@@ -64,6 +65,7 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
                 resultIntent.putExtra("name", name);
                 resultIntent.putExtra("detail", detail);
                 resultIntent.putExtra("rules", rules);
+                resultIntent.putExtra("facility", facility);
                 resultIntent.putExtra("deadline", deadline);
                 resultIntent.putExtra("attendees", attendees);
                 resultIntent.putExtra("entrants", entrants);

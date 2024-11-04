@@ -23,9 +23,9 @@ public class EventController {
     }
 
     // Method to create an Event and store it in Firebase
-    public void createEvent(String name, String detail, String rules, String deadline, String attendees, String entrants, String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled, Uri selectedImageUri, EventCallback callback) {
+    public void createEvent(String name, String detail, String rules, String deadline, String attendees, String entrants, String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled, Uri selectedImageUri, String facility, EventCallback callback) {
         // Create a new Event object
-        Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, selectedImageUri);
+        Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, selectedImageUri, facility);
 
         // Add the new event to Firebase
         addEventToFirestore(newEvent, callback);
@@ -57,12 +57,13 @@ public class EventController {
                             String name = document.getString("name");
                             String detail = document.getString("detail");
                             String rules = document.getString("rules");
+                            String facility = document.getString("facility");
                             String deadline = document.getString("deadline");
                             String startDate = document.getString("startDate");
                             String ticketPrice = document.getString("ticketPrice");
                             Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
 
-                            Event event = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri);
+                            Event event = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
                             eventList.add(event);
                         }
                         callback.onEventListLoaded(eventList);

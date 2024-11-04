@@ -22,7 +22,7 @@ public class EventOptionsActivity extends AppCompatActivity {
     private EditText eventDeadline, eventAttendees, eventEntrants;
     private EditText eventStartDate, eventTicketPrice;  // New fields
     private CheckBox geolocationCheckbox, notificationsCheckbox;
-    private String name, detail, rules;
+    private String name, detail, rules, facility;
     private Uri selectedImageUri; // Ensure this is set if image is chosen in EventCreatorActivity
     private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$";
 
@@ -46,6 +46,10 @@ public class EventOptionsActivity extends AppCompatActivity {
         name = getIntent().getStringExtra("name");
         detail = getIntent().getStringExtra("detail");
         rules = getIntent().getStringExtra("rules");
+        facility = getIntent().getStringExtra("facility");
+        if (facility == null || facility.isEmpty()) {
+            facility = "Online"; // Ensure the facility is set to "Online" if not provided
+        }
         if (getIntent().hasExtra("imageUri")) {
             selectedImageUri = Uri.parse(getIntent().getStringExtra("imageUri"));
         }
@@ -90,6 +94,7 @@ public class EventOptionsActivity extends AppCompatActivity {
                         geolocationEnabled,
                         notificationsEnabled,
                         selectedImageUri,
+                        facility,
                         new EventController.EventCallback() {
                             @Override
                             public void onEventListLoaded(ArrayList<Event> events) {
