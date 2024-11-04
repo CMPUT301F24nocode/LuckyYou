@@ -1,5 +1,4 @@
 package com.example.projectv2.View;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,34 +9,37 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectv2.Controller.EventController;
-import com.example.projectv2.Controller.EntrantListController;
-import com.example.projectv2.Controller.EventController.EventCallback;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
+
+import com.example.projectv2.Controller.EventController;
+import com.example.projectv2.Model.Event;
+import com.example.projectv2.R;
 import java.util.ArrayList;
 
 public class EventOptionsActivity extends AppCompatActivity {
 
     private EditText eventDeadline, eventAttendees, eventEntrants;
-    private EditText eventStartDate, eventTicketPrice;
+    private EditText eventStartDate, eventTicketPrice;  // New fields
     private CheckBox geolocationCheckbox, notificationsCheckbox;
-    private String name, detail, rules;
-    private Uri selectedImageUri;
+    private String name, detail, rules, facility;
+    private Uri selectedImageUri; // Ensure this is set if image is chosen in EventCreatorActivity
     private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$";
 
-    private EventController eventController;
+    public EventController eventController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_event_options);
+        setContentView(R.layout.create_event_options); // Displays create_event_options.xml
 
         // Initialize UI components
         eventDeadline = findViewById(R.id.create_event_deadline_view);
+
         eventAttendees = findViewById(R.id.create_event_attendees_num_view);
         eventEntrants = findViewById(R.id.create_event_entrants_num_view);
-        eventStartDate = findViewById(R.id.create_event_start_date);
+        eventStartDate = findViewById(R.id.create_event_start_date);  // Initialize new fields
         eventTicketPrice = findViewById(R.id.create_event_ticket_price);
         geolocationCheckbox = findViewById(R.id.create_event_geolocation_checkbox_view);
         notificationsCheckbox = findViewById(R.id.create_event_notification_checkbox_view);
@@ -46,6 +48,10 @@ public class EventOptionsActivity extends AppCompatActivity {
         name = getIntent().getStringExtra("name");
         detail = getIntent().getStringExtra("detail");
         rules = getIntent().getStringExtra("rules");
+        facility = getIntent().getStringExtra("facility");
+        if (facility == null || facility.isEmpty()) {
+            facility = "Online"; // Ensure the facility is set to "Online" if not provided
+        }
         if (getIntent().hasExtra("imageUri")) {
             selectedImageUri = Uri.parse(getIntent().getStringExtra("imageUri"));
         }
@@ -90,21 +96,12 @@ public class EventOptionsActivity extends AppCompatActivity {
                         geolocationEnabled,
                         notificationsEnabled,
                         selectedImageUri,
-                        new EventCallback() {
+                        facility,
+                        new EventController.EventCallback() {
                             @Override
                             public void onEventListLoaded(ArrayList<Event> events) {
-                                // No implementation needed here
-                            }
-
-                            @Override
-                            public void onEventCreated(String eventId) {
                                 // Show success message when event creation is successful
                                 Toast.makeText(EventOptionsActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
-
-                                // Call EntrantListController to add the entrantList field with empty arrays
-                                EntrantListController entrantListController = new EntrantListController();
-                                entrantListController.addEntrantListField(eventId);
-
                                 finish(); // Optionally close the activity after success
                             }
 
@@ -124,4 +121,6 @@ public class EventOptionsActivity extends AppCompatActivity {
     private boolean isValidDate(String date) {
         return date.matches(DATE_PATTERN);
     }
+
+
 }

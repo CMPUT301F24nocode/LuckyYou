@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Controller.FacilityController;
+import com.example.projectv2.MainActivity;
 import com.example.projectv2.Model.Facility;
 import com.example.projectv2.R;
 
@@ -57,6 +59,14 @@ public class FacilityListActivity extends AppCompatActivity {
                 Log.e("FacilityListActivity", "Error fetching facilities", e);
                 Toast.makeText(FacilityListActivity.this, "Error loading facilities", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        // Set up the Back button to return to MainActivity (homescreen)
+        ImageButton backButton = findViewById(R.id.facility_edit_back_button);
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(FacilityListActivity.this, EventHomeActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         // Set up button to create a new facility

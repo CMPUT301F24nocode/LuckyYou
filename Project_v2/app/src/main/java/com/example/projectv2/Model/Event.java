@@ -9,9 +9,10 @@ public class Event {
     private String deadline;
     private String startDate;
     private String ticketPrice;
-    private Uri imageUri; // New field for image URI
+    private Uri imageUri;
+    private String facility;
 
-    public Event(String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri) {
+    public Event(String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
         this.name = name;
         this.detail = detail;
         this.rules = rules;
@@ -19,6 +20,7 @@ public class Event {
         this.startDate = startDate;
         this.ticketPrice = ticketPrice;
         this.imageUri = imageUri;
+        this.facility = facility;
     }
 
     public String getName() {
@@ -45,7 +47,7 @@ public class Event {
         return ticketPrice;
     }
 
-    public Uri getImageUri() {
-        return imageUri;
-    }
+    public Uri getImageUri() { return imageUri; }
+
+    public String getFacility() { return facility; }
 }
