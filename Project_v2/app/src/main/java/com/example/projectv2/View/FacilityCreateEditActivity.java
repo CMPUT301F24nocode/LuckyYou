@@ -24,7 +24,7 @@ public class FacilityCreateEditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.facility_create_edit_page);
+        setContentView(R.layout.facility_create_page);
 
         // Back button to navigate back to the previous activity
         ImageButton eventBackButton = findViewById(R.id.facility_edit_back_button);

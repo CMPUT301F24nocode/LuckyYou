@@ -1,6 +1,7 @@
 package com.example.projectv2.View;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,24 +39,47 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
 
-        // Set image
-        if (event.getImageUri() != null) {
-            holder.backgroundImageView.setImageURI(event.getImageUri());
-        } else {
-            holder.backgroundImageView.setImageResource(R.drawable.placeholder_event); // Default image
+        // Load image directly using URI with a try-catch block for safety
+        try {
+            if (event.getImageUri() != null) {
+                Uri imageUri = event.getImageUri();
+                holder.backgroundImageView.setImageURI(imageUri);
+
+                // Check if the image failed to load and set a default image
+                if (holder.backgroundImageView.getDrawable() == null) {
+                    holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
+                }
+            } else {
+                holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
+            }
+        } catch (Exception e) {
+            holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
+            e.printStackTrace();
         }
 
-        // Set text details
         holder.eventNameTextView.setText(event.getName());
         holder.eventDateTextView.setText(event.getDeadline());
         holder.eventDetailTextView.setText(event.getDetail());
+        holder.eventPriceTextView.setText(
+                (event.getTicketPrice() != null && !event.getTicketPrice().isEmpty() && !event.getTicketPrice().equals("0"))
+                        ? "$" + event.getTicketPrice()
+                        : "Free"
+        );
 
-        // Display ticket price or "Free" if not specified
-        if (event.getTicketPrice() != null && !event.getTicketPrice().isEmpty() && !event.getTicketPrice().equals("0")) {
-            holder.eventPriceTextView.setText("$" + event.getTicketPrice());
-        } else {
-            holder.eventPriceTextView.setText("Free");
-        }
+        // Set click listener to open EventDetailsActivity with consistent keys
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EventDetailsActivity.class);
+            intent.putExtra("name", event.getName());
+            intent.putExtra("details", event.getDetail());
+            intent.putExtra("rules", event.getRules());
+            intent.putExtra("deadline", event.getDeadline());
+            intent.putExtra("startDate", event.getStartDate());
+            intent.putExtra("price", event.getTicketPrice());
+            if (event.getImageUri() != null) {
+                intent.putExtra("imageUri", event.getImageUri().toString());
+            }
+            context.startActivity(intent);
+        });
     }
 
     @Override
