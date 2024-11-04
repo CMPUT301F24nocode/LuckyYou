@@ -10,6 +10,10 @@ navigationFragment = "2.8.3"
 navigationUi = "2.8.3"
 googleGmsGoogleServices = "4.4.2"
 firebaseFirestore = "25.1.1"
+playServicesLocation = "21.0.1"
+playServicesMaps = "19.0.0"
+playServicesMapsVersion = "18.1.0"
+playServicesPlaces = "17.1.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -23,6 +27,10 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 
 circleimageview = { group = "de.hdodenhof", name = "circleimageview", version = "3.1.0" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+play-services-maps-v1810 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
+play-services-places = { module = "com.google.android.gms:play-services-places", version.ref = "playServicesPlaces" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

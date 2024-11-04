@@ -40,6 +40,7 @@
     <string name="previous">og previous</string>
     <string name="first_fragment_label">first frag label</string>
     <string name="second_fragment_label">second frag label</string>
+    <string name="Not_a_user"><u>Not a User? Signup Here</u>.</string>
     <string name="create_facility_name_text">Enter Facility Name</string>
     <string name="create_facility_details_text">Enter Facility Details</string>
 

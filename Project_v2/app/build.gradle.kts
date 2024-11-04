@@ -48,5 +48,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation (libs.circleimageview)
+    implementation(libs.play.services.maps) // Replace with the latest version
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps.v1810)
+    implementation(libs.play.services.places)
 }
