@@ -1,6 +1,5 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/homescreen_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/lucky_background"
-            app:layout_constraintBottom_toTopOf="@+id/eventRecyclerView"
+            app:layout_constraintBottom_toTopOf="@+id/eventListView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include"
@@ -46,16 +45,16 @@
 
         </com.google.android.material.tabs.TabLayout>
 
-        <!-- Add the RecyclerView for displaying events -->
+        <!-- Add the ListView for displaying events -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/eventRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/tabLayout"
             app:layout_constraintBottom_toTopOf="@+id/homescreen_fab"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="8dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/homescreen_fab"
