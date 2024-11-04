@@ -36,6 +36,7 @@
         <activity android:name=".View.FacilityListActivity"
             tools:ignore="DuplicateActivity" />
         <activity android:name=".View.FacilityCreateEditActivity" />
+        <activity android:name=".View.EventDetailsActivity"/>
         <activity android:name=".View.FacilityLandingPageActivity" />
 
     </application>

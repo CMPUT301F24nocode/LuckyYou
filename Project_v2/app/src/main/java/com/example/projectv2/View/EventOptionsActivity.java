@@ -1,4 +1,5 @@
 package com.example.projectv2.View;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,11 +9,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.projectv2.Controller.EventController;
-import com.example.projectv2.Model.Event;
-import com.example.projectv2.R;
-
-
 import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
@@ -36,7 +32,6 @@ public class EventOptionsActivity extends AppCompatActivity {
 
         // Initialize UI components
         eventDeadline = findViewById(R.id.create_event_deadline_view);
-
         eventAttendees = findViewById(R.id.create_event_attendees_num_view);
         eventEntrants = findViewById(R.id.create_event_entrants_num_view);
         eventStartDate = findViewById(R.id.create_event_start_date);  // Initialize new fields
@@ -106,6 +101,12 @@ public class EventOptionsActivity extends AppCompatActivity {
                             }
 
                             @Override
+                            public void onEventCreated(String eventId) {
+                                // Log or handle the event creation success if needed
+                                Log.d("EventOptionsActivity", "Event created with ID: " + eventId);
+                            }
+
+                            @Override
                             public void onError(Exception e) {
                                 // Handle error, such as showing an error message
                                 Toast.makeText(EventOptionsActivity.this, "Error creating event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -121,6 +122,4 @@ public class EventOptionsActivity extends AppCompatActivity {
     private boolean isValidDate(String date) {
         return date.matches(DATE_PATTERN);
     }
-
-
 }

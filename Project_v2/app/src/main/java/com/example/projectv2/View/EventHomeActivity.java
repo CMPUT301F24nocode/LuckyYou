@@ -79,6 +79,12 @@ public class EventHomeActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onEventCreated(String eventId) {
+                // You can log this information or handle event creation here if needed
+                Log.d("EventHomeActivity", "Event created with ID: " + eventId);
+            }
+
+            @Override
             public void onError(Exception e) {
                 Log.e("EventHomeActivity", "Error fetching events", e);
             }
@@ -111,21 +117,40 @@ public class EventHomeActivity extends AppCompatActivity {
 
             // Display a message and create a new event
             Toast.makeText(this, "Event Created: " + name, Toast.LENGTH_SHORT).show();
-            Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
 
-            // Add the new event to Firestore using EventController
-            eventController.addEventToFirestore(newEvent, new EventController.EventCallback() {
-                @Override
-                public void onEventListLoaded(ArrayList<Event> events) {
-                    Log.d("EventHomeActivity", "New event added. Updating event list with " + events.size() + " items.");
-                    adapter.updateEventList(events);
-                }
+            // Use the createEvent method from EventController
+            eventController.createEvent(
+                    name,
+                    detail,
+                    rules,
+                    deadline,
+                    attendees,
+                    entrants,
+                    startDate,
+                    ticketPrice,
+                    geolocationEnabled,
+                    notificationsEnabled,
+                    imageUri,
+                    facility,
+                    new EventController.EventCallback() {
+                        @Override
+                        public void onEventListLoaded(ArrayList<Event> events) {
+                            Log.d("EventHomeActivity", "New event added. Updating event list with " + events.size() + " items.");
+                            adapter.updateEventList(events);
+                        }
 
-                @Override
-                public void onError(Exception e) {
-                    Log.e("EventHomeActivity", "Error adding event", e);
-                }
-            });
+                        @Override
+                        public void onEventCreated(String eventId) {
+                            // Handle the event creation success, e.g., log or show a message
+                            Log.d("EventHomeActivity", "Event created successfully with ID: " + eventId);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e("EventHomeActivity", "Error adding event", e);
+                        }
+                    }
+            );
         }
     }
 }
