@@ -96,6 +96,7 @@ public class EventHomeActivity extends AppCompatActivity {
             String detail = data.getStringExtra("detail");
             String rules = data.getStringExtra("rules");
             String deadline = data.getStringExtra("deadline");
+            String facility = data.getStringExtra("facility");
             String attendees = data.getStringExtra("attendees");
             String entrants = data.getStringExtra("entrants");
             String startDate = data.getStringExtra("startDate");
@@ -110,7 +111,7 @@ public class EventHomeActivity extends AppCompatActivity {
 
             // Display a message and create a new event
             Toast.makeText(this, "Event Created: " + name, Toast.LENGTH_SHORT).show();
-            Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri);
+            Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
 
             // Add the new event to Firestore using EventController
             eventController.addEventToFirestore(newEvent, new EventController.EventCallback() {
