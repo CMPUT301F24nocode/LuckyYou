@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Edit Facility"
+        android:text="Create Facility"
         android:textColor="@color/lucky_white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/facility_edit_back_button"
