@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -49,6 +50,13 @@ public class EventHomeActivity extends AppCompatActivity {
         createButton.setOnClickListener(v -> {
             Intent intent = new Intent(EventHomeActivity.this, EventCreatorActivity.class);
             startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
+        });
+
+        // Initialize Facility List Button and set click listener
+        Button facilityListButton = findViewById(R.id.facility_list_button);
+        facilityListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(EventHomeActivity.this, FacilityListActivity.class);
+            startActivity(intent);
         });
 
         // Initialize NavigationView
