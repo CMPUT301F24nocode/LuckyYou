@@ -1,13 +1,17 @@
 package com.example.projectv2.Controller;
+
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-
 import com.example.projectv2.Model.Event;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
+import com.google.firebase.firestore.SetOptions;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EventController {
     private FirebaseFirestore db;
@@ -15,6 +19,9 @@ public class EventController {
 
     public interface EventCallback {
         void onEventListLoaded(ArrayList<Event> events);
+
+        void onEventCreated(String eventId);
+
         void onError(Exception e);
     }
 
@@ -23,25 +30,42 @@ public class EventController {
     }
 
     // Method to create an Event and store it in Firebase
-    public void createEvent(String name, String detail, String rules, String deadline, String attendees, String entrants, String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled, Uri selectedImageUri, String facility, EventCallback callback) {
-        // Create a new Event object
-        Event newEvent = new Event(name, detail, rules, deadline, startDate, ticketPrice, selectedImageUri, facility);
+    public void createEvent(String name, String detail, String rules, String deadline, String attendees, String entrants,
+                            String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled,
+                            Uri selectedImageUri, String facility, EventCallback callback) {
+        // Create a map to represent the event and the entrant list fields
+        Map<String, Object> eventMap = new HashMap<>();
+        eventMap.put("name", name);
+        eventMap.put("detail", detail);
+        eventMap.put("rules", rules);
+        eventMap.put("deadline", deadline);
+        eventMap.put("attendees", attendees);
+        eventMap.put("entrants", entrants);
+        eventMap.put("startDate", startDate);
+        eventMap.put("ticketPrice", ticketPrice);
+        eventMap.put("geolocationEnabled", geolocationEnabled);
+        eventMap.put("notificationsEnabled", notificationsEnabled);
+        eventMap.put("imageUri", selectedImageUri != null ? selectedImageUri.toString() : null);
+        eventMap.put("facility", facility);
 
-        // Add the new event to Firebase
-        addEventToFirestore(newEvent, callback);
-    }
+        // Add empty lists for entrant subfields
+        Map<String, Object> entrantListMap = new HashMap<>();
+        entrantListMap.put("Attendees", new ArrayList<>());
+        entrantListMap.put("Unlucky", new ArrayList<>());
+        entrantListMap.put("Declined", new ArrayList<>());
+        entrantListMap.put("Removed", new ArrayList<>());
+        entrantListMap.put("EntrantList", new ArrayList<>());
+        eventMap.put("entrantList", entrantListMap);
 
-    // Method to add an event to Firestore
-    public void addEventToFirestore(Event event, EventCallback callback) {
-        db.collection("events")
-                .add(event)
+        // Add the event and the entrant list fields to Firestore
+        db.collection("events").add(eventMap)
                 .addOnSuccessListener(documentReference -> {
-                    Log.d("EventController", "Event added with ID: " + documentReference.getId());
-                    eventList.add(event); // Optionally add to the local list
-                    callback.onEventListLoaded(eventList); // Notify callback with updated list
+                    String eventId = documentReference.getId();
+                    Log.d("EventController", "Event with entrant list added successfully with ID: " + eventId);
+                    callback.onEventCreated(eventId);
                 })
                 .addOnFailureListener(e -> {
-                    Log.w("EventController", "Error adding event", e);
+                    Log.e("EventController", "Error adding event with entrant list: " + e.getMessage());
                     callback.onError(e);
                 });
     }
@@ -71,6 +95,55 @@ public class EventController {
                         Log.w("EventController", "Error getting documents.", task.getException());
                         callback.onError(task.getException());
                     }
+                });
+    }
+
+    public void checkAndAddEntrant(String eventId, String name, String email, String phoneNumber, EventCallback callback) {
+        // Fetch the event document from Firestore
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Retrieve the current entrant list and the limit
+                        List<Map<String, String>> currentEntrantList = (List<Map<String, String>>) documentSnapshot.get("entrantList.EntrantList");
+                        int entrantsLimit = documentSnapshot.getLong("entrants").intValue(); // Ensure 'entrants' is stored as a number
+
+                        // Ensure currentEntrantList is initialized to avoid NullPointerException
+                        if (currentEntrantList == null) {
+                            currentEntrantList = new ArrayList<>();
+                        }
+
+                        // Check if the current number of entrants is below the limit
+                        if (currentEntrantList.size() < entrantsLimit) {
+                            // Create a map to represent the new entrant's details
+                            Map<String, String> userDetails = new HashMap<>();
+                            userDetails.put("name", name);
+                            userDetails.put("email", email);
+                            userDetails.put("phoneNumber", phoneNumber);
+
+                            // Add the user details to the EntrantList
+                            db.collection("events").document(eventId)
+                                    .update("entrantList.EntrantList", FieldValue.arrayUnion(userDetails))
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("EventController", "User with details added to EntrantList successfully.");
+                                        callback.onEventCreated(eventId);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("EventController", "Error adding user to EntrantList: " + e.getMessage());
+                                        callback.onError(e);
+                                    });
+                        } else {
+                            // Deny the request if the limit is reached
+                            Log.d("EventController", "Entrant limit reached. No more users can join.");
+                            callback.onError(new Exception("Entrant limit reached. No more users can join."));
+                        }
+                    } else {
+                        Log.e("EventController", "Event not found.");
+                        callback.onError(new Exception("Event not found."));
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EventController", "Error fetching event data: " + e.getMessage());
+                    callback.onError(e);
                 });
     }
 }
