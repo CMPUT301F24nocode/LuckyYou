@@ -44,6 +44,7 @@
         <activity android:name=".View.EventLandingPageOrganizerActivity"/>
         <activity android:name=".View.EventLandingPageUserActivity"/>
         <activity android:name=".View.FacilityLandingPageActivity" />
+        <activity android:name=".View.EventCreatorActivity" />
 
 
 
