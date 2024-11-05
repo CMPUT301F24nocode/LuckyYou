@@ -2,7 +2,10 @@ package com.example.projectv2.Model;
 
 import android.net.Uri;
 
+import java.util.List;
+
 public class Event {
+    private List<Event> entrantlist;
     private String name;
     private String detail;
     private String rules;
@@ -11,7 +14,7 @@ public class Event {
     private String ticketPrice;
     private Uri imageUri; // New field for image URI
 
-    public Event(String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri) {
+    public Event(String name, String detail, String rules, String deadline, String startDate, String ticketPrice, Uri imageUri) {
         this.name = name;
         this.detail = detail;
         this.rules = rules;
@@ -47,5 +50,9 @@ public class Event {
 
     public Uri getImageUri() {
         return imageUri;
+    }
+
+    public String getId() {
+        return "";
     }
 }

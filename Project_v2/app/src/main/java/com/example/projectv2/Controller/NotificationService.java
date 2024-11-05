@@ -13,6 +13,7 @@ import java.util.Map;
 public class NotificationService {
 
     private final FirebaseFirestore db; // Firebase Firestore instance for database operations
+    private String eventName;
 
     /**
      * Constructs a NotificationService and initializes the Firestore database instance.
@@ -44,6 +45,14 @@ public class NotificationService {
                         // Handle failure
                     });
         }
+        //waiting list
+        NotificationService notificationService = new NotificationService();
+        notificationService.sendNotification(new Notification(
+                userId,
+                "You have successfully joined the waiting list for the event " + eventName,
+                false, // isOrganiser
+                false  // isAdmin
+        ));
 
         // If the notification is for admins, add to admin_notif array
         if (notification.isAdmin()) {

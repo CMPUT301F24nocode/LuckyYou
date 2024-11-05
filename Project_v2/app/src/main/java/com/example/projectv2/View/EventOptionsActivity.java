@@ -17,6 +17,7 @@ import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventOptionsActivity extends AppCompatActivity {
 
@@ -93,6 +94,11 @@ public class EventOptionsActivity extends AppCompatActivity {
                         notificationsEnabled,
                         selectedImageUri,
                         new EventController.EventCallback() {
+                            @Override
+                            public void onEventListLoaded(List<Event> events) {
+
+                            }
+
                             @Override
                             public void onEventListLoaded(ArrayList<Event> events) {
                                 // Show success message when event creation is successful

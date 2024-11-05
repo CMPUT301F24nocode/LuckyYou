@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventHomeActivity extends AppCompatActivity {
 
@@ -65,6 +66,11 @@ public class EventHomeActivity extends AppCompatActivity {
         Log.d("EventHomeActivity", "Starting Firebase fetch...");
         eventController.fetchEvents(new EventController.EventCallback() {
             @Override
+            public void onEventListLoaded(List<Event> events) {
+
+            }
+
+            @Override
             public void onEventListLoaded(ArrayList<Event> events) {
                 Log.d("EventHomeActivity", "Fetched " + events.size() + " events from Firebase.");
                 adapter.updateEventList(events);
@@ -106,6 +112,11 @@ public class EventHomeActivity extends AppCompatActivity {
 
             // Add the new event to Firestore using EventController
             eventController.addEventToFirestore(newEvent, new EventController.EventCallback() {
+                @Override
+                public void onEventListLoaded(List<Event> events) {
+
+                }
+
                 @Override
                 public void onEventListLoaded(ArrayList<Event> events) {
                     Log.d("EventHomeActivity", "New event added. Updating event list with " + events.size() + " items.");

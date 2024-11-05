@@ -1,6 +1,7 @@
 package com.example.projectv2.View;
 
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Controller.AvailableEventsAdapter;
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
 import java.util.ArrayList;
@@ -38,13 +40,8 @@ public class AvailableEventsFragment extends Fragment {
         return view;
     }
 
-    private List<String> getAvailableEventsList() {
-        List<String> events = new ArrayList<>();
-        events.add("Event 1");
-        events.add("Event 2");
-        events.add("Event 3");
-        events.add("Event 4");
-        events.add("Event 5");
+    private List<Event> getAvailableEventsList() {
+        List<Event> events = new ArrayList<>();
         return events;
     }
 }

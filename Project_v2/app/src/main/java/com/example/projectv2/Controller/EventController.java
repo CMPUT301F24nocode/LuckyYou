@@ -5,16 +5,20 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.projectv2.Model.Event;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EventController {
     private FirebaseFirestore db;
     private final ArrayList<Event> eventList = new ArrayList<>();
 
     public interface EventCallback {
+        void onEventListLoaded(List<Event> events);
+
         void onEventListLoaded(ArrayList<Event> events);
         void onError(Exception e);
     }
@@ -46,6 +50,21 @@ public class EventController {
                     callback.onError(e);
                 });
     }
+    // Add methods to add and remove entrants from the waiting list.
+    public void joinWaitingList(String eventId, String userId, EventCallback callback) {
+        db.collection("events").document(eventId)
+                .update("waitingList", FieldValue.arrayUnion(userId))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("EventController", "User added to waiting list.");
+                    fetchEvents(callback); // Fetch updated list
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EventController", "Error adding to waiting list", e);
+                    callback.onError(e);
+                });
+    }
+
+
 
     // Fetch events from Firestore and notify callback
     public void fetchEvents(EventCallback callback) {
