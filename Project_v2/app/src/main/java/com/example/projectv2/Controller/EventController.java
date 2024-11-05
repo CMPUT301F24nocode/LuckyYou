@@ -15,6 +15,9 @@ public class EventController {
 
     public interface EventCallback {
         void onEventListLoaded(ArrayList<Event> events);
+
+        void onEventCreated(String eventId);
+
         void onError(Exception e);
     }
 

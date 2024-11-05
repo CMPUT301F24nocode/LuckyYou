@@ -1,7 +1,5 @@
 package com.example.projectv2.View;
 
-import static android.os.Build.VERSION_CODES.R;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,11 +8,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Model.Event;
-
+import com.example.projectv2.R;
 import java.util.ArrayList;
 
 public class EventOptionsActivity extends AppCompatActivity {
@@ -34,7 +31,7 @@ public class EventOptionsActivity extends AppCompatActivity {
         setContentView(R.layout.create_event_options); // Displays create_event_options.xml
 
         // Initialize UI components
-        eventDeadline = findViewById(R);
+        eventDeadline = findViewById(R.id.create_event_deadline_view);
         eventAttendees = findViewById(R.id.create_event_attendees_num_view);
         eventEntrants = findViewById(R.id.create_event_entrants_num_view);
         eventStartDate = findViewById(R.id.create_event_start_date);  // Initialize new fields
@@ -101,6 +98,12 @@ public class EventOptionsActivity extends AppCompatActivity {
                                 // Show success message when event creation is successful
                                 Toast.makeText(EventOptionsActivity.this, "Event created successfully", Toast.LENGTH_SHORT).show();
                                 finish(); // Optionally close the activity after success
+                            }
+
+                            @Override
+                            public void onEventCreated(String eventId) {
+                                // Log or handle the event creation success if needed
+                                Log.d("EventOptionsActivity", "Event created with ID: " + eventId);
                             }
 
                             @Override
