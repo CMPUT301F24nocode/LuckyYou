@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectv2.R;
 
 
-public class EventLandingPageActivity extends AppCompatActivity {
+public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
     private ImageView eventImageView;
     private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
