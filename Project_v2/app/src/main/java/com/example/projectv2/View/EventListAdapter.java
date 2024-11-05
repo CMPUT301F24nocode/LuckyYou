@@ -3,6 +3,7 @@ package com.example.projectv2.View;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,13 +70,14 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         // Set click listener to open EventDetailsActivity with consistent keys
         holder.itemView.setOnClickListener(v -> {
 
-//            Check if the event is made by the user
-//            if (user = owner of event) {
-//                EventLandingPageOrganiser
-//            }
-//            else {
-//                EventLandingPageUser
-//            }
+//            Checks if the user is the owner of the event and opens the appropriate activity
+            String user= Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            if (user.equals(event.getOwner())) {
+                Intent intent = new Intent(context, EventLandingPageOrganizerActivity.class);
+
+            }else {
+                Intent intent = new Intent(context, EventLandingPageUserActivity.class);
+            }
 
             Intent intent = new Intent(context, EventLandingPageUserActivity.class);
             intent.putExtra("name", event.getName());
