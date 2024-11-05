@@ -32,8 +32,6 @@ private CheckBox isOrganizer;
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
-
-
         signUpButton = findViewById(R.id.signup_button);
         email = findViewById(R.id.signup_email);
         firstName = findViewById(R.id.signup_firstname);

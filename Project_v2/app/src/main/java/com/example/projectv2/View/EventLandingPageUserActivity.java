@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
 
@@ -17,6 +19,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
     private ImageView eventImageView;
     private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
+    private Button joinEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         eventDeadlineView = findViewById(R.id.event_deadline_view);
         eventCountdownView = findViewById(R.id.event_countdown_view);
         eventPriceView = findViewById(R.id.event_price_view);
+        joinEventButton = findViewById(R.id.event_join_button);
 
         // Back button to navigate back to the previous activity
         ImageButton eventBackButton = findViewById(R.id.event_back_button);
@@ -41,6 +45,8 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             }
         });
 
+
+
         // Retrieve event data from intent and provide fallback values
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
@@ -50,6 +56,18 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         String startDate = intent.getStringExtra("startDate");
         String price = intent.getStringExtra("price");
         String imageUriString = intent.getStringExtra("imageUri");
+        Event event = (Event) intent.getSerializableExtra("event");
+        joinEventButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+
+
+
+
+            }
+        });
 
 
         // Set data to views with null-checks

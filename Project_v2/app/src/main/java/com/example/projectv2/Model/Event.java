@@ -2,7 +2,9 @@ package com.example.projectv2.Model;
 
 import android.net.Uri;
 
-public class Event {
+import java.io.Serializable;
+
+public class Event implements Serializable {
     private String owner;
     private String name;
     private String detail;

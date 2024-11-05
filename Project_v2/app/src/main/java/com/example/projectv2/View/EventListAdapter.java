@@ -89,6 +89,8 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             if (event.getImageUri() != null) {
                 intent.putExtra("imageUri", event.getImageUri().toString());
             }
+            intent.putExtra("event", event);
+
             context.startActivity(intent);
         });
     }
