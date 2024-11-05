@@ -29,6 +29,7 @@
         <activity android:name=".View.AdminProfileListActivity" />
         <activity android:name=".View.AdminImageListActivity" />
         <activity android:name=".View.AdminFacilityListActivity" />
+        <activity android:name=".View.EventCreatorActivity" />
         <activity android:name=".View.SignUpActivity"
             tools:ignore="Instantiatable" />
         <activity android:name=".View.CreateEventOptionsActivity"
@@ -40,7 +41,8 @@
         <activity android:name=".View.FacilityListActivity"
             tools:ignore="DuplicateActivity" />
 
-        <activity android:name=".View.EventDetailsActivity"/>
+        <activity android:name=".View.EventLandingPageOrganizerActivity"/>
+        <activity android:name=".View.EventLandingPageUserActivity"/>
         <activity android:name=".View.FacilityLandingPageActivity" />
 
 

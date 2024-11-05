@@ -98,6 +98,7 @@ public class EventHomeActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODE_CREATE_EVENT && resultCode == RESULT_OK && data != null) {
             // Retrieve data from EventOptionsActivity
+            String owner = data.getStringExtra("owner");
             String name = data.getStringExtra("name");
             String detail = data.getStringExtra("detail");
             String rules = data.getStringExtra("rules");
@@ -120,6 +121,7 @@ public class EventHomeActivity extends AppCompatActivity {
 
             // Use the createEvent method from EventController
             eventController.createEvent(
+                    owner,
                     name,
                     detail,
                     rules,

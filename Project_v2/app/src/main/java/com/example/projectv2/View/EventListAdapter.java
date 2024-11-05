@@ -68,7 +68,16 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
         // Set click listener to open EventDetailsActivity with consistent keys
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventDetailsActivity.class);
+
+//            Check if the event is made by the user
+//            if (user = owner of event) {
+//                EventLandingPageOrganiser
+//            }
+//            else {
+//                EventLandingPageUser
+//            }
+
+            Intent intent = new Intent(context, EventLandingPageUserActivity.class);
             intent.putExtra("name", event.getName());
             intent.putExtra("details", event.getDetail());
             intent.putExtra("rules", event.getRules());

@@ -1,7 +1,9 @@
 package com.example.projectv2.View;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -60,6 +62,8 @@ public class EventOptionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Collect data
+                @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                String owner = deviceID;
                 String deadline = eventDeadline.getText().toString();
                 String attendees = eventAttendees.getText().toString();
                 String entrants = eventEntrants.getText().toString();
@@ -80,6 +84,7 @@ public class EventOptionsActivity extends AppCompatActivity {
 
                 // Call EventController to save the event in Firestore
                 eventController.createEvent(
+                        owner,
                         name,
                         detail,
                         rules,
