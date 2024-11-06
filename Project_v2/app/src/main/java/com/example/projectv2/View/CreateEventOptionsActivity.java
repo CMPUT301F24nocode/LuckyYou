@@ -1,25 +1,25 @@
-package com.example.projectv2.View;// CreateEventOptionsActivity.java allows users to specify additional event options, including date, attendees, and optional features like geolocation and notifications.
+package com.example.projectv2.View;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.projectv2.R;
 
 public class CreateEventOptionsActivity extends AppCompatActivity {
-    private EditText eventDeadline, eventAttendees, eventEntrants, eventStartDate, eventTicketPrice; // Input fields for event options
-    private CheckBox geolocationCheckbox, notificationsCheckbox; // Checkboxes for geolocation and notifications options
-    private String name, detail, rules, facility; // Event attributes passed from previous activity
-    private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$"; // Regex pattern for date validation
+    private EditText eventDeadline, eventAttendees, eventEntrants;
+    private EditText eventStartDate, eventTicketPrice;
+    private CheckBox geolocationCheckbox, notificationsCheckbox;
+    private String name, detail, rules, facility;
+    private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_event_options);
+        setContentView(R.layout.create_event_options); // Displays create_event_options.xml
 
         // Initialize UI components
         eventDeadline = findViewById(R.id.create_event_deadline_view);
@@ -36,47 +36,51 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
         rules = getIntent().getStringExtra("rules");
         facility = getIntent().getStringExtra("facility");
 
-        // Button to submit options and validate data
+
         Button createEventButton = findViewById(R.id.create_event_button);
-        createEventButton.setOnClickListener(v -> {
-            String deadline = eventDeadline.getText().toString();
-            String attendees = eventAttendees.getText().toString();
-            String entrants = eventEntrants.getText().toString();
-            String startDate = eventStartDate.getText().toString();
-            String ticketPrice = eventTicketPrice.getText().toString();
-            boolean geolocationEnabled = geolocationCheckbox.isChecked();
-            boolean notificationsEnabled = notificationsCheckbox.isChecked();
+        createEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Collect data
+                String deadline = eventDeadline.getText().toString();
+                String attendees = eventAttendees.getText().toString();
+                String entrants = eventEntrants.getText().toString();
+                String startDate = eventStartDate.getText().toString();
+                String ticketPrice = eventTicketPrice.getText().toString();
+                boolean geolocationEnabled = geolocationCheckbox.isChecked();
+                boolean notificationsEnabled = notificationsCheckbox.isChecked();
 
-            // Validate date format for deadline and start date
-            if (!isValidDate(deadline)) {
-                eventDeadline.setError("Invalid date format. Use DD-MM-YYYY");
-                return;
+                // Validate date format
+                if (!isValidDate(deadline)) {
+                    eventDeadline.setError("Invalid date format. Use DD-MM-YYYY");
+                    return;
+                }
+                if (!isValidDate(startDate)) {
+                    eventStartDate.setError("Invalid date format. Use DD-MM-YYYY");
+                    return;
+                }
+
+                // Create intent to pass data back to EventCreatorActivity
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("name", name);
+                resultIntent.putExtra("detail", detail);
+                resultIntent.putExtra("rules", rules);
+                resultIntent.putExtra("facility", facility);
+                resultIntent.putExtra("deadline", deadline);
+                resultIntent.putExtra("attendees", attendees);
+                resultIntent.putExtra("entrants", entrants);
+                resultIntent.putExtra("startDate", startDate);
+                resultIntent.putExtra("ticketPrice", ticketPrice);
+                resultIntent.putExtra("geolocationEnabled", geolocationEnabled);
+                resultIntent.putExtra("notificationsEnabled", notificationsEnabled);
+
+                // Set result and finish activity
+                setResult(RESULT_OK, resultIntent);
+                finish();
             }
-            if (!isValidDate(startDate)) {
-                eventStartDate.setError("Invalid date format. Use DD-MM-YYYY");
-                return;
-            }
-
-            // Prepare intent with data to pass back to EventCreatorActivity
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("name", name);
-            resultIntent.putExtra("detail", detail);
-            resultIntent.putExtra("rules", rules);
-            resultIntent.putExtra("facility", facility);
-            resultIntent.putExtra("deadline", deadline);
-            resultIntent.putExtra("attendees", attendees);
-            resultIntent.putExtra("entrants", entrants);
-            resultIntent.putExtra("startDate", startDate);
-            resultIntent.putExtra("ticketPrice", ticketPrice);
-            resultIntent.putExtra("geolocationEnabled", geolocationEnabled);
-            resultIntent.putExtra("notificationsEnabled", notificationsEnabled);
-
-            setResult(RESULT_OK, resultIntent);
-            finish();
         });
     }
-
-    // Validates if the date string matches the required pattern
+    // Method to check if date matches pattern
     private boolean isValidDate(String date) {
         return date.matches(DATE_PATTERN);
     }

@@ -49,13 +49,15 @@ public class EventLandingPageActivity extends AppCompatActivity {
         String startDate = intent.getStringExtra("startDate");
         String price = intent.getStringExtra("price");
         String imageUriString = intent.getStringExtra("imageUri");
+        String eventID = intent.getStringExtra("eventID");
 
         // Configure QR Code button
         qrcodeButton.setOnClickListener(v -> {
             Intent qrIntent = new Intent(EventLandingPageActivity.this, QrOrganiserActivity.class);
-            qrIntent.putExtra("name", getIntent().getStringExtra("name"));
-            qrIntent.putExtra("description", getIntent().getStringExtra("details"));
-            qrIntent.putExtra("posterUrl", getIntent().getStringExtra("imageUri"));
+            qrIntent.putExtra("name", name);
+            qrIntent.putExtra("description", details);
+            qrIntent.putExtra("posterUrl", imageUriString);
+            qrIntent.putExtra("eventID", eventID);
             startActivity(qrIntent);
         });
 
