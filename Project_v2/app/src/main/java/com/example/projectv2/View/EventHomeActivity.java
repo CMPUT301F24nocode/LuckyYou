@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -52,6 +53,8 @@ public class EventHomeActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
         });
 
+        ImageButton refresh=findViewById(R.id.refreshButton);
+        refresh.setOnClickListener(view -> fetchEventsFromFirebase());
         // Initialize Facility List Button and set click listener
         Button facilityListButton = findViewById(R.id.facility_list_button);
         facilityListButton.setOnClickListener(v -> {
@@ -68,19 +71,17 @@ public class EventHomeActivity extends AppCompatActivity {
         // Logic to handle navigation view interactions (if needed)
     }
 
-    // Fetch events from Firebase Firestore
     private void fetchEventsFromFirebase() {
         Log.d("EventHomeActivity", "Starting Firebase fetch...");
         eventController.fetchEvents(new EventController.EventCallback() {
             @Override
             public void onEventListLoaded(ArrayList<Event> events) {
                 Log.d("EventHomeActivity", "Fetched " + events.size() + " events from Firebase.");
-                adapter.updateEventList(events);
+                adapter.updateEventList(events); // Update the adapter with the new list of events
             }
 
             @Override
             public void onEventCreated(String eventId) {
-                // You can log this information or handle event creation here if needed
                 Log.d("EventHomeActivity", "Event created with ID: " + eventId);
             }
 

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.ImageDownloaderTask;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
@@ -39,24 +40,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
 
-        // Load image directly using URI with a try-catch block for safety
-        try {
-            if (event.getImageUri() != null) {
-                Uri imageUri = event.getImageUri();
-                holder.backgroundImageView.setImageURI(imageUri);
-
-                // Check if the image failed to load and set a default image
-                if (holder.backgroundImageView.getDrawable() == null) {
-                    holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
-                }
-            } else {
-                holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
-            }
-        } catch (Exception e) {
+        // Load image using ImageDownloaderTask
+        if (event.getImageUri() != null) {
+            String imageUrl = event.getImageUri().toString();
+            new ImageDownloaderTask(holder.backgroundImageView).execute(imageUrl);
+        } else {
             holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
-            e.printStackTrace();
         }
 
+        // Set other fields
         holder.eventNameTextView.setText(event.getName());
         holder.eventDateTextView.setText(event.getDeadline());
         holder.eventDetailTextView.setText(event.getDetail());
@@ -66,7 +58,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
                         : "Free"
         );
 
-        // Set click listener to open EventDetailsActivity with consistent keys
+        // Set click listener to open EventDetailsActivity with data
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventDetailsActivity.class);
             intent.putExtra("name", event.getName());
@@ -81,6 +73,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             context.startActivity(intent);
         });
     }
+
 
     @Override
     public int getItemCount() {

@@ -108,8 +108,9 @@ public class EventController {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        eventList.clear();
+                        eventList.clear();  // Clear the list to avoid duplication on refresh
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Extract data from Firestore document
                             String name = document.getString("name");
                             String detail = document.getString("detail");
                             String rules = document.getString("rules");
@@ -119,10 +120,11 @@ public class EventController {
                             String ticketPrice = document.getString("ticketPrice");
                             Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
 
-
+                            // Create Event object and add it to the list
                             Event event = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
                             eventList.add(event);
                         }
+                        // Notify the callback with the updated event list
                         callback.onEventListLoaded(eventList);
                     } else {
                         Log.w("EventController", "Error getting documents.", task.getException());
