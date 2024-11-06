@@ -67,6 +67,17 @@ public class EventController {
         eventMap.put("facility", facility);
         eventMap.put("eventID", String.valueOf(eventID)); // Add the random eventID
 
+        db.collection("events").add(eventMap)
+                .addOnSuccessListener(documentReference -> {
+                    String eventId = documentReference.getId();
+                    Log.d("EventController", "Event with eventID " + eventID + " added successfully with Firestore ID: " + eventId);
+                    callback.onEventCreated(eventId);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EventController", "Error adding event with eventID " + eventID + ": " + e.getMessage());
+                    callback.onError(e);
+                });
+
 
         // Add empty lists for entrant subfields
         Map<String, Object> entrantListMap = new HashMap<>();
