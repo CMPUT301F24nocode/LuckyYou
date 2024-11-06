@@ -78,6 +78,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             intent.putExtra("deadline", event.getDeadline());
             intent.putExtra("startDate", event.getStartDate());
             intent.putExtra("price", event.getTicketPrice());
+            intent.putExtra("eventID", event.getEventID());
             if (event.getImageUri() != null) {
                 intent.putExtra("imageUri", event.getImageUri().toString());
             }

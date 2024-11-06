@@ -62,7 +62,7 @@ public class EventLandingPageActivity extends AppCompatActivity {
         Button viewEntrantListButton = findViewById(R.id.view_entrant_list_button);
         viewEntrantListButton.setOnClickListener(v -> {
             Intent entrantListIntent = new Intent(EventLandingPageActivity.this, EntrantListActivity.class);
-            entrantListIntent.putExtra("eventId", getIntent().getStringExtra("eventId")); // Pass the event ID to fetch entrants
+            entrantListIntent.putExtra("eventId", getIntent().getStringExtra("eventID")); // Pass the eventID to EntrantListActivity
             startActivity(entrantListIntent);
         });
 
