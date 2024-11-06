@@ -25,15 +25,13 @@ public class QrOrganiserActivity extends AppCompatActivity {
 
         // Get event data passed from the previous activity
         Intent intent = getIntent();
-        String eventID = intent.getStringExtra("eventID");
-        Log.d("QrOrganiserActivity", "Received eventID: " + eventID);
+        String eventName = intent.getStringExtra("name");
         String eventDescription = intent.getStringExtra("description");
         String eventPosterUrl = intent.getStringExtra("posterUrl");
 
         // Generate QR code based on event description and poster URL
-        generateQrCode( "Event ID: " + eventID + "\nDescription: " + eventDescription + "\nPosterURL: " + eventPosterUrl);
+        generateQrCode(  "Event Name: " + eventName + "\nEvent Description: " + eventDescription + "\nEvent PosterURL: " + eventPosterUrl);
     }
-
     private void generateQrCode(String data) {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();

@@ -1,10 +1,10 @@
+// EventLandingPageActivity.java is the Page which displays the information about the event when clicked on in homescreen.xml
+
 package com.example.projectv2.View;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,25 +12,22 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.example.projectv2.R;
-
-
+import com.example.projectv2.View.QrOrganiserActivity;
 
 public class EventLandingPageActivity extends AppCompatActivity {
 
-    private ImageView eventImageView;
-    private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView, eventIDView;
-    private Button qrcodeButton;
+    private ImageView eventImageView; // Event image display
+    private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
+    private Button qrcodeButton; // Button for generating a QR code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_landing_page_organiser);
 
-        qrcodeButton = findViewById(R.id.qrcode_button);
-
         // Initialize views
+        qrcodeButton = findViewById(R.id.qrcode_button);
         eventImageView = findViewById(R.id.event_picture);
         eventNameView = findViewById(R.id.event_name_view);
         eventDetailsView = findViewById(R.id.event_details_view);
@@ -39,24 +36,11 @@ public class EventLandingPageActivity extends AppCompatActivity {
         eventCountdownView = findViewById(R.id.event_countdown_view);
         eventPriceView = findViewById(R.id.event_price_view);
 
-        // Back button to navigate back to the previous activity
+        // Set up Back button to return to the previous screen
         ImageButton eventBackButton = findViewById(R.id.event_back_button);
-        eventBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Ends the current activity and returns to the previous screen
-            }
-        });
+        eventBackButton.setOnClickListener(v -> finish());
 
-        // Set up QR Code button click listener
-        qrcodeButton.setOnClickListener(v -> {
-            Intent qrIntent = new Intent(EventLandingPageActivity.this, QrOrganiserActivity.class);
-            qrIntent.putExtra("description", getIntent().getStringExtra("details"));
-            qrIntent.putExtra("posterUrl", getIntent().getStringExtra("imageUri"));
-            startActivity(qrIntent);
-        });
-
-        // Retrieve event data from intent and provide fallback values
+        // Load event details from Intent
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String details = intent.getStringExtra("details");
@@ -66,25 +50,40 @@ public class EventLandingPageActivity extends AppCompatActivity {
         String price = intent.getStringExtra("price");
         String imageUriString = intent.getStringExtra("imageUri");
 
+        // Configure QR Code button
+        qrcodeButton.setOnClickListener(v -> {
+            Intent qrIntent = new Intent(EventLandingPageActivity.this, QrOrganiserActivity.class);
+            qrIntent.putExtra("name", getIntent().getStringExtra("name"));
+            qrIntent.putExtra("description", getIntent().getStringExtra("details"));
+            qrIntent.putExtra("posterUrl", getIntent().getStringExtra("imageUri"));
+            startActivity(qrIntent);
+        });
 
-        // Set data to views with null-checks
+        Button viewEntrantListButton = findViewById(R.id.view_entrant_list_button);
+        viewEntrantListButton.setOnClickListener(v -> {
+            Intent entrantListIntent = new Intent(EventLandingPageActivity.this, EntrantListActivity.class);
+            entrantListIntent.putExtra("eventId", getIntent().getStringExtra("eventId")); // Pass the event ID to fetch entrants
+            startActivity(entrantListIntent);
+        });
+
+        // Set UI components with event data, or fallback if null
         eventNameView.setText(name != null ? name : "No name");
         eventDetailsView.setText(details != null ? details : "No details");
         eventRulesView.setText(rules != null ? rules : "No rules provided");
         eventDeadlineView.setText(deadline != null ? deadline : "No deadline");
         eventCountdownView.setText(startDate != null ? "Starts in: " + startDate : "No start date");
         eventPriceView.setText(price != null && !price.equals("0") ? "$" + price : "Free");
-        // Load image if URI is available
+
+        // Load image if URI is provided
         try {
             if (imageUriString != null && !imageUriString.isEmpty()) {
                 Uri imageUri = Uri.parse(imageUriString);
-                eventImageView.setImageURI(imageUri); // Attempt to load directly
+                eventImageView.setImageURI(imageUri);
             } else {
                 eventImageView.setImageResource(R.drawable.placeholder_event);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            eventImageView.setImageResource(R.drawable.placeholder_event); // Fallback if loading fails
+            eventImageView.setImageResource(R.drawable.placeholder_event);
         }
     }
 }

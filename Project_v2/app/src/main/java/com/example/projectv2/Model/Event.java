@@ -11,8 +11,9 @@ public class Event {
     private String ticketPrice;
     private Uri imageUri;
     private String facility;
+    private String eventID;
 
-    public Event(String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
+    public Event(String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility, String eventID) {
         this.name = name;
         this.detail = detail;
         this.rules = rules;
@@ -21,6 +22,7 @@ public class Event {
         this.ticketPrice = ticketPrice;
         this.imageUri = imageUri;
         this.facility = facility;
+        this.eventID = eventID;
     }
 
     public String getName() {
@@ -50,4 +52,8 @@ public class Event {
     public Uri getImageUri() { return imageUri; }
 
     public String getFacility() { return facility; }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
 }

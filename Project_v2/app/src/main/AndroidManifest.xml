@@ -32,12 +32,12 @@
         <activity android:name=".View.CreateEventOptionsActivity" />
         <activity android:name=".View.EventCreatorActivity" />
         <activity android:name=".View.EventLandingPageActivity"/>
-        <activity android:name=".View.EventOptionsActivity" />
         <activity android:name=".View.FacilityListActivity"
             tools:ignore="DuplicateActivity" />
         <activity android:name=".View.FacilityCreateEditActivity" />
         <activity android:name=".View.FacilityLandingPageActivity" />
         <activity android:name=".View.QrOrganiserActivity" />
+        <activity android:name=".View.EntrantListActivity"/>
 
     </application>
 

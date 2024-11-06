@@ -41,15 +41,12 @@ public class EventController {
 
 
     // Method to create an Event and store it in Firebase
-
-
     public void createEvent(String name, String detail, String rules, String deadline, String attendees, String entrants,
                             String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled,
                             Uri selectedImageUri, String facility, EventCallback callback) {
         // Generate a random 7-digit event ID
         Random random = new Random();
-        int eventID = 1000000 + random.nextInt(9000000); // Generates a number between 1000000 and 9999999
-
+        String eventID = String.valueOf(1000000 + random.nextInt(9000000)); // Generates a 7-digit number as a String
 
         // Create a map to represent the event and the entrant list fields
         Map<String, Object> eventMap = new HashMap<>();
@@ -65,19 +62,7 @@ public class EventController {
         eventMap.put("notificationsEnabled", notificationsEnabled);
         eventMap.put("imageUri", selectedImageUri != null ? selectedImageUri.toString() : null);
         eventMap.put("facility", facility);
-        eventMap.put("eventID", String.valueOf(eventID)); // Add the random eventID
-
-        db.collection("events").add(eventMap)
-                .addOnSuccessListener(documentReference -> {
-                    String eventId = documentReference.getId();
-                    Log.d("EventController", "Event with eventID " + eventID + " added successfully with Firestore ID: " + eventId);
-                    callback.onEventCreated(eventId);
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("EventController", "Error adding event with eventID " + eventID + ": " + e.getMessage());
-                    callback.onError(e);
-                });
-
+        eventMap.put("eventID", eventID); // Add the eventID as a field in the map
 
         // Add empty lists for entrant subfields
         Map<String, Object> entrantListMap = new HashMap<>();
@@ -88,19 +73,19 @@ public class EventController {
         entrantListMap.put("EntrantList", new ArrayList<>());
         eventMap.put("entrantList", entrantListMap);
 
-
-        // Add the event and the entrant list fields to Firestore
-        db.collection("events").add(eventMap)
-                .addOnSuccessListener(documentReference -> {
-                    String eventId = documentReference.getId();
-                    Log.d("EventController", "Event with entrant list added successfully with ID: " + eventId);
-                    callback.onEventCreated(eventId);
+        // Use the eventID as the document ID in Firestore
+        db.collection("events").document(eventID)
+                .set(eventMap)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("EventController", "Event with entrant list added successfully with ID: " + eventID);
+                    callback.onEventCreated(eventID); // Pass the custom eventID back to the callback
                 })
                 .addOnFailureListener(e -> {
                     Log.e("EventController", "Error adding event with entrant list: " + e.getMessage());
                     callback.onError(e);
                 });
     }
+
     public void updateEventImage(String eventId, Uri newImageUri, ImageUpdateCallback callback) {
         Map<String, Object> updateData = new HashMap<>();
         updateData.put("imageUri", newImageUri.toString());
@@ -128,10 +113,11 @@ public class EventController {
                             String deadline = document.getString("deadline");
                             String startDate = document.getString("startDate");
                             String ticketPrice = document.getString("ticketPrice");
+                            String eventID = document.getString("eventID");
                             Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
 
 
-                            Event event = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
+                            Event event = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility, eventID);
                             eventList.add(event);
                         }
                         callback.onEventListLoaded(eventList);
@@ -141,4 +127,14 @@ public class EventController {
                     }
                 });
     }
+    public void updateEventQrHash(String eventId, String qrHash) {
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("qrHash", qrHash);
+
+        db.collection("events").document(eventId)
+                .set(updateData, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> Log.d("EventController", "QR hash updated successfully"))
+                .addOnFailureListener(e -> Log.e("EventController", "Error updating QR hash", e));
+    }
+
 }

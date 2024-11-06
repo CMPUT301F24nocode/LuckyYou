@@ -1,3 +1,5 @@
+// EventListAdapter.java is an adapter class for displaying Events in homescreen.xml via recycler view.
+
 package com.example.projectv2.View;
 
 import android.content.Context;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+import com.example.projectv2.View.EventLandingPageActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.List;
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
     private Context context;
-    private List<Event> eventList;
+    private List<Event> eventList; // List of events to display
 
     public EventListAdapter(Context context, ArrayList<Event> events) {
         this.context = context;
@@ -39,13 +42,12 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
 
-        // Load image directly using URI with a try-catch block for safety
+        // Load event image if URI exists, else use placeholder image
         try {
             if (event.getImageUri() != null) {
                 Uri imageUri = event.getImageUri();
                 holder.backgroundImageView.setImageURI(imageUri);
 
-                // Check if the image failed to load and set a default image
                 if (holder.backgroundImageView.getDrawable() == null) {
                     holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
                 }
@@ -57,6 +59,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             e.printStackTrace();
         }
 
+        // Set event details on UI elements
         holder.eventNameTextView.setText(event.getName());
         holder.eventDateTextView.setText(event.getDeadline());
         holder.eventDetailTextView.setText(event.getDetail());
@@ -66,7 +69,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
                         : "Free"
         );
 
-        // Set click listener to open EventDetailsActivity with consistent keys
+        // Set click listener to open EventDetailsActivity
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventLandingPageActivity.class);
             intent.putExtra("name", event.getName());
@@ -87,6 +90,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         return eventList.size();
     }
 
+    // Updates the event list and notifies the adapter
     public void updateEventList(List<Event> newEvents) {
         this.eventList.clear();
         this.eventList.addAll(newEvents);
@@ -95,10 +99,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         ImageView backgroundImageView;
-        TextView eventNameTextView;
-        TextView eventDateTextView;
-        TextView eventDetailTextView;
-        TextView eventPriceTextView;
+        TextView eventNameTextView, eventDateTextView, eventDetailTextView, eventPriceTextView;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
