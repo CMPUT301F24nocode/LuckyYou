@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+import com.example.projectv2.View.EventLandingPageOrganizerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.Objects;
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
     private Context context;
-    private List<Event> eventList;
+    private List<Event> eventList; // List of events to display
 
     public EventListAdapter(Context context, ArrayList<Event> events) {
         this.context = context;
@@ -60,6 +61,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             e.printStackTrace();
         }
 
+        // Set event details on UI elements
         holder.eventNameTextView.setText(event.getName());
         holder.eventDateTextView.setText(event.getDeadline());
         holder.eventDetailTextView.setText(event.getDetail());
@@ -87,6 +89,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             intent.putExtra("owner", event.getOwner());
             intent.putExtra("event", event);
             intent.putExtra("user",deviceID);
+            intent.putExtra("eventID", event.getEventID());
             if (event.getImageUri() != null) {
                 intent.putExtra("imageUri", event.getImageUri().toString());
             }

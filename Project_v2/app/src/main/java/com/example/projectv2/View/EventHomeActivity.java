@@ -1,3 +1,6 @@
+// EventHomeActivity.java manages the main screen for the event list, allowing users to create new events, view existing events, and access additional features.
+
+
 package com.example.projectv2.View;
 
 import android.content.Intent;
@@ -12,9 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+import com.example.projectv2.View.EventCreatorActivity;
+import com.example.projectv2.View.EventListAdapter;
+import com.example.projectv2.View.FacilityListActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -22,10 +29,12 @@ import java.util.ArrayList;
 
 public class EventHomeActivity extends AppCompatActivity {
 
+    // Request code for activity results
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
-    private EventController eventController;
-    private RecyclerView recyclerView;
-    private EventListAdapter adapter;
+
+    private EventController eventController; // Controller for Firestore operations
+    private RecyclerView recyclerView; // RecyclerView for displaying events
+    private EventListAdapter adapter; // Adapter for RecyclerView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +89,6 @@ public class EventHomeActivity extends AppCompatActivity {
 
             @Override
             public void onEventCreated(String eventId) {
-                // You can log this information or handle event creation here if needed
                 Log.d("EventHomeActivity", "Event created with ID: " + eventId);
             }
 
@@ -97,7 +105,6 @@ public class EventHomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_CREATE_EVENT && resultCode == RESULT_OK && data != null) {
-            // Retrieve data from EventOptionsActivity
             String name = data.getStringExtra("name");
             String detail = data.getStringExtra("detail");
             String rules = data.getStringExtra("rules");
@@ -109,39 +116,20 @@ public class EventHomeActivity extends AppCompatActivity {
             String ticketPrice = data.getStringExtra("ticketPrice");
             boolean geolocationEnabled = data.getBooleanExtra("geolocationEnabled", false);
             boolean notificationsEnabled = data.getBooleanExtra("notificationsEnabled", false);
-            Uri imageUri = null;
-            String imageUriString = data.getStringExtra("imageUri");
-            if (imageUriString != null && !imageUriString.isEmpty()) {
-                imageUri = Uri.parse(imageUriString);
-            }
+            Uri imageUri = data.getStringExtra("imageUri") != null ? Uri.parse(data.getStringExtra("imageUri")) : null;
 
-            // Display a message and create a new event
             Toast.makeText(this, "Event Created: " + name, Toast.LENGTH_SHORT).show();
 
-            // Use the createEvent method from EventController
             eventController.createEvent(
-                    name,
-                    detail,
-                    rules,
-                    deadline,
-                    attendees,
-                    entrants,
-                    startDate,
-                    ticketPrice,
-                    geolocationEnabled,
-                    notificationsEnabled,
-                    imageUri,
-                    facility,
+                    name, detail, rules, deadline, attendees, entrants, startDate, ticketPrice, geolocationEnabled, notificationsEnabled, imageUri, facility,
                     new EventController.EventCallback() {
                         @Override
                         public void onEventListLoaded(ArrayList<Event> events) {
-                            Log.d("EventHomeActivity", "New event added. Updating event list with " + events.size() + " items.");
                             adapter.updateEventList(events);
                         }
 
                         @Override
                         public void onEventCreated(String eventId) {
-                            // Handle the event creation success, e.g., log or show a message
                             Log.d("EventHomeActivity", "Event created successfully with ID: " + eventId);
                         }
 

@@ -57,9 +57,19 @@ public class Event implements Serializable {
         return ticketPrice;
     }
 
-    public Uri getImageUri() { return imageUri; }
+    public Uri getImageUri() {
+        return imageUri;
+    }
 
-    public String getFacility() { return facility; }
-    public String geteventID() { return eventID; }
+    public String getFacility() {
+        return facility;
+    }
 
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+
+    public String getEventID() {
+        return eventID;
+    }
 }

@@ -71,7 +71,8 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
                             String detail = document.getString("detail");
                             Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
                             String eventFacilityName = document.getString("facilityName");
-                            Event event = new Event(owner, name, detail, null, null, null, null, imageUri, eventFacilityName);
+
+                            Event event = new Event(name, detail, null, null, null, null, null, imageUri, eventFacilityName);
                             eventList.add(event);
                         }
                         // Notify your adapter of the changes, if needed
