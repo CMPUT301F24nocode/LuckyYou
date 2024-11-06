@@ -2,7 +2,11 @@ package com.example.projectv2.Model;
 
 import android.net.Uri;
 
-public class Event {
+import java.io.Serializable;
+
+public class Event implements Serializable {
+    private  String eventID;
+    private String owner;
     private String name;
     private String detail;
     private String rules;
@@ -12,7 +16,8 @@ public class Event {
     private Uri imageUri;
     private String facility;
 
-    public Event(String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
+    public Event(String owner, String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
+        this.owner = owner;
         this.name = name;
         this.detail = detail;
         this.rules = rules;
@@ -21,6 +26,11 @@ public class Event {
         this.ticketPrice = ticketPrice;
         this.imageUri = imageUri;
         this.facility = facility;
+        this.eventID="nkcTTroyI5zDThrAnVqA";
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public String getName() {
@@ -50,4 +60,6 @@ public class Event {
     public Uri getImageUri() { return imageUri; }
 
     public String getFacility() { return facility; }
+    public String geteventID() { return eventID; }
+
 }

@@ -46,7 +46,18 @@
 
         </com.google.android.material.tabs.TabLayout>
 
+
         <!-- Add the RecyclerView for displaying events -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/black"
+            app:cardElevation="4dp"> <!-- Shadow effect -->
+
+        </androidx.cardview.widget.CardView>
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/eventRecyclerView"
             android:layout_width="match_parent"
@@ -78,6 +89,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.583"
             app:layout_constraintStart_toEndOf="@+id/homescreen_fab" />
+
+        <ImageButton
+            android:id="@+id/refreshButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:backgroundTint="#5669FF"
+            android:src="@drawable/refersh_button"
+            app:tint="@android:color/white"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="79dp"
+            tools:layout_editor_absoluteY="16dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

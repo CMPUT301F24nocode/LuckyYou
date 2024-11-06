@@ -78,6 +78,7 @@ public class EventController {
                     if (task.isSuccessful()) {
                         eventList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            String owner = document.getString("owner");
                             String name = document.getString("name");
                             String detail = document.getString("detail");
                             String rules = document.getString("rules");
@@ -87,7 +88,7 @@ public class EventController {
                             String ticketPrice = document.getString("ticketPrice");
                             Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
 
-                            Event event = new Event(name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
+                            Event event = new Event(owner,name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
                             eventList.add(event);
                         }
                         callback.onEventListLoaded(eventList);

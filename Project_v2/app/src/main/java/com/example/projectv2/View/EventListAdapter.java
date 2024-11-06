@@ -1,8 +1,10 @@
 package com.example.projectv2.View;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.example.projectv2.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
@@ -68,13 +71,22 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
         // Set click listener to open EventDetailsActivity with consistent keys
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventDetailsActivity.class);
+            @SuppressLint("HardwareIds") String deviceID= Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            Intent intent ;
+            if (Objects.equals(event.getOwner(), deviceID)) {
+                intent = new Intent(context, EventLandingPageOrganizerActivity.class);
+            } else {
+                intent = new Intent(context, EventLandingPageUserActivity.class);
+            }
             intent.putExtra("name", event.getName());
             intent.putExtra("details", event.getDetail());
             intent.putExtra("rules", event.getRules());
             intent.putExtra("deadline", event.getDeadline());
             intent.putExtra("startDate", event.getStartDate());
             intent.putExtra("price", event.getTicketPrice());
+            intent.putExtra("owner", event.getOwner());
+            intent.putExtra("event", event);
+            intent.putExtra("user",deviceID);
             if (event.getImageUri() != null) {
                 intent.putExtra("imageUri", event.getImageUri().toString());
             }

@@ -11,11 +11,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
 
 
-public class EventLandingPageActivity extends AppCompatActivity {
+public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
     private ImageView eventImageView;
     private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
@@ -52,6 +53,8 @@ public class EventLandingPageActivity extends AppCompatActivity {
         String startDate = intent.getStringExtra("startDate");
         String price = intent.getStringExtra("price");
         String imageUriString = intent.getStringExtra("imageUri");
+        String owner = intent.getStringExtra("owner");
+        Event event = (Event) intent.getSerializableExtra("event");
 
 
         // Set data to views with null-checks
