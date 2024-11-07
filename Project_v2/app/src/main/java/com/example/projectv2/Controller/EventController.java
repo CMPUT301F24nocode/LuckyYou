@@ -111,7 +111,7 @@ public class EventController {
                             Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
 
                             // Creating Event object with all fields including imageUri
-                            Event event = new Event(owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
+                            Event event = new Event(eventID ,owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
                             eventList.add(event);
                         }
                         callback.onEventListLoaded(eventList);

@@ -75,13 +75,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
         // Set click listener to open EventDetailsActivity with consistent keys
         holder.itemView.setOnClickListener(v -> {
-            @SuppressLint("HardwareIds") String deviceID= Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//            @SuppressLint("HardwareIds") String deviceID= Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//            Intent intent ;
+//            if (Objects.equals(event.getOwner(), deviceID)) {
+//                intent = new Intent(context, EventLandingPageOrganizerActivity.class);
+//            } else {
+//                intent = new Intent(context, EventLandingPageUserActivity.class);
+//            }
             Intent intent ;
-            if (Objects.equals(event.getOwner(), deviceID)) {
-                intent = new Intent(context, EventLandingPageOrganizerActivity.class);
-            } else {
-                intent = new Intent(context, EventLandingPageUserActivity.class);
-            }
+            intent = new Intent(context, EventLandingPageOrganizerActivity.class);
             intent.putExtra("name", event.getName());
             intent.putExtra("details", event.getDetail());
             intent.putExtra("rules", event.getRules());
@@ -91,7 +93,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             intent.putExtra("eventID", event.getEventID());
             intent.putExtra("owner", event.getOwner());
             intent.putExtra("event", event);
-            intent.putExtra("user",deviceID);
+            //intent.putExtra("user",deviceID);
             intent.putExtra("eventID", event.getEventID());
             if (event.getImageUri() != null) {
                 intent.putExtra("imageUri", event.getImageUri().toString());

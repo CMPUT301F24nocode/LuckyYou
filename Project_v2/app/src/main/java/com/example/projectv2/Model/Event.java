@@ -15,7 +15,7 @@ public class Event implements Serializable {
     private Uri imageUri;
     private String facility;
 
-    public Event(String owner, String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
+    public Event(String eventID, String owner, String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
         this.eventID= eventID;
         this.owner = owner;
         this.name = name;

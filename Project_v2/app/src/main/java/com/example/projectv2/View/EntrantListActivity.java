@@ -57,36 +57,40 @@ public class EntrantListActivity extends AppCompatActivity {
     // Set up the filter spinner with options: "Entrant List", "Attendees", "Declined"
     private void setupFilterSpinner() {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, new String[]{"Entrant List", "Attendees", "Declined"});
+                android.R.layout.simple_spinner_item, new String[]{"Entrant List", "Attendees", "Declined", "Unlucky", "Removed"});
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(spinnerAdapter);
 
-        // Handle spinner item selection to apply filtering
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Determine which filter option is selected and load the corresponding data
                 String selectedOption = (String) parent.getItemAtPosition(position);
                 switch (selectedOption) {
                     case "Entrant List":
-                        loadEntrantList(); // Load full list of entrants
+                        loadEntrantList();
                         break;
                     case "Attendees":
-                        loadAttendees(); // Load up to 20 randomly selected attendees
+                        loadAttendees();
                         break;
                     case "Declined":
-                        loadDeclined(); // Load list of declined entrants
+                        loadDeclined();
+                        break;
+                    case "Unlucky":
+                        loadUnlucky();
+                        break;
+                    case "Removed":
+                        loadRemoved();
                         break;
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Default to showing Entrant List if nothing is selected
                 loadEntrantList();
             }
         });
     }
+
 
     // Method to load the full entrant list from Firebase Firestore
     private void loadEntrantList() {
@@ -150,5 +154,41 @@ public class EntrantListActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error loading declined entrants", e));
+    }
+
+    // Load the list of "Unlucky" entrants
+    private void loadUnlucky() {
+        String eventId = getIntent().getStringExtra("eventId");
+
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> unlucky = (List<String>) documentSnapshot.get("entrantList.Unlucky");
+                        if (unlucky != null) {
+                            adapter.updateEntrantList(unlucky);
+                        } else {
+                            Toast.makeText(this, "No unlucky entrants found.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error loading unlucky entrants", e));
+    }
+
+    // Load the list of "Removed" entrants
+    private void loadRemoved() {
+        String eventId = getIntent().getStringExtra("eventId");
+
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> removed = (List<String>) documentSnapshot.get("entrantList.Removed");
+                        if (removed != null) {
+                            adapter.updateEntrantList(removed);
+                        } else {
+                            Toast.makeText(this, "No removed entrants found.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error loading removed entrants", e));
     }
 }

@@ -16,59 +16,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <!-- TabLayout for tabs -->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/lucky_background"
-            app:layout_constraintBottom_toTopOf="@+id/eventRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include"
             app:tabIndicatorColor="@color/lucky_white"
             app:tabSelectedTextColor="@color/lucky_white"
-            app:tabTextColor="@color/lucky_grey">
+            app:tabTextColor="@color/lucky_grey" />
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Available Events" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Event Status" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Your Events" />
-
-        </com.google.android.material.tabs.TabLayout>
-
-<!--Better do-->
-        <!-- Add the RecyclerView for displaying events -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardBackgroundColor="@color/black"
-            app:cardElevation="4dp"
-            tools:ignore="MissingConstraints"> <!-- Shadow effect -->
-
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/eventRecyclerView"
+        <!-- ViewPager2 for swiping between fragments -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tabLayout"
             app:layout_constraintBottom_toTopOf="@+id/homescreen_fab"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Floating Action Button for creating a new event -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/homescreen_fab"
             android:layout_width="wrap_content"
@@ -113,7 +84,5 @@
         android:background="@color/lucky_background"
         app:headerLayout="@layout/homescreen_nav_bar_header"
         app:menu="@menu/homescreen_nav_bar_menu" />
-
-
 
 </androidx.drawerlayout.widget.DrawerLayout>
