@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rounded_overlay"
-    android:backgroundTint="@color/lucky_uiEmphasis"
-    android:padding="32dp">
+    android:background="@color/lucky_background"
+    android:padding="24dp">
 
     <Button
         android:id="@+id/delete_event_button"

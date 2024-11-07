@@ -1,7 +1,6 @@
 package com.example.projectv2.Model;
 
 import android.net.Uri;
-
 import java.io.Serializable;
 
 public class Event implements Serializable {
@@ -17,6 +16,7 @@ public class Event implements Serializable {
     private String facility;
 
     public Event(String owner, String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
+        this.eventID= eventID;
         this.owner = owner;
         this.name = name;
         this.detail = detail;
@@ -26,7 +26,13 @@ public class Event implements Serializable {
         this.ticketPrice = ticketPrice;
         this.imageUri = imageUri;
         this.facility = facility;
-        this.eventID="nkcTTroyI5zDThrAnVqA"; // for now it is hardcoded this value to diljeet's event, should be fine for testing. will change it later to dynamic
+    }
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+
+    public String getEventID() {
+        return eventID;
     }
 
     public String getOwner() {
@@ -63,13 +69,5 @@ public class Event implements Serializable {
 
     public String getFacility() {
         return facility;
-    }
-
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
-    }
-
-    public String getEventID() {
-        return eventID;
     }
 }

@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Facility;
 import com.example.projectv2.R;
 
@@ -26,14 +28,7 @@ public class FacilityCreateEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facility_create_page);
 
-        // Back button to navigate back to the previous activity
-        ImageButton eventBackButton = findViewById(R.id.facility_edit_back_button);
-        eventBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Ends the current activity and returns to the previous screen
-            }
-        });
+        topBarUtils.topBarSetup(this, "Create Facility", View.INVISIBLE);
 
         nameEditText = findViewById(R.id.facility_edit_name_view);
         descriptionEditText = findViewById(R.id.facility_edit_description_view);

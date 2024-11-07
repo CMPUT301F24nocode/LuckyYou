@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.MainActivity;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,7 +24,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventCreatorActivity extends AppCompatActivity {
+public class CreateEventActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_EVENT_OPTIONS = 2;
     private static final int REQUEST_CODE_SELECT_IMAGE = 3;
@@ -50,13 +51,7 @@ public class EventCreatorActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         loadFacilities();
 
-        // Set up the Back button to return to MainActivity (homescreen)
-        ImageButton backButton = findViewById(R.id.event_back_button);
-        backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventCreatorActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        topBarUtils.topBarSetup(this, "Create Event", View.INVISIBLE);
 
         // Set up the ImageButton to open the gallery for selecting an image
         ImageButton imageButton = findViewById(R.id.create_event_pic_button);
@@ -68,7 +63,7 @@ public class EventCreatorActivity extends AppCompatActivity {
         // Set up the Next button to open EventOptionsActivity
         Button nextButton = findViewById(R.id.create_event_next_button);
         nextButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventCreatorActivity.this, CreateEventOptionsActivity.class);
+            Intent intent = new Intent(CreateEventActivity.this, CreateEventOptionsActivity.class);
             intent.putExtra("name", eventNameView.getText().toString());
             intent.putExtra("detail", eventDetailsView.getText().toString());
             intent.putExtra("rules", eventRulesView.getText().toString());
