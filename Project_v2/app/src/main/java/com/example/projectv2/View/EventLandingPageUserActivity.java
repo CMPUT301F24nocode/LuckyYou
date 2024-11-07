@@ -3,6 +3,7 @@ package com.example.projectv2.View;
 import static android.app.ProgressDialog.show;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,6 +38,8 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         setContentView(R.layout.event_landing_page_user);
         db = FirebaseFirestore.getInstance();
 
+        topBarUtils.topBarSetup(this, "Event", View.VISIBLE);
+
         // Initialize views
         eventImageView = findViewById(R.id.event_picture);
         eventNameView = findViewById(R.id.event_name_view);
@@ -45,17 +49,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         eventCountdownView = findViewById(R.id.event_countdown_view);
         eventPriceView = findViewById(R.id.event_price_view);
         joinEventButton = findViewById(R.id.event_join_button);
-
-        // Back button to navigate back to the previous activity
-        ImageButton eventBackButton = findViewById(R.id.event_back_button);
-        eventBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Ends the current activity and returns to the previous screen
-            }
-        });
-
-
 
         // Retrieve event data from intent and provide fallback values
         Intent intent = getIntent();
@@ -68,10 +61,9 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         String imageUriString = intent.getStringExtra("imageUri");
         String userID=intent.getStringExtra("user");
         Event event = (Event) intent.getSerializableExtra("event");
-        joinEventButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
+
+        joinEventButton.setOnClickListener(view -> {
 //                Task<QuerySnapshot> user=db.collection("Users").get(Source.valueOf(userID));
                 String eventID=event.getEventID();
                 DocumentReference eventRef = db.collection("events").document(eventID);
@@ -80,21 +72,19 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                             // Success feedback
 //                            Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
 //                            joinEventButton.setEnabled(false);
-                            joinEventButton.setText("Leave");
-                            joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon,0,0,0);
-                        joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
-                        })
-                        .addOnFailureListener(e -> {
-                            // Error feedback
+                        joinEventButton.setText("Leave");
+                        joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon,0,0,0);
+                    joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
+                    })
+                    .addOnFailureListener(e -> {
+                        // Error feedback
 //                            Snackbar.make(view, "Failed to join event: " + e.getMessage(),
 //                                    Snackbar.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        });
-            }
+                        e.printStackTrace();
+                    });
         });
-        joinEventButton.setOnLongClickListener(new View.OnLongClickListener(){
-            @Override
-            public boolean onLongClick(View view) {
+
+        joinEventButton.setOnLongClickListener(view -> {
 //                joinEventButton.setEnabled(false);
                 AlertDialog.Builder builder = new AlertDialog.Builder(EventLandingPageUserActivity.this);
                 builder.setTitle("Leave Event");
@@ -116,16 +106,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                             });});
                 return true;
 
-                }
-
-
-
-
-
-
-
-
-        });
+            });
 
 
         // Set data to views with null-checks
@@ -147,5 +128,14 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             e.printStackTrace();
             eventImageView.setImageResource(R.drawable.placeholder_event); // Fallback if loading fails
         }
+
+        ImageButton moreButton = findViewById(R.id.more_settings_button);
+        moreButton.setOnClickListener(v -> showPopup());
+    }
+
+    private void showPopup(){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.event_overlay);
+        dialog.show();
     }
 }

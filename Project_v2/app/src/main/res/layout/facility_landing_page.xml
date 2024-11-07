@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/lucky_background"
     android:clipToPadding="false"
-    android:padding="32dp">
+    android:padding="24dp">
 
     <ImageView
         android:id="@+id/facility_picture"
@@ -23,6 +23,14 @@
         app:tint="#404040"
         app:tintMode="multiply" />
 
+    <include
+        android:id="@+id/notification_top_bar"
+        layout="@layout/top_bar_clear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/event_edit_button"
@@ -53,48 +61,18 @@
         android:id="@+id/event_name_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
         android:text="Butter Dome"
         android:textAlignment="center"
         android:textColor="@color/lucky_white"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/facility_picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/facility_back_button" />
-
-    <ImageButton
-        android:id="@+id/facility_back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="-16dp"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back" />
-
-    <ImageButton
-        android:id="@+id/facility_more_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/more" />
-
-    <TextView
-        android:id="@+id/event_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Facility"
-        android:textColor="@color/lucky_white"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/facility_back_button"
-        app:layout_constraintStart_toEndOf="@+id/facility_back_button"
-        app:layout_constraintTop_toTopOf="@+id/facility_back_button" />
+        app:layout_constraintTop_toBottomOf="@+id/notification_top_bar"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView2"
@@ -116,6 +94,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/airbnbcereal_w_bk"
         android:text="@string/event_description_text"
+        android:textAlignment="textStart"
         android:textColor="@color/lucky_white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"

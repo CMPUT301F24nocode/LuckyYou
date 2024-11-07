@@ -1,6 +1,7 @@
 package com.example.projectv2;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -10,12 +11,21 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.provider.Settings;
+import android.util.Log;
+import android.widget.ImageView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Controller.EventsPagerAdapter;
+import com.example.projectv2.Controller.NotificationAdapter;
+import com.example.projectv2.Controller.NotificationService;
+import com.example.projectv2.Model.Event;
+import com.example.projectv2.Model.Notification;
+import com.example.projectv2.Model.User;
 import com.example.projectv2.View.AdminFacilityListActivity;
 import com.example.projectv2.View.AdminImageListActivity;
 import com.example.projectv2.View.AdminProfileListActivity;
@@ -29,6 +39,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,12 +50,14 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ViewPager2 viewPager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
-        //Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-        //startActivity(intent);
+
+//        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+//        startActivity(intent);
 
         drawerLayout = findViewById(R.id.homescreen_drawer_layout);
         ImageView profilePicture = findViewById(R.id.homescreen_profile_pic);
@@ -72,13 +87,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         fab.setOnClickListener(view -> {
-            if (viewPager.getCurrentItem() == 0) {
-                AvailableEventsFragment fragment = (AvailableEventsFragment) getSupportFragmentManager()
-                        .findFragmentByTag("f" + viewPager.getCurrentItem());
-                if (fragment != null) {
-                    fragment.startCreateEventActivity();
-                }
-            }
+            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
         });
 
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -121,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attach();
     }
+
+    // Handle the result from EventCreatorActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -132,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
             if (fragment != null) {
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
+
         }
     }
 }

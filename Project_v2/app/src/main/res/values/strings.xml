@@ -42,6 +42,7 @@
     <string name="second_fragment_label">second frag label</string>
     <string name="create_facility_name_text">Enter Facility Name</string>
     <string name="create_facility_details_text">Enter Facility Details</string>
+    <string name="Not_a_user"><u>Not a User? Signup Here</u>.</string>
 
     <string-array name="dropdown_items">
         <item>Entrants</item>

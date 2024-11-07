@@ -1,5 +1,8 @@
+// EventLandingPageActivity.java is the Page which displays the information about the event when clicked on in homescreen.xml
+
 package com.example.projectv2.View;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +14,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.example.projectv2.View.QrOrganiserActivity;
@@ -27,24 +30,17 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_landing_page_organiser);
 
+        topBarUtils.topBarSetup(this, "Event", View.VISIBLE);
+
         // Initialize views
         qrcodeButton = findViewById(R.id.qrcode_button);
         eventImageView = findViewById(R.id.event_picture);
         eventNameView = findViewById(R.id.event_name_view);
-        eventDetailsView = findViewById(R.id.event_details_view);
+        eventDetailsView = findViewById(R.id.event_details_view_organiser);
         eventRulesView = findViewById(R.id.event_rules_view);
         eventDeadlineView = findViewById(R.id.event_deadline_view);
         eventCountdownView = findViewById(R.id.event_countdown_view);
         eventPriceView = findViewById(R.id.event_price_view);
-
-        // Back button to navigate back to the previous activity
-        ImageButton eventBackButton = findViewById(R.id.event_back_button);
-        eventBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Ends the current activity and returns to the previous screen
-            }
-        });
 
         // Retrieve event data from intent and provide fallback values
         Intent intent = getIntent();
@@ -94,5 +90,14 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
             e.printStackTrace();
             eventImageView.setImageResource(R.drawable.placeholder_event); // Fallback if loading fails
         }
+
+        ImageButton moreButton = findViewById(R.id.more_settings_button);
+        moreButton.setOnClickListener(v -> showPopup());
+
+    }
+    private void showPopup(){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.event_edit_overlay);
+        dialog.show();
     }
 }

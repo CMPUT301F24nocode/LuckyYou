@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.example.projectv2.View.EventLandingPageOrganizerActivity;
+import com.example.projectv2.View.EventLandingPageUserActivity;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
 
         // Set OnClickListener to navigate to EventLandingPageOrganizerActivity with event details
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventLandingPageOrganizerActivity.class);
+            Intent intent = new Intent(context, EventLandingPageUserActivity.class);
             intent.putExtra("name", event.getName());
             intent.putExtra("details", event.getDetail());
             intent.putExtra("rules", event.getRules());

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.MainActivity;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,13 +51,7 @@ public class CreateEventActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         loadFacilities();
 
-        // Set up the Back button to return to MainActivity (homescreen)
-        ImageButton backButton = findViewById(R.id.event_back_button);
-        backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        topBarUtils.topBarSetup(this, "Create Event", View.INVISIBLE);
 
         // Set up the ImageButton to open the gallery for selecting an image
         ImageButton imageButton = findViewById(R.id.create_event_pic_button);

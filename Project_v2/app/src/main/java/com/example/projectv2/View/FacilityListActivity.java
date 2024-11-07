@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Controller.FacilityController;
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.MainActivity;
 import com.example.projectv2.Model.Facility;
 import com.example.projectv2.R;
@@ -33,6 +34,8 @@ public class FacilityListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facility_list);
+
+        topBarUtils.topBarSetup(this, "Facilities", View.INVISIBLE);
 
         // Initialize the list and adapter
         facilityList = new ArrayList<>();
@@ -59,14 +62,6 @@ public class FacilityListActivity extends AppCompatActivity {
                 Log.e("FacilityListActivity", "Error fetching facilities", e);
                 Toast.makeText(FacilityListActivity.this, "Error loading facilities", Toast.LENGTH_SHORT).show();
             }
-        });
-
-        // Set up the Back button to return to MainActivity (homescreen)
-        ImageButton backButton = findViewById(R.id.facility_edit_back_button);
-        backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FacilityListActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
         });
 
         // Set up button to create a new facility

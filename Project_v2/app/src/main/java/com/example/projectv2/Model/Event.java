@@ -27,13 +27,6 @@ public class Event implements Serializable {
         this.imageUri = imageUri;
         this.facility = facility;
     }
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
-    }
-
-    public String getEventID() {
-        return eventID;
-    }
 
     public String getOwner() {
         return owner;
@@ -69,5 +62,13 @@ public class Event implements Serializable {
 
     public String getFacility() {
         return facility;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+
+    public String getEventID() {
+        return eventID;
     }
 }

@@ -1,14 +1,18 @@
 package com.example.projectv2.View;
 
+import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,17 +31,14 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.facility_landing_page);
+        topBarUtils.topBarSetup(this, "Facility", View.VISIBLE);
 
         db = FirebaseFirestore.getInstance();
 
         // Initialize views
-        ImageButton eventBackButton = findViewById(R.id.facility_back_button);
         ImageView facilityImageView = findViewById(R.id.facility_picture);
         TextView facilityNameTextView = findViewById(R.id.event_name_view);
         TextView facilityDescriptionTextView = findViewById(R.id.facility_description_view);
-
-        // Set up the back button
-        eventBackButton.setOnClickListener(v -> finish());
 
         // Get data from the intent
         String facilityName = getIntent().getStringExtra("facility_name");
@@ -56,6 +57,9 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
 
         // Load events related to the facility
         loadEventsForFacility(facilityName);
+
+        ImageButton moreButton = findViewById(R.id.more_settings_button);
+        moreButton.setOnClickListener(v -> showPopup());
     }
 
     private void loadEventsForFacility(String facilityName) {
@@ -82,5 +86,11 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
                         Toast.makeText(FacilityLandingPageActivity.this, "Error loading events", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void showPopup(){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.facility_admin_overlay);
+        dialog.show();
     }
 }

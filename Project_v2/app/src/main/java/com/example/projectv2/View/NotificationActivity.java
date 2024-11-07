@@ -1,9 +1,11 @@
 package com.example.projectv2.View;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
+import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.Controller.NotificationAdapter;
@@ -49,7 +51,16 @@ public class NotificationActivity extends AppCompatActivity {
         adapter = new NotificationAdapter(notificationList);
         recyclerView.setAdapter(adapter);
 
-        loadNotifications("12345"); // Figure out who to display notifications for
+//        NotificationService notificationService = new NotificationService();
+//        Notification notification = new Notification("1d0e750f99dbaaab", "Org notif test", true, false);
+//        notificationService.sendNotification(notification);
+//        notification = new Notification("1d0e750f99dbaaab", "Admin notif test", false, true);
+//        notificationService.sendNotification(notification);
+//        NotificationAdapter adapter = new NotificationAdapter(notificationList);
+//        recyclerView.setAdapter(adapter);
+
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        loadNotifications("deviceID"); // Figure out who to display notifications for
     }
 
     /**
@@ -62,11 +73,11 @@ public class NotificationActivity extends AppCompatActivity {
         db.collection("Users").document(userId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Boolean isAdmin = documentSnapshot.getBoolean("admin");
-                        Boolean isOrganiser = documentSnapshot.getBoolean("organiser");
+                        Boolean isAdmin = documentSnapshot.getBoolean("adminNotif");
+                        Boolean isOrganiser = documentSnapshot.getBoolean("organizerNotif");
 
                         if (Boolean.TRUE.equals(isAdmin)) {
-                            List<Map<String, Object>> adminNotifs = (List<Map<String, Object>>) documentSnapshot.get("admin_notif");
+                            List<Map<String, Object>> adminNotifs = (List<Map<String, Object>>) documentSnapshot.get("adminNotifList");
                             if (adminNotifs != null) {
                                 for (Map<String, Object> notifData : adminNotifs) {
                                     Notification notification = mapToNotification(notifData, true, false);
@@ -76,7 +87,7 @@ public class NotificationActivity extends AppCompatActivity {
                         }
 
                         if (Boolean.TRUE.equals(isOrganiser)) {
-                            List<Map<String, Object>> orgNotifs = (List<Map<String, Object>>) documentSnapshot.get("organiser_notif");
+                            List<Map<String, Object>> orgNotifs = (List<Map<String, Object>>) documentSnapshot.get("organizerNotifList");
                             if (orgNotifs != null) {
                                 for (Map<String, Object> notifData : orgNotifs) {
                                     Notification notification = mapToNotification(notifData, false, true);
@@ -106,7 +117,6 @@ public class NotificationActivity extends AppCompatActivity {
         String content = (String) notifData.get("content");
         String timeSent = (String) notifData.get("timeSent");
 
-        Notification notification = new Notification(sendTo, content, timeSent, isOrganiser, isAdmin);
-        return notification;
+        return new Notification(sendTo, content, timeSent, isOrganiser, isAdmin);
     }
 }

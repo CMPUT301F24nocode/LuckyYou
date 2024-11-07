@@ -24,6 +24,7 @@ import com.example.projectv2.R;
 import com.example.projectv2.View.CreateEventActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AvailableEventsFragment extends Fragment {
 

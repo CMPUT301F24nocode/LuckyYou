@@ -36,7 +36,7 @@ public class NotificationService {
         // If the notification is for organisers, add to organiser_notif array
         if (notification.isOrganiser()) {
             db.collection("Users").document(userId)
-                    .update("organiser_notif", FieldValue.arrayUnion(notificationData))
+                    .update("organizerNotifList", FieldValue.arrayUnion(notificationData))
                     .addOnSuccessListener(aVoid -> {
                         // Log success if needed
                     })
@@ -45,10 +45,10 @@ public class NotificationService {
                     });
         }
 
-        // If the notification is for admins, add to admin_notif array
+        // If the notification is for admins, add to adminNotifList array
         if (notification.isAdmin()) {
             db.collection("Users").document(userId)
-                    .update("admin_notif", FieldValue.arrayUnion(notificationData))
+                    .update("adminNotifList", FieldValue.arrayUnion(notificationData))
                     .addOnSuccessListener(aVoid -> {
                         // Log success if needed
                     })
