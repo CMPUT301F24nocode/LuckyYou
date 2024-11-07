@@ -113,4 +113,6 @@
         app:headerLayout="@layout/homescreen_nav_bar_header"
         app:menu="@menu/homescreen_nav_bar_menu" />
 
+
+
 </androidx.drawerlayout.widget.DrawerLayout>

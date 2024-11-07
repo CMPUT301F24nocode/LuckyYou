@@ -60,7 +60,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
         // Set click listener to open EventDetailsActivity with data
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventDetailsActivity.class);
+            Intent intent = new Intent(context, EventLandingPageActivity.class);
             intent.putExtra("name", event.getName());
             intent.putExtra("details", event.getDetail());
             intent.putExtra("rules", event.getRules());

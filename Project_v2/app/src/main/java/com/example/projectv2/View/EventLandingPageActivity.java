@@ -3,7 +3,9 @@ package com.example.projectv2.View;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,12 +20,15 @@ import com.example.projectv2.R;
 public class EventLandingPageActivity extends AppCompatActivity {
 
     private ImageView eventImageView;
-    private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
+    private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView, eventIDView;
+    private Button qrcodeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_landing_page_organiser);
+
+        qrcodeButton = findViewById(R.id.qrcode_button);
 
         // Initialize views
         eventImageView = findViewById(R.id.event_picture);
@@ -52,6 +57,15 @@ public class EventLandingPageActivity extends AppCompatActivity {
         String startDate = intent.getStringExtra("startDate");
         String price = intent.getStringExtra("price");
         String imageUriString = intent.getStringExtra("imageUri");
+
+        // Set up QR Code button click listener
+        qrcodeButton.setOnClickListener(v -> {
+            Intent qrIntent = new Intent(EventLandingPageActivity.this, QrOrganiserActivity.class);
+            qrIntent.putExtra("name", getIntent().getStringExtra("name"));
+            qrIntent.putExtra("description", getIntent().getStringExtra("details"));
+            qrIntent.putExtra("posterUrl", getIntent().getStringExtra("imageUri"));
+            startActivity(qrIntent);
+        });
 
 
         // Set data to views with null-checks
