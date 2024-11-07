@@ -1,5 +1,6 @@
 // EventController.java
 package com.example.projectv2.Controller;
+
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -18,7 +19,6 @@ public class EventController {
 
     public interface EventCallback {
         void onEventListLoaded(List<Event> events);
-
         void onEventListLoaded(ArrayList<Event> events);
         void onError(Exception e);
     }
@@ -50,7 +50,23 @@ public class EventController {
                     callback.onError(e);
                 });
     }
-    // Add methods to add and remove entrants from the waiting list.
+
+    // Method to delete an event image reference from Firestore
+    public void deleteEventImage(String eventId, EventCallback callback) {
+        // Remove the image URL from the event document in Firestore
+        db.collection("events").document(eventId)
+                .update("imageUri", FieldValue.delete())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("EventController", "Image reference removed from Firestore.");
+                    fetchEvents(callback); // Refresh the event list
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EventController", "Error removing image reference from Firestore", e);
+                    callback.onError(e);
+                });
+    }
+
+    // Method to add an entrant to the waiting list of an event
     public void joinWaitingList(String eventId, String userId, EventCallback callback) {
         db.collection("events").document(eventId)
                 .update("waitingList", FieldValue.arrayUnion(userId))
@@ -64,7 +80,19 @@ public class EventController {
                 });
     }
 
-
+    // Method to remove an entrant from the waiting list of an event
+    public void leaveWaitingList(String eventId, String userId, EventCallback callback) {
+        db.collection("events").document(eventId)
+                .update("waitingList", FieldValue.arrayRemove(userId))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("EventController", "User removed from waiting list.");
+                    fetchEvents(callback); // Fetch updated list
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("EventController", "Error removing from waiting list", e);
+                    callback.onError(e);
+                });
+    }
 
     // Fetch events from Firestore and notify callback
     public void fetchEvents(EventCallback callback) {
@@ -92,5 +120,6 @@ public class EventController {
                     }
                 });
     }
-
 }
+
+

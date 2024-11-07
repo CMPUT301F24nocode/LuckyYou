@@ -55,4 +55,8 @@ public class Event {
     public String getId() {
         return "";
     }
+
+    public String getEventId() {
+        return "";
+    }
 }
