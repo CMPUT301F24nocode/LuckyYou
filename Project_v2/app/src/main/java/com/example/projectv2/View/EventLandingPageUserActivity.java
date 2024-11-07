@@ -73,7 +73,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                Task<QuerySnapshot> user=db.collection("Users").get(Source.valueOf(userID));
-                String eventID=event.geteventID();
+                String eventID=event.getEventID();
                 DocumentReference eventRef = db.collection("events").document(eventID);
                 eventRef.update("EntrantList", FieldValue.arrayUnion(userID))
                         .addOnSuccessListener(aVoid -> {
@@ -100,7 +100,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 builder.setTitle("Leave Event");
                 builder.setMessage("Are you sure you want to leave this event?");
                 builder.setPositiveButton("Yes", (dialog, which) -> {
-                    String eventID=event.geteventID();
+                    String eventID=event.getEventID();
                     DocumentReference eventRef = db.collection("events").document(eventID);
                     eventRef.update("EntrantList", FieldValue.arrayRemove(userID))
                             .addOnSuccessListener(aVoid -> {

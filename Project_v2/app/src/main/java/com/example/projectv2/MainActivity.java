@@ -22,8 +22,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.sign_up);
-        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-        startActivity(intent);
+
 
 //        drawerLayout = findViewById(R.id.homescreen_drawer_layout);
 //        ImageView profilePicture = findViewById(R.id.homescreen_profile_pic);
