@@ -4,6 +4,8 @@ import android.net.Uri;
 import java.io.Serializable;
 
 public class Event implements Serializable {
+    private  String eventID;
+    private String owner;
     private String name;
     private String detail;
     private String rules;
@@ -12,9 +14,10 @@ public class Event implements Serializable {
     private String ticketPrice;
     private Uri imageUri;
     private String facility;
-    private String eventID;
 
-    public Event(String name, String detail, String rules, String deadline, String startDate, String ticketPrice, Uri imageUri, String facility, String eventID) {
+    public Event(String owner, String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
+        this.eventID= eventID;
+        this.owner = owner;
         this.name = name;
         this.detail = detail;
         this.rules = rules;
@@ -23,7 +26,17 @@ public class Event implements Serializable {
         this.ticketPrice = ticketPrice;
         this.imageUri = imageUri;
         this.facility = facility;
+    }
+    public void setEventID(String eventID) {
         this.eventID = eventID;
+    }
+
+    public String getEventID() {
+        return eventID;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public String getName() {
@@ -56,13 +69,5 @@ public class Event implements Serializable {
 
     public String getFacility() {
         return facility;
-    }
-
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
-    }
-
-    public String getEventID() {
-        return eventID;
     }
 }

@@ -66,12 +66,13 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         eventList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            String owner = document.getString("owner");
                             String name = document.getString("name");
                             String detail = document.getString("detail");
                             Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
                             String eventFacilityName = document.getString("facilityName");
 
-                            Event event = new Event(name, detail, null, null, null, null, imageUri, eventFacilityName, null);
+                            Event event = new Event(name, detail, null, null, null, null, null, imageUri, eventFacilityName);
                             eventList.add(event);
                         }
                         // Notify your adapter of the changes, if needed

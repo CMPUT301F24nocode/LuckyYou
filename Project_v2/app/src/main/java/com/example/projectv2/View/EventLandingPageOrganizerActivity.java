@@ -1,23 +1,24 @@
-// EventLandingPageActivity.java is the Page which displays the information about the event when clicked on in homescreen.xml
-
 package com.example.projectv2.View;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.example.projectv2.View.QrOrganiserActivity;
 
-public class EventLandingPageActivity extends AppCompatActivity {
+public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
-    private ImageView eventImageView; // Event image display
+    private ImageView eventImageView;
     private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
     private Button qrcodeButton; // Button for generating a QR code
 
@@ -36,11 +37,16 @@ public class EventLandingPageActivity extends AppCompatActivity {
         eventCountdownView = findViewById(R.id.event_countdown_view);
         eventPriceView = findViewById(R.id.event_price_view);
 
-        // Set up Back button to return to the previous screen
+        // Back button to navigate back to the previous activity
         ImageButton eventBackButton = findViewById(R.id.event_back_button);
-        eventBackButton.setOnClickListener(v -> finish());
+        eventBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish(); // Ends the current activity and returns to the previous screen
+            }
+        });
 
-        // Load event details from Intent
+        // Retrieve event data from intent and provide fallback values
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String details = intent.getStringExtra("details");
@@ -50,10 +56,12 @@ public class EventLandingPageActivity extends AppCompatActivity {
         String price = intent.getStringExtra("price");
         String imageUriString = intent.getStringExtra("imageUri");
         String eventID = intent.getStringExtra("eventID");
+        String owner = intent.getStringExtra("owner");
+        Event event = (Event) intent.getSerializableExtra("event");
 
         // Configure QR Code button
         qrcodeButton.setOnClickListener(v -> {
-            Intent qrIntent = new Intent(EventLandingPageActivity.this, QrOrganiserActivity.class);
+            Intent qrIntent = new Intent(EventLandingPageOrganizerActivity.this, QrOrganiserActivity.class);
             qrIntent.putExtra("name", name);
             qrIntent.putExtra("description", details);
             qrIntent.putExtra("posterUrl", imageUriString);
@@ -63,7 +71,7 @@ public class EventLandingPageActivity extends AppCompatActivity {
 
         Button viewEntrantListButton = findViewById(R.id.view_entrant_list_button);
         viewEntrantListButton.setOnClickListener(v -> {
-            Intent entrantListIntent = new Intent(EventLandingPageActivity.this, EntrantListActivity.class);
+            Intent entrantListIntent = new Intent(EventLandingPageOrganizerActivity.this, EntrantListActivity.class);
             entrantListIntent.putExtra("eventId", getIntent().getStringExtra("eventID")); // Pass the eventID to EntrantListActivity
             startActivity(entrantListIntent);
         });
@@ -75,17 +83,17 @@ public class EventLandingPageActivity extends AppCompatActivity {
         eventDeadlineView.setText(deadline != null ? deadline : "No deadline");
         eventCountdownView.setText(startDate != null ? "Starts in: " + startDate : "No start date");
         eventPriceView.setText(price != null && !price.equals("0") ? "$" + price : "Free");
-
-        // Load image if URI is provided
+        // Load image if URI is available
         try {
             if (imageUriString != null && !imageUriString.isEmpty()) {
                 Uri imageUri = Uri.parse(imageUriString);
-                eventImageView.setImageURI(imageUri);
+                eventImageView.setImageURI(imageUri); // Attempt to load directly
             } else {
                 eventImageView.setImageResource(R.drawable.placeholder_event);
             }
         } catch (Exception e) {
-            eventImageView.setImageResource(R.drawable.placeholder_event);
+            e.printStackTrace();
+            eventImageView.setImageResource(R.drawable.placeholder_event); // Fallback if loading fails
         }
     }
 }
