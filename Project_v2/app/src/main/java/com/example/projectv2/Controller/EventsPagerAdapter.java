@@ -19,6 +19,8 @@ public class EventsPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch (position) {
+            case 0:
+                return new AvailableEventsFragment();
             case 1:
                 return new EventStatusFragment();
             case 2:

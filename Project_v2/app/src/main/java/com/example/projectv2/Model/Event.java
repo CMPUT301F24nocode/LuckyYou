@@ -15,7 +15,7 @@ public class Event implements Serializable {
     private Uri imageUri;
     private String facility;
 
-    public Event(String owner, String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
+    public Event(String eventID, String owner, String name, String detail, String rules,String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
         this.eventID= eventID;
         this.owner = owner;
         this.name = name;
@@ -26,13 +26,6 @@ public class Event implements Serializable {
         this.ticketPrice = ticketPrice;
         this.imageUri = imageUri;
         this.facility = facility;
-    }
-    public void setEventID(String eventID) {
-        this.eventID = eventID;
-    }
-
-    public String getEventID() {
-        return eventID;
     }
 
     public String getOwner() {
@@ -69,5 +62,13 @@ public class Event implements Serializable {
 
     public String getFacility() {
         return facility;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
+    }
+
+    public String getEventID() {
+        return eventID;
     }
 }

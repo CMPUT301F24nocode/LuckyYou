@@ -65,11 +65,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
         joinEventButton.setOnClickListener(view -> {
 //                Task<QuerySnapshot> user=db.collection("Users").get(Source.valueOf(userID));
-            String eventID=event.getEventID();
-            DocumentReference eventRef = db.collection("events").document(eventID);
-            eventRef.update("EntrantList", FieldValue.arrayUnion(userID))
-                    .addOnSuccessListener(aVoid -> {
-                        // Success feedback
+                String eventID=event.getEventID();
+                DocumentReference eventRef = db.collection("events").document(eventID);
+                eventRef.update("EntrantList", FieldValue.arrayUnion(userID))
+                        .addOnSuccessListener(aVoid -> {
+                            // Success feedback
 //                            Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
 //                            joinEventButton.setEnabled(false);
                         joinEventButton.setText("Leave");
@@ -86,25 +86,25 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
         joinEventButton.setOnLongClickListener(view -> {
 //                joinEventButton.setEnabled(false);
-            AlertDialog.Builder builder = new AlertDialog.Builder(EventLandingPageUserActivity.this);
-            builder.setTitle("Leave Event");
-            builder.setMessage("Are you sure you want to leave this event?");
-            builder.setPositiveButton("Yes", (dialog, which) -> {
-                String eventID=event.getEventID();
-                DocumentReference eventRef = db.collection("events").document(eventID);
-                eventRef.update("EntrantList", FieldValue.arrayRemove(userID))
-                        .addOnSuccessListener(aVoid -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(EventLandingPageUserActivity.this);
+                builder.setTitle("Leave Event");
+                builder.setMessage("Are you sure you want to leave this event?");
+                builder.setPositiveButton("Yes", (dialog, which) -> {
+                    String eventID=event.getEventID();
+                    DocumentReference eventRef = db.collection("events").document(eventID);
+                    eventRef.update("EntrantList", FieldValue.arrayRemove(userID))
+                            .addOnSuccessListener(aVoid -> {
 
 //                                Snackbar.make(view, "Successfully left the event", Snackbar.LENGTH_LONG).show();
 //                                joinEventButton.setEnabled(true);
-                        })
-                        .addOnFailureListener(e -> {
+                            })
+                            .addOnFailureListener(e -> {
 //                                Snackbar.make(view, "Failed to leave event: " + e.getMessage(),
 //                                        Snackbar.LENGTH_LONG).show();
 //                                joinEventButton.setEnabled(true);
-                            e.printStackTrace();
-                        });});
-            return true;
+                                e.printStackTrace();
+                            });});
+                return true;
 
             });
 

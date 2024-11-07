@@ -14,6 +14,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.projectv2.Controller.EventController;
@@ -74,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
 
         notificationBell.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        });
+
+        Button facilityListButton = findViewById(R.id.facility_list_button);
+        facilityListButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, FacilityListActivity.class);
             startActivity(intent);
         });
 
