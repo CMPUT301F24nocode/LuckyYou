@@ -35,6 +35,8 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.deviceID=deviceID;
         this.profileImage="";
+        this.adminNotifList=new ArrayList<Map>();
+        this.organizerNotifList=new ArrayList<Map>();
     }
 
     // Getters
