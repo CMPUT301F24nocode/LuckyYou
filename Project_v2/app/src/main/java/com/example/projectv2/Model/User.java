@@ -1,5 +1,9 @@
 package com.example.projectv2.Model;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Map;
+
 public class User {
     private boolean isAdmin;
     private boolean adminNotif;
@@ -11,8 +15,10 @@ public class User {
     private long phoneNumber;
     private String profileImage;
     private String deviceID;
+    private ArrayList<Map>  adminNotifList;
+    private ArrayList<Map>  organizerNotifList;
 
-    //partial constructor that defaults to isAdmin=false and callls the full constructor, call this partical constructor if the user is not intended to be an admin
+    //partial constructor that defaults to isAdmin=false and callls the full constructor, call this partial constructor if the user is not intended to be an admin
     public User( String email,String firstName,String lastName,boolean isOrganizer,long phoneNumber,String deviceID){
         this(false,true,email,firstName,lastName,isOrganizer,true,phoneNumber,deviceID);
     }
@@ -65,6 +71,11 @@ public class User {
     public String getDeviceID(){
         return deviceID;
     }
+    public ArrayList<Map> getAdminNotifList(){
+        return adminNotifList;
+    }
+    public ArrayList<Map> getOrganizerNotifList(){
+        return organizerNotifList;}
 
     // Setters
     public void setAdmin(boolean admin) {
@@ -101,4 +112,10 @@ public class User {
     public void setDeviceID(String deviceID){
         this.deviceID=deviceID;
     }
+    public void setAdminNotifList(ArrayList<Map> adminNotifList){
+        this.adminNotifList=adminNotifList;
+    }
+public void setOrganizerNotifList(ArrayList<Map> organizerNotifList){
+        this.organizerNotifList=organizerNotifList;
+}
 }

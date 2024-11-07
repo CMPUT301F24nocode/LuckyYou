@@ -26,7 +26,7 @@ public class Event implements Serializable {
         this.ticketPrice = ticketPrice;
         this.imageUri = imageUri;
         this.facility = facility;
-        this.eventID="nkcTTroyI5zDThrAnVqA";
+        this.eventID="nkcTTroyI5zDThrAnVqA"; // for now it is hardcoded this value to diljeet's event, should be fine for testing. will change it later to dynamic
     }
 
     public String getOwner() {
