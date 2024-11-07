@@ -1,56 +1,48 @@
-package com.example.projectv2.View;
+package com.example.projectv2.Controller;
 
 import android.os.Bundle;
-import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.projectv2.Controller.EventController;
-import com.example.projectv2.Controller.ImageAdapter;
-import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class AdminImageListActivity extends AppCompatActivity {
+public class AdminImageListActivity extends AppCompatActivity implements ImageAdapter.OnImageDeleteListener {
 
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerViewImages;
     private ImageAdapter imageAdapter;
-    private EventController eventController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_image_list);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3)); // Grid with 3 columns
+        // Sample list of images (assuming they are drawable resources)
+        List<Integer> imageList = Arrays.asList(
+                R.drawable.placeholder_event, // replace with actual drawable names
+                R.drawable.placeholder_event,
+                R.drawable.placeholder_event
+                // Add more drawable resources as needed
+        );
 
-        eventController = new EventController(this);
+        // Initialize RecyclerView
+        recyclerViewImages = findViewById(R.id.recyclerViewImages);
+        recyclerViewImages.setLayoutManager(new GridLayoutManager(this, 3)); // 3 columns
 
-        // Fetch events from Firestore and display them in the RecyclerView
-        eventController.fetchEvents(new EventController.EventCallback() {
-            @Override
-            public void onEventListLoaded(List<Event> events) {
-                imageAdapter = new ImageAdapter(events, eventController);
-                recyclerView.setAdapter(imageAdapter);
-            }
+        // Initialize Adapter
+        imageAdapter = new ImageAdapter(this, imageList, this);
+        recyclerViewImages.setAdapter(imageAdapter);
+    }
 
-            @Override
-            public void onEventListLoaded(ArrayList<Event> events) {
-                // No implementation needed
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("AdminImageListActivity", "Error fetching events", e);
-            }
-        });
+    @Override
+    public void onImageDelete(int position) {
+        // Handle image deletion if needed, e.g., showing a dialog or removing from the list
+        // For this browsing feature, we might not need to delete images, so this can be empty or show a message
     }
 }
+
 
 
 
