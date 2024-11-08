@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Controller.qrUtils;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -43,8 +45,29 @@ public class QrOrganiserActivity extends AppCompatActivity {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.encodeBitmap(data, BarcodeFormat.QR_CODE, 400, 400);
             qrCodeImageView.setImageBitmap(bitmap);
+
+            // Generate the hashed string from the bitmap
+            String qrHashData = qrUtils.getBitmapHash(bitmap);
+
+            // Log and save to Firestore
+//            Log.d("QR Hash", qrHashData);
+            saveQrHashToFirestore(qrHashData);
         } catch (WriterException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void saveQrHashToFirestore(String qrHashData) {
+        // Retrieve the event ID to locate the correct document
+        Intent intent = getIntent();
+        String eventID = intent.getStringExtra("eventID");
+
+        if (eventID != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("events").document(eventID)
+                    .update("qrHashData", qrHashData)  // Add the hashed string under 'qrHashData'
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "QR hash saved successfully"))
+                    .addOnFailureListener(e -> Log.w("Firestore", "Error saving QR hash", e));
         }
     }
 }
