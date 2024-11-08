@@ -68,6 +68,8 @@ public class LoginActivity extends AppCompatActivity {
                             // Navigate to MainActivity
                             Log.d(TAG, "Navigating to MainActivity");
                             Intent intent = new Intent(this, MainActivity.class);
+                            intent.putExtra("deviceID", deviceID);
+
                             startActivity(intent);
                             finish();
                         } else {

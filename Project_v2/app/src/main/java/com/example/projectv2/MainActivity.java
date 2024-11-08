@@ -1,9 +1,11 @@
 package com.example.projectv2;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectv2.Controller.EventController;
@@ -35,15 +38,22 @@ import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
 import com.example.projectv2.View.SignUpActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    private FirebaseFirestore db;
+//    private TextView userNameTextView;
+    private String userName;
+
 
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
 
@@ -51,21 +61,29 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
+        NavigationView navigationView ;
 
-//        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-//        startActivity(intent);
+
 
         drawerLayout = findViewById(R.id.homescreen_drawer_layout);
+//        userNameTextView = findViewById(R.id.textView19);
+//        userNameTextView.setText("");
+
+
+
         ImageView profilePicture = findViewById(R.id.homescreen_profile_pic);
         ImageView notificationBell = findViewById(R.id.homescreen_notification_bell);
-        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView = findViewById(R.id.navigation_view);
         viewPager = findViewById(R.id.viewPager2);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         FloatingActionButton fab = findViewById(R.id.homescreen_fab);
+
+        fetchAndDisplayUserName(navigationView);
 
         profilePicture.setOnClickListener(view -> {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -90,7 +108,11 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_profile) {
+                //User should see their details
+                intent = getIntent();
+                String userID = intent.getStringExtra("deviceID");
                 intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("userID", userID);
             } else if (itemId == R.id.nav_facilities) {
                 intent = new Intent(MainActivity.this, FacilityListActivity.class);
             } else if (itemId == R.id.nav_browseProfiles) {
@@ -140,5 +162,33 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
+    }
+    private void fetchAndDisplayUserName(NavigationView navigationView) {
+        // Get the current user's ID (assuming you have it stored somewhere)
+        @SuppressLint("HardwareIds") String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        db = FirebaseFirestore.getInstance();
+        db.collection("Users").document(userId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // Get the user's name from the document
+                                userName = document.getString("name");
+                                // Update the TextView with the user's name
+                                View headerView = navigationView.getHeaderView(0);
+                                TextView userNameTextView = headerView.findViewById(R.id.textView19);
+                                userNameTextView.setText(userName);
+                            } else {
+                                Log.d("MainActivity", "No such document");
+                            }
+                        } else {
+                            Log.d("MainActivity", "get failed with ", task.getException());
+                        }
+                    }
+                });
     }
 }

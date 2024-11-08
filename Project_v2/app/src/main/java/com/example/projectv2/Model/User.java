@@ -17,10 +17,12 @@ public class User {
     private String deviceID;
     private ArrayList<Map>  adminNotifList;
     private ArrayList<Map>  organizerNotifList;
+    private String name;
+    public User(){}
 
     //partial constructor that defaults to isAdmin=false and callls the full constructor, call this partial constructor if the user is not intended to be an admin
-    public User( String email,String firstName,String lastName,boolean isOrganizer,long phoneNumber,String deviceID){
-        this(false,true,email,firstName,lastName,isOrganizer,true,phoneNumber,deviceID);
+    public User( String email,String firstName,String lastName,long phoneNumber,String deviceID){
+        this(false,true,email,firstName,lastName,false,true,phoneNumber,deviceID);
     }
 
     // Constructor
@@ -53,7 +55,7 @@ public class User {
     }
 
     public String getName() {
-        return firstName+" "+lastName;
+        return name;
     }
 
     public boolean isOrganizer() {
@@ -92,8 +94,8 @@ public class User {
         this.email = email;
     }
 
-    public void setName(String firstName,String lastName) {
-        this.firstName = firstName;this.lastName=lastName;
+    public void setName(String name) {
+        this.name=name;
     }
 
     public void setOrganizer(boolean organizer) {

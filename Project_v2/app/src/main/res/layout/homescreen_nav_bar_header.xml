@@ -35,9 +35,9 @@
     <TextView
         android:id="@+id/textView19"
         style="@style/RoundedProfileName"
-        android:layout_width="141dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="142dp"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
+        android:layout_marginTop="144dp"
         android:text="John Doe"
         android:textAlignment="center"
         android:textColor="@color/lucky_white"
