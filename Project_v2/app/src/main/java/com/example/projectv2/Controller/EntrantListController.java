@@ -46,7 +46,7 @@ public class EntrantListController {
 
     public void updateSelectedList(String eventId, List<String> selectedList) {
         db.collection("events").document(eventId)
-                .update("entrantList.SelectedList", selectedList)
+                .update("entrantList.Selected", selectedList)
                 .addOnSuccessListener(aVoid -> Log.d("EntrantListController", "Selected List updated successfully"))
                 .addOnFailureListener(e -> Log.e("EntrantListController", "Error updating Selected List", e));
     }
