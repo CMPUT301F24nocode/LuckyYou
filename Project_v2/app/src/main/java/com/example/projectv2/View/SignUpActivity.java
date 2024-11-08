@@ -39,7 +39,7 @@ public class SignUpActivity extends AppCompatActivity {
         firstName = findViewById(R.id.signup_firstname);
         lastName = findViewById(R.id.signup_secondname);
         phoneNumber = findViewById(R.id.signup_phonenumber);
-        isOrganizer = findViewById(R.id.is_organizer);
+
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,8 +53,14 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void signUpUser() {
+        long phoneNumberValue;
+        try {
+            phoneNumberValue=Long.parseLong(phoneNumber.getText().toString());
+        }catch (NumberFormatException e){
+            phoneNumberValue=0000000000;
+        }
         @SuppressLint("HardwareIds") String deviceID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-        User newUser = new User(email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(), isOrganizer.isChecked(),Long.parseLong(phoneNumber.getText().toString()),deviceID);
+        User newUser = new User(email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(),phoneNumberValue,deviceID);
         db.collection("Users").document(newUser.getDeviceID()).set(newUser).addOnSuccessListener(aVoid -> {
             Log.d("User", "DocumentSnapshot added with ID: " + newUser.getDeviceID());
         }).addOnFailureListener(e -> {

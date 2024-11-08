@@ -5,26 +5,32 @@
 
     <item
         android:id="@+id/nav_profile"
+        android:icon="@drawable/profile_icon"
         android:title="Profile" />
 
     <item
         android:id="@+id/nav_facilities"
+        android:icon="@drawable/facility_icon"
         android:title="Your Facilities" />
 
     <item
         android:id="@+id/nav_qrScanner"
+        android:icon="@drawable/qrscanner_icon"
         android:title="QR Scanner" />
 
     <item
         android:id="@+id/nav_browseProfiles"
+        android:icon="@drawable/browseprofiles_icon"
         android:title="Browse Profiles" />
 
     <item
         android:id="@+id/nav_browseImages"
+        android:icon="@drawable/browseimage_icon"
         android:title="Browse Images" />
 
     <item
         android:id="@+id/nav_browseFacilities"
+        android:icon="@drawable/facility_icon"
         android:title="Browse Facilities" />
 
 </menu>

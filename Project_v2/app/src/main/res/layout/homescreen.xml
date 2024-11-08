@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/lucky_background"
-            app:layout_constraintBottom_toTopOf="@+id/eventRecyclerView"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include"
@@ -68,17 +68,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/facility_list_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:text="Facility"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.583"
-            app:layout_constraintStart_toEndOf="@+id/homescreen_fab" />
-
         <ImageButton
             android:id="@+id/refreshButton"
             android:layout_width="48dp"
@@ -100,6 +89,8 @@
         android:layout_gravity="start"
         android:background="@color/lucky_background"
         app:headerLayout="@layout/homescreen_nav_bar_header"
-        app:menu="@menu/homescreen_nav_bar_menu" />
+        app:menu="@menu/homescreen_nav_bar_menu"
+        app:itemIconTint="@color/lucky_white"
+        app:itemTextColor="@color/lucky_white"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

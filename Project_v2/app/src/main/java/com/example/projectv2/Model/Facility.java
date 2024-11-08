@@ -1,16 +1,12 @@
 package com.example.projectv2.Model;
 
-import android.net.Uri;
-
 public class Facility {
     private String name;
     private String description;
-    private Uri imageUri;
 
-    public Facility(String name, String description, Uri imageUri) {
+    public Facility(String name, String description) {
         this.name = name;
         this.description = description;
-        this.imageUri = imageUri;
     }
 
     public String getName() {
@@ -21,7 +17,4 @@ public class Facility {
         return description;
     }
 
-    public Uri getImageUri() {
-        return imageUri;
-    }
 }
