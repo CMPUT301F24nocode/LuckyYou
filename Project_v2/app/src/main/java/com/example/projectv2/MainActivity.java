@@ -1,9 +1,11 @@
 package com.example.projectv2;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +19,7 @@ import android.widget.ImageView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectv2.Controller.EventController;
@@ -35,15 +38,22 @@ import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
 import com.example.projectv2.View.SignUpActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    private FirebaseFirestore db;
+    private TextView userNameTextView;
+    private String userName;
+
 
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
 
@@ -51,15 +61,15 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
 
-//        Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-//        startActivity(intent);
-
         drawerLayout = findViewById(R.id.homescreen_drawer_layout);
+
+
         ImageView profilePicture = findViewById(R.id.homescreen_profile_pic);
         ImageView notificationBell = findViewById(R.id.homescreen_notification_bell);
         NavigationView navigationView = findViewById(R.id.navigation_view);
@@ -96,7 +106,11 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_profile) {
+                //User should see their details
+                intent=getIntent();
+                String userID=intent.getStringExtra("deviceID");
                 intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("userID", userID);
             } else if (itemId == R.id.nav_facilities) {
                 intent = new Intent(MainActivity.this, FacilityListActivity.class);
             } else if (itemId == R.id.nav_browseProfiles) {
@@ -147,4 +161,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+
 }
