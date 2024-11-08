@@ -33,10 +33,10 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/homescreen_name"
         style="@style/RoundedProfileName"
-        android:layout_width="141dp"
-        android:layout_height="31dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="142dp"
         android:text="John Doe"
         android:textAlignment="center"
