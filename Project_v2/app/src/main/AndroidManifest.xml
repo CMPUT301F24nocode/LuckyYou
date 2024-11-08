@@ -39,6 +39,7 @@
         <activity android:name=".View.QrOrganiserActivity" />
         <activity android:name=".View.EntrantListActivity"/>
         <activity android:name=".View.SignUpActivity"/>
+        <activity android:name=".View.ProfileOverlayActivity"/>
 
 
     </application>

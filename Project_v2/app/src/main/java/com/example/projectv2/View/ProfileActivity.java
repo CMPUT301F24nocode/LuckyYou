@@ -113,6 +113,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 //    private void updateUser(User user){
 //        User newUser = new User(user.isAdmin(),user.isAdminNotif(),user.getEmail(),user.getName(),user.getPhoneNumber());
-//
-//    }
+
+  //  }
 }
