@@ -1,8 +1,13 @@
-// FacilityController.java
+/**
+ * FacilityController manages the creation, addition, and retrieval of facilities
+ * stored in Firestore. It provides methods for creating a new facility, adding it to
+ * Firestore, and fetching the list of facilities for use in the application.
+ *
+ * <p>Outstanding Issues: None currently identified.</p>
+ */
 package com.example.projectv2.Controller;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import com.example.projectv2.Model.Facility;
@@ -11,29 +16,52 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Controller for handling facility-related operations in Firestore.
+ * This class provides methods to create, add, and retrieve facilities.
+ */
 public class FacilityController {
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db;
     private final ArrayList<Facility> facilityList = new ArrayList<>();
 
+    /**
+     * Callback interface for facility-related operations to communicate results
+     * back to the calling class.
+     */
     public interface FacilityCallback {
         void onFacilityListLoaded(ArrayList<Facility> facilities);
         void onError(Exception e);
     }
 
+    /**
+     * Constructs a FacilityController with the given context, initializing the Firestore
+     * database instance.
+     *
+     * @param context the context in which this controller operates
+     */
     public FacilityController(Context context) {
         db = FirebaseFirestore.getInstance();
     }
 
-    // Method to create a Facility and store it in Firebase
+    /**
+     * Creates a new facility with the specified details and saves it to Firestore.
+     *
+     * @param name        the name of the facility
+     * @param description a description of the facility
+     * @param id          the unique ID of the facility
+     * @param callback    callback to handle success or error
+     */
     public void createFacility(String name, String description, String id, FacilityCallback callback) {
-        // Create a new Facility object
         Facility newFacility = new Facility(name, description, id);
-
-        // Add the new facility to Firebase
         addFacilityToFirestore(newFacility, callback);
     }
 
-    // Method to add a facility to Firestore
+    /**
+     * Adds a facility to the Firestore database.
+     *
+     * @param facility the Facility object to add to Firestore
+     * @param callback callback to handle success or error
+     */
     public void addFacilityToFirestore(Facility facility, FacilityCallback callback) {
         db.collection("facilities")
                 .add(facility)
@@ -48,7 +76,12 @@ public class FacilityController {
                 });
     }
 
-    // Fetch facilities from Firestore and notify callback
+    /**
+     * Fetches the list of facilities from Firestore and notifies the callback with the
+     * facility data.
+     *
+     * @param callback callback to handle the loaded facilities or errors
+     */
     public void fetchFacilities(FacilityCallback callback) {
         db.collection("facilities")
                 .get()

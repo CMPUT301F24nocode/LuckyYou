@@ -1,3 +1,10 @@
+/**
+ * Activity for configuring additional options for an event, such as date, attendee limits,
+ * ticket price, geolocation, and notifications. The collected data is passed back to the
+ * previous activity upon completion.
+ *
+ * <p>Outstanding Issues: None currently identified.</p>
+ */
 package com.example.projectv2.View;
 
 import android.content.Intent;
@@ -9,6 +16,11 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectv2.R;
 
+/**
+ * CreateEventOptionsActivity allows users to input additional options for an event.
+ * Users can specify event details such as deadline, start date, attendee limits, and
+ * optional geolocation and notification settings.
+ */
 public class CreateEventOptionsActivity extends AppCompatActivity {
     private EditText eventDeadline, eventAttendees, eventEntrants;
     private EditText eventStartDate, eventTicketPrice;
@@ -16,6 +28,12 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
     private String name, detail, rules, facility;
     private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$";
 
+    /**
+     * Called when the activity is created. Sets up UI elements for inputting event options
+     * and retrieves initial event details passed via Intent.
+     *
+     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +53,6 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
         detail = getIntent().getStringExtra("detail");
         rules = getIntent().getStringExtra("rules");
         facility = getIntent().getStringExtra("facility");
-
 
         Button createEventButton = findViewById(R.id.create_event_button);
         createEventButton.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +97,13 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
             }
         });
     }
-    // Method to check if date matches pattern
+
+    /**
+     * Validates if the provided date string matches the expected date format (DD-MM-YYYY).
+     *
+     * @param date the date string to validate
+     * @return true if the date matches the expected pattern, false otherwise
+     */
     private boolean isValidDate(String date) {
         return date.matches(DATE_PATTERN);
     }

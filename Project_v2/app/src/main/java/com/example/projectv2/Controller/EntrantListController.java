@@ -1,3 +1,10 @@
+/**
+ * EntrantListController is responsible for managing entrant lists for events stored in Firestore.
+ * This includes creating and updating various entrant lists such as selected, cancelled, and attendee lists
+ * associated with an event.
+ *
+ * <p>Outstanding Issues: None currently identified.</p>
+ */
 package com.example.projectv2.Controller;
 
 import android.util.Log;
@@ -11,19 +18,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller class for managing entrant lists in the Firestore database.
+ * This class provides methods to create, update, and modify various entrant lists
+ * for a specified event.
+ */
 public class EntrantListController {
 
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db;
 
+    /**
+     * Constructs an EntrantListController and initializes the Firestore database instance.
+     */
     public EntrantListController() {
         db = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * Adds an entrant list field with empty arrays for EntrantList, WaitingList,
+     * SelectedList, CancelledList, and AttendeeList to the Firestore document of the specified event.
+     *
+     * @param eventId the ID of the event to which the entrant list field will be added
+     */
     public void addEntrantListField(String eventId) {
-        // Create empty arrays for each subfield
-        List<String> emptyList = new ArrayList<>(); // Modifiable lists
+        List<String> emptyList = new ArrayList<>();
 
-        // Create a map to represent the entrantList field with empty arrays
         Map<String, Object> entrantListMap = new HashMap<>();
         entrantListMap.put("EntrantList", emptyList);
         entrantListMap.put("WaitingList", emptyList);
@@ -31,7 +50,6 @@ public class EntrantListController {
         entrantListMap.put("CancelledList", emptyList);
         entrantListMap.put("AttendeeList", emptyList);
 
-        // Add or update the map in the Firestore document with merge option
         db.collection("events").document(eventId)
                 .set(new HashMap<String, Object>() {{
                     put("entrantList", entrantListMap);
@@ -44,6 +62,12 @@ public class EntrantListController {
                 });
     }
 
+    /**
+     * Updates the SelectedList for a specified event in the Firestore database.
+     *
+     * @param eventId      the ID of the event whose SelectedList will be updated
+     * @param selectedList the list of selected entrants to update in the Firestore
+     */
     public void updateSelectedList(String eventId, List<String> selectedList) {
         db.collection("events").document(eventId)
                 .update("entrantList.Selected", selectedList)
@@ -51,6 +75,12 @@ public class EntrantListController {
                 .addOnFailureListener(e -> Log.e("EntrantListController", "Error updating Selected List", e));
     }
 
+    /**
+     * Updates the CancelledList for a specified event in the Firestore database.
+     *
+     * @param eventId       the ID of the event whose CancelledList will be updated
+     * @param cancelledList the list of cancelled entrants to update in the Firestore
+     */
     public void updateCancelledList(String eventId, List<String> cancelledList) {
         db.collection("events").document(eventId)
                 .update("entrantList.CancelledList", cancelledList)
@@ -58,6 +88,12 @@ public class EntrantListController {
                 .addOnFailureListener(e -> Log.e("EntrantListController", "Error updating Cancelled List", e));
     }
 
+    /**
+     * Updates the AttendeeList for a specified event in the Firestore database.
+     *
+     * @param eventId      the ID of the event whose AttendeeList will be updated
+     * @param attendeeList the list of attendees to update in the Firestore
+     */
     public void updateAttendeeList(String eventId, List<String> attendeeList) {
         db.collection("events").document(eventId)
                 .update("entrantList.AttendeeList", attendeeList)
@@ -65,6 +101,12 @@ public class EntrantListController {
                 .addOnFailureListener(e -> Log.e("EntrantListController", "Error updating Attendee List", e));
     }
 
+    /**
+     * Adds a specified user ID to the CancelledList for a specified event in the Firestore database.
+     *
+     * @param eventId the ID of the event to update
+     * @param userId  the user ID to add to the CancelledList
+     */
     public void addToCancelledList(String eventId, String userId) {
         db.collection("events").document(eventId)
                 .update("entrantList.CancelledList", FieldValue.arrayUnion(userId))

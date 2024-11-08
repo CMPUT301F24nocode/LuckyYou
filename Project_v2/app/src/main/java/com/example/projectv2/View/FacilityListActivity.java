@@ -1,3 +1,9 @@
+/**
+ * Activity that displays a list of facilities, allowing users to view existing facilities or create new ones.
+ * Retrieves facility data from Firebase Firestore and provides options to add new facilities.
+ *
+ * <p>Outstanding Issues: None currently identified.</p>
+ */
 package com.example.projectv2.View;
 
 import android.content.Intent;
@@ -20,6 +26,10 @@ import com.example.projectv2.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * FacilityListActivity displays a list of facilities and allows users to add new facilities.
+ * It uses a RecyclerView with a FacilityAdapter to display facilities and handles interactions for creating new facilities.
+ */
 public class FacilityListActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_CREATE_FACILITY = 1;
@@ -27,6 +37,12 @@ public class FacilityListActivity extends AppCompatActivity {
     private FacilityAdapter facilityAdapter;
     private FacilityController facilityController;
 
+    /**
+     * Called when the activity is created. Sets up the RecyclerView for displaying facilities,
+     * initializes the FacilityController, and fetches the current list of facilities from Firebase.
+     *
+     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +85,14 @@ public class FacilityListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the result from FacilityCreateActivity when a new facility is created.
+     * If the result is successful, the new facility data is added to Firebase Firestore and displayed in the list.
+     *
+     * @param requestCode the integer request code originally supplied to startActivityForResult(), allowing the result code to be identified
+     * @param resultCode  the integer result code returned by the child activity through its setResult()
+     * @param data        an Intent, which can return result data to the caller (various data can be attached to the Intent "extras")
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -77,7 +101,6 @@ public class FacilityListActivity extends AppCompatActivity {
             String description = data.getStringExtra("facility_description");
             String facilityID = data.getStringExtra("facility_ID");
 
-            // Log data to ensure correctness
             Log.d("FacilityListActivity", "New Facility: " + name + ", " + description);
 
             // Create and save the new facility in Firebase
