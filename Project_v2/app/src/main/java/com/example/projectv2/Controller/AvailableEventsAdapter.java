@@ -1,7 +1,10 @@
 package com.example.projectv2.Controller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,12 +51,17 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventLandingPageUserActivity.class);
             intent.putExtra("name", event.getName());
+            Log.d("bgvefdfvjghbbhdvfbdhfvhbvfdbhfvdbhgjdfv", event.getName());
             intent.putExtra("details", event.getDetail());
             intent.putExtra("rules", event.getRules());
             intent.putExtra("deadline", event.getDeadline());
             intent.putExtra("startDate", event.getStartDate());
             intent.putExtra("price", event.getTicketPrice());
             intent.putExtra("eventID", event.getEventID());
+            @SuppressLint("HardwareIds")
+            String deviceID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            intent.putExtra("user", deviceID);
+            Log.d("bgvefdfvjghbbhdvfbdhfvhbvfdbhfvdbhgjdfv", event.getEventID());
             intent.putExtra("owner", event.getOwner());
             if (event.getImageUri() != null) {
                 intent.putExtra("imageUri", event.getImageUri().toString());

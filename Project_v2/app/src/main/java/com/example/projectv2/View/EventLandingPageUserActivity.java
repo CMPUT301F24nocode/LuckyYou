@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -60,26 +61,26 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         String price = intent.getStringExtra("price");
         String imageUriString = intent.getStringExtra("imageUri");
         String userID=intent.getStringExtra("user");
+        String eventID=intent.getStringExtra("eventID");
         Event event = (Event) intent.getSerializableExtra("event");
 
 
         joinEventButton.setOnClickListener(view -> {
-//                Task<QuerySnapshot> user=db.collection("Users").get(Source.valueOf(userID));
-                String eventID=event.getEventID();
+            Log.d("bgvefdfvjghbbhdvfbdhfvhbvfdbhfvdbhgjdfv", "ITS REACHING HUZZAH");
                 DocumentReference eventRef = db.collection("events").document(eventID);
-                eventRef.update("EntrantList", FieldValue.arrayUnion(userID))
+                eventRef.update("entrantList.EntrantList", FieldValue.arrayUnion(userID))
                         .addOnSuccessListener(aVoid -> {
                             // Success feedback
-//                            Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
-//                            joinEventButton.setEnabled(false);
+                            Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
+                            joinEventButton.setEnabled(false);
                         joinEventButton.setText("Leave");
                         joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon,0,0,0);
                     joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
                     })
                     .addOnFailureListener(e -> {
                         // Error feedback
-//                            Snackbar.make(view, "Failed to join event: " + e.getMessage(),
-//                                    Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(view, "Failed to join event: " + e.getMessage(),
+                                    Snackbar.LENGTH_LONG).show();
                         e.printStackTrace();
                     });
         });
@@ -90,22 +91,20 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 builder.setTitle("Leave Event");
                 builder.setMessage("Are you sure you want to leave this event?");
                 builder.setPositiveButton("Yes", (dialog, which) -> {
-                    String eventID=event.getEventID();
                     DocumentReference eventRef = db.collection("events").document(eventID);
-                    eventRef.update("EntrantList", FieldValue.arrayRemove(userID))
+                    eventRef.update("entrantList.EntrantList", FieldValue.arrayRemove(userID))
                             .addOnSuccessListener(aVoid -> {
 
-//                                Snackbar.make(view, "Successfully left the event", Snackbar.LENGTH_LONG).show();
-//                                joinEventButton.setEnabled(true);
+                                Snackbar.make(view, "Successfully left the event", Snackbar.LENGTH_LONG).show();
+                                joinEventButton.setEnabled(true);
                             })
                             .addOnFailureListener(e -> {
-//                                Snackbar.make(view, "Failed to leave event: " + e.getMessage(),
-//                                        Snackbar.LENGTH_LONG).show();
-//                                joinEventButton.setEnabled(true);
+                                Snackbar.make(view, "Failed to leave event: " + e.getMessage(),
+                                        Snackbar.LENGTH_LONG).show();
+                                joinEventButton.setEnabled(true);
                                 e.printStackTrace();
                             });});
                 return true;
-
             });
 
 
