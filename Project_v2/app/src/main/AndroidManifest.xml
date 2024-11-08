@@ -42,6 +42,8 @@
         <activity android:name=".View.FacilityLandingPageActivity" />
         <activity android:name=".View.QrOrganiserActivity" />
         <activity android:name=".View.EntrantListActivity"/>
+        <activity android:name=".View.EventHomeActivity"/>
+
 
     </application>
 
