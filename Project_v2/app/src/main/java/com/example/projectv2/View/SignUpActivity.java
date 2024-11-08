@@ -2,6 +2,7 @@ package com.example.projectv2.View;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.MainActivity;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +45,8 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signUpUser();
+                Intent intent = new Intent(SignUpActivity.this, EventHomeActivity.class);
+                startActivity(intent);
             }
         });
 
