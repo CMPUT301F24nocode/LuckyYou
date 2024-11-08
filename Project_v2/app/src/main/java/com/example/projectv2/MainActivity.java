@@ -2,7 +2,6 @@ package com.example.projectv2;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,17 +16,9 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Controller.EventsPagerAdapter;
-import com.example.projectv2.Controller.NotificationAdapter;
-import com.example.projectv2.Controller.NotificationService;
-import com.example.projectv2.Model.Event;
-import com.example.projectv2.Model.Notification;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.View.AdminFacilityListActivity;
 import com.example.projectv2.View.AdminImageListActivity;
@@ -37,7 +28,6 @@ import com.example.projectv2.View.CreateEventActivity;
 import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
-import com.example.projectv2.View.SignUpActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,12 +37,11 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
 //    private TextView userNameTextView;
     private String userName;
+    private boolean isOrganizer;
 
 
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
@@ -64,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        @SuppressLint("HardwareIds") String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
         NavigationView navigationView ;
@@ -82,8 +72,27 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager2);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         FloatingActionButton fab = findViewById(R.id.homescreen_fab);
+        fab.setVisibility(View.INVISIBLE);
+        checkOrganizer(userId, new OnOrganizerCheckComplete() {
+            @Override
+            public void onComplete(boolean isOrganizerResult) {
+                isOrganizer = isOrganizerResult;
+                Log.d("isOrganizer", String.valueOf(isOrganizer));
 
-        fetchAndDisplayUserName(navigationView);
+                // Update UI based on organizer status
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isOrganizer) {
+                            fab.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        fetchAndDisplayUserName(navigationView,userId);
 
         profilePicture.setOnClickListener(view -> {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -163,12 +172,12 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-    private void fetchAndDisplayUserName(NavigationView navigationView) {
+    private void fetchAndDisplayUserName(NavigationView navigationView,String userID) {
         // Get the current user's ID (assuming you have it stored somewhere)
-        @SuppressLint("HardwareIds") String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
 
         db = FirebaseFirestore.getInstance();
-        db.collection("Users").document(userId)
+        db.collection("Users").document(userID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -190,5 +199,43 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    //The checkOrganizer method returns the value of isOrganizer before the Firestore query completes. because of the asynchoronous nature of Firestore
+    private void checkOrganizer(String userID, OnOrganizerCheckComplete callback) {
+        if (db == null) {
+            db = FirebaseFirestore.getInstance();
+        }
+
+        db.collection("Users").document(userID)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                User user = document.toObject(User.class);
+                                Log.d("MainActivity", "Fetched the class");
+
+                                if (user != null) {
+                                    boolean isOrganizer = user.isOrganizer();
+                                    Log.d("checkOrganizer", String.valueOf(isOrganizer));
+                                    callback.onComplete(isOrganizer);
+                                } else {
+                                    callback.onComplete(false);
+                                }
+                            } else {
+                                callback.onComplete(false);
+                            }
+                        } else {
+                            callback.onComplete(false);
+                        }
+                    }
+                });
+    }
+
+    // Create an interface for the callback
+    interface OnOrganizerCheckComplete {
+        void onComplete(boolean isOrganizer);
     }
 }
