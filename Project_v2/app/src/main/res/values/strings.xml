@@ -43,6 +43,7 @@
     <string name="create_facility_name_text">Enter Facility Name</string>
     <string name="create_facility_details_text">Enter Facility Details</string>
     <string name="Not_a_user"><u>Not a User? Signup Here</u>.</string>
+    <string name="not_an_organizer">Currently, you are not an organizer. If you want to become an organizer you need to have a facility. Click on "Create" Button to create a facility right now</string>
 
     <string-array name="dropdown_items">
         <item>Entrants</item>
