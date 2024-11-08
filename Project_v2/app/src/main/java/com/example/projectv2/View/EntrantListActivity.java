@@ -79,7 +79,7 @@ public class EntrantListActivity extends AppCompatActivity {
                         loadSelectedList();
                         break;
                     case "Cancelled List":
-                        loadCancelled();
+                        loadCancelledList();
                         break;
                     case "Attendee List":
                         loadAttendeeList();
@@ -157,28 +157,6 @@ public class EntrantListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e(TAG, "Error loading Waiting List", e));
     }
 
-    // Method to load the cancelled list from Firestore
-    private void loadCancelled() {
-        String eventId = getIntent().getStringExtra("eventId"); // Retrieve event ID from intent
-
-        // Fetch the cancelled list from Firestore
-        db.collection("events").document(eventId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> cancelledList = (List<String>) documentSnapshot.get("entrantList.CancelledList");
-                        if (cancelledList != null) {
-                            adapter.updateEntrantList(cancelledList); // Update adapter with cancelled entrants
-                        } else {
-                            Toast.makeText(this, "No cancelled entrants found.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading cancelled list", e);
-                    Toast.makeText(this, "Failed to load cancelled list", Toast.LENGTH_SHORT).show();
-                });
-    }
-
     // Method to randomly select 20 users for the Selected List
     private void loadSelectedList() {
         String eventId = getIntent().getStringExtra("eventId");
@@ -199,6 +177,28 @@ public class EntrantListActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error loading Selected List", e));
+    }
+
+    // Method to load the cancelled list from Firestore
+    private void loadCancelledList() {
+        String eventId = getIntent().getStringExtra("eventId"); // Retrieve event ID from intent
+
+        // Fetch the cancelled list from Firestore
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> cancelledList = (List<String>) documentSnapshot.get("entrantList.CancelledList");
+                        if (cancelledList != null && !cancelledList.isEmpty()) {
+                            adapter.updateEntrantList(cancelledList); // Update adapter with cancelled entrants
+                        } else {
+                            Toast.makeText(this, "No users have cancelled.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error loading Cancelled List", e);
+                    Toast.makeText(this, "Failed to load Cancelled List", Toast.LENGTH_SHORT).show();
+                });
     }
 
     // Helper method to send notification to selected users

@@ -75,12 +75,13 @@ public class FacilityListActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_CREATE_FACILITY && resultCode == RESULT_OK && data != null) {
             String name = data.getStringExtra("facility_name");
             String description = data.getStringExtra("facility_description");
+            String facilityID = data.getStringExtra("facility_ID");
 
             // Log data to ensure correctness
             Log.d("FacilityListActivity", "New Facility: " + name + ", " + description);
 
             // Create and save the new facility in Firebase
-            facilityController.createFacility(name, description, new FacilityController.FacilityCallback() {
+            facilityController.createFacility(name, description, facilityID, new FacilityController.FacilityCallback() {
                 @Override
                 public void onFacilityListLoaded(ArrayList<Facility> facilities) {
                     facilityList.clear();

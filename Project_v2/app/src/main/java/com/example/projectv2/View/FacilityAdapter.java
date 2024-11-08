@@ -38,6 +38,7 @@ public class FacilityAdapter extends RecyclerView.Adapter<FacilityAdapter.Facili
         // Set OnClickListener to open the facility landing page with details
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, FacilityLandingPageActivity.class);
+            intent.putExtra("facility_id", facility.getId()); // Pass the facility ID
             intent.putExtra("facility_name", facility.getName());
             intent.putExtra("facility_description", facility.getDescription());
             context.startActivity(intent);
