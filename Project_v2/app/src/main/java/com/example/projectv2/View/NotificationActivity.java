@@ -60,7 +60,7 @@ public class NotificationActivity extends AppCompatActivity {
 //        recyclerView.setAdapter(adapter);
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        loadNotifications("deviceID"); // Figure out who to display notifications for
+        loadNotifications(deviceID); // Figure out who to display notifications for
     }
 
     /**

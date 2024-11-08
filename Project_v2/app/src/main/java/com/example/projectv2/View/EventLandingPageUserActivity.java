@@ -22,8 +22,11 @@ import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 
 public class EventLandingPageUserActivity extends AppCompatActivity {
@@ -32,6 +35,8 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
     private Button joinEventButton;
     private FirebaseFirestore db;
+    private int entrantsNum;
+    private int entrantListSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,52 +71,84 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
 
         joinEventButton.setOnClickListener(view -> {
+            DocumentReference eventRef = db.collection("events").document(eventID);
+            eventRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        // Get the 'entrantsNum' field and store it in a variable
+                        entrantsNum = Integer.parseInt(document.getString("entrants"));
 
+                        List<String> entrantList = (List<String>) document.get("entrantList.EntrantList");
+                        if (entrantList != null) {
+                            entrantListSize = entrantList.size();
+                            Log.d("Firestore", "Number of entries in EntrantList: " + entrantListSize);
+                        }
+                        // Log or use the variable as needed
+                        Log.d("Firestore", "Entrants: " + entrantsNum);
+
+                        if (entrantListSize <= entrantsNum) {
+                            eventRef.update("entrantList.EntrantList", FieldValue.arrayUnion(userID))
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Success feedback
+                                        Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
+                                        joinEventButton.setEnabled(false);
+                                        joinEventButton.setText("Leave");
+                                        joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon, 0, 0, 0);
+                                        joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Error feedback
+                                        Snackbar.make(view, "Failed to join event: " + e.getMessage(),
+                                                Snackbar.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                    });
+
+                            eventRef.update("entrantList.Waiting", FieldValue.arrayUnion(userID))
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Success feedback
+                                        Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
+                                        joinEventButton.setEnabled(false);
+                                        joinEventButton.setText("Leave");
+                                        joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon, 0, 0, 0);
+                                        joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Error feedback
+                                        Snackbar.make(view, "Failed to join event: " + e.getMessage(),
+                                                Snackbar.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                    });
+                        }
+                        else{
+                            Snackbar.make(view, "Waiting list is full. Try again later.", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            });
+        });
+
+        joinEventButton.setOnLongClickListener(view -> {
+//                joinEventButton.setEnabled(false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(EventLandingPageUserActivity.this);
+            builder.setTitle("Leave Event");
+            builder.setMessage("Are you sure you want to leave this event?");
+            builder.setPositiveButton("Yes", (dialog, which) -> {
                 DocumentReference eventRef = db.collection("events").document(eventID);
-                eventRef.update("entrantList.EntrantList", FieldValue.arrayUnion(userID))
-                        .addOnSuccessListener(aVoid -> {
-                            // Success feedback
-                            Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
-//                            joinEventButton.setEnabled(false);
-                        joinEventButton.setText("Leave");
-                        joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon,0,0,0);
-                    joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
+                eventRef.update("entrantList.EntrantList", FieldValue.arrayRemove(userID))
+                    .addOnSuccessListener(aVoid -> {
+
+                        Snackbar.make(view, "Successfully left the event", Snackbar.LENGTH_LONG).show();
+                        joinEventButton.setEnabled(true);
                     })
                     .addOnFailureListener(e -> {
-                        // Error feedback
-                            Snackbar.make(view, "Failed to join event: " + e.getMessage(),
-                                    Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(view, "Failed to leave event: " + e.getMessage(),
+                                Snackbar.LENGTH_LONG).show();
+                        joinEventButton.setEnabled(true);
                         e.printStackTrace();
-                    });
-        });
-
-        joinEventButton.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(EventLandingPageUserActivity.this);
-                builder.setTitle("Leave Event");
-                builder.setMessage("Are you sure you want to leave this event?");
-                builder.setPositiveButton("Yes", (dialog, which) -> {
-                    DocumentReference eventRef = db.collection("events").document(eventID);
-                    eventRef.update("entrantList.EntrantList", FieldValue.arrayRemove(userID))
-                            .addOnSuccessListener(aVoid -> {
-                                Snackbar.make(view, "Successfully left the event", Snackbar.LENGTH_LONG).show();
-                                joinEventButton.setText("Join");
-                                joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.joinevent_icon, 0, 0, 0);
-                                joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
-                            })
-                            .addOnFailureListener(e -> {
-                                Snackbar.make(view, "Failed to leave event: " + e.getMessage(),
-                                        Snackbar.LENGTH_LONG).show();
-                                e.printStackTrace();
-                            });
-                });
-                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                return true;
-            }
-        });
+                    });});
+            return true;
+            });
 
 
         // Set data to views with null-checks
