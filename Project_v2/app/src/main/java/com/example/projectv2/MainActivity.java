@@ -68,24 +68,24 @@ public class MainActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager2);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         FloatingActionButton fab = findViewById(R.id.homescreen_fab);
-        fab.setVisibility(View.INVISIBLE);
-        checkOrganizer(userId, new OnOrganizerCheckComplete() {
-            @Override
-            public void onComplete(boolean isOrganizerResult) {
-                isOrganizer = isOrganizerResult;
-                Log.d("isOrganizer", String.valueOf(isOrganizer));
-
-                // Update UI based on organizer status
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isOrganizer) {
-                            fab.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-            }
-        });
+        fab.setVisibility(View.VISIBLE);
+//        checkOrganizer(userId, new OnOrganizerCheckComplete() {
+//            @Override
+//            public void onComplete(boolean isOrganizerResult) {
+//                isOrganizer = isOrganizerResult;
+//                Log.d("isOrganizer", String.valueOf(isOrganizer));
+//
+//                // Update UI based on organizer status
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (isOrganizer) {
+//                            fab.setVisibility(View.VISIBLE);
+//                        }
+//                    }
+//                });
+//            }
+//        });
 
 
         fetchAndDisplayUserName(navigationView,userId);
