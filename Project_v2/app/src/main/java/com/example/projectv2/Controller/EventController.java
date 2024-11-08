@@ -170,13 +170,4 @@ public class EventController {
                     callback.onError(e);
                 });
     }
-    public void updateEventQrHash(String eventId, String qrHash) {
-        Map<String, Object> updateData = new HashMap<>();
-        updateData.put("qrHash", qrHash);
-
-        db.collection("events").document(eventId)
-                .set(updateData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> Log.d("EventController", "QR hash updated successfully"))
-                .addOnFailureListener(e -> Log.e("EventController", "Error updating QR hash", e));
-    }
 }

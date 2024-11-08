@@ -12,7 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.EntrantListController;
+import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -57,7 +60,7 @@ public class EntrantListActivity extends AppCompatActivity {
     // Set up the filter spinner with options: "Entrant List", "Attendees", "Declined"
     private void setupFilterSpinner() {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, new String[]{"Entrant List", "Attendees", "Declined", "Unlucky", "Removed"});
+                android.R.layout.simple_spinner_item, new String[]{"Entrant List", "Waiting List", "Selected List", "Cancelled List", "Attendee List"});
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(spinnerAdapter);
 
@@ -69,17 +72,17 @@ public class EntrantListActivity extends AppCompatActivity {
                     case "Entrant List":
                         loadEntrantList();
                         break;
-                    case "Attendees":
-                        loadAttendees();
+                    case "Waiting List":
+                        loadWaitingList();
                         break;
-                    case "Declined":
-                        loadDeclined();
+                    case "Selected List":
+                        loadSelectedList();
                         break;
-                    case "Unlucky":
-                        loadUnlucky();
+                    case "Cancelled List":
+                        loadCancelled();
                         break;
-                    case "Removed":
-                        loadRemoved();
+                    case "Attendee List":
+                        loadAttendeeList();
                         break;
                 }
             }
@@ -116,7 +119,7 @@ public class EntrantListActivity extends AppCompatActivity {
     }
 
     // Method to load a random selection of up to 20 attendees (FOR NOW)
-    private void loadAttendees() {
+    private void loadAttendeeList() {
         String eventId = getIntent().getStringExtra("eventId"); // Retrieve event ID from intent
 
         // Fetch the attendees list from Firestore
@@ -137,58 +140,73 @@ public class EntrantListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e(TAG, "Error loading attendees", e));
     }
 
-    // Method to load a list of declined entrants from Firestore
-    private void loadDeclined() {
+    // Method to load the waiting list from Firestore
+    private void loadWaitingList() {
+        String eventId = getIntent().getStringExtra("eventId");
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> waitingList = (List<String>) documentSnapshot.get("entrantList.WaitingList");
+                        if (waitingList != null) {
+                            adapter.updateEntrantList(waitingList);
+                        } else {
+                            Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error loading Waiting List", e));
+    }
+
+    // Method to load the cancelled list from Firestore
+    private void loadCancelled() {
         String eventId = getIntent().getStringExtra("eventId"); // Retrieve event ID from intent
 
-        // Fetch the declined list from Firestore
+        // Fetch the cancelled list from Firestore
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        List<String> declined = (List<String>) documentSnapshot.get("entrantList.Declined");
-                        if (declined != null) {
-                            adapter.updateEntrantList(declined); // Update adapter with declined entrants
+                        List<String> cancelledList = (List<String>) documentSnapshot.get("entrantList.CancelledList");
+                        if (cancelledList != null) {
+                            adapter.updateEntrantList(cancelledList); // Update adapter with cancelled entrants
                         } else {
-                            Toast.makeText(this, "No declined entrants found.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "No cancelled entrants found.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
-                .addOnFailureListener(e -> Log.e(TAG, "Error loading declined entrants", e));
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error loading cancelled list", e);
+                    Toast.makeText(this, "Failed to load cancelled list", Toast.LENGTH_SHORT).show();
+                });
     }
 
-    // Load the list of "Unlucky" entrants
-    private void loadUnlucky() {
+    // Method to randomly select 20 users for the Selected List
+    private void loadSelectedList() {
         String eventId = getIntent().getStringExtra("eventId");
-
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        List<String> unlucky = (List<String>) documentSnapshot.get("entrantList.Unlucky");
-                        if (unlucky != null) {
-                            adapter.updateEntrantList(unlucky);
+                        List<String> waitingList = (List<String>) documentSnapshot.get("entrantList.WaitingList");
+                        if (waitingList != null && waitingList.size() > 0) {
+                            Collections.shuffle(waitingList);
+                            List<String> selectedList = waitingList.size() > 20 ? waitingList.subList(0, 20) : waitingList;
+                            EntrantListController controller = new EntrantListController();
+                            controller.updateSelectedList(eventId, selectedList);
+                            sendNotificationToSelected(selectedList);
+                            adapter.updateEntrantList(selectedList);
                         } else {
-                            Toast.makeText(this, "No unlucky entrants found.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "No entrants available for selection.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
-                .addOnFailureListener(e -> Log.e(TAG, "Error loading unlucky entrants", e));
+                .addOnFailureListener(e -> Log.e(TAG, "Error loading Selected List", e));
     }
 
-    // Load the list of "Removed" entrants
-    private void loadRemoved() {
-        String eventId = getIntent().getStringExtra("eventId");
-
-        db.collection("events").document(eventId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> removed = (List<String>) documentSnapshot.get("entrantList.Removed");
-                        if (removed != null) {
-                            adapter.updateEntrantList(removed);
-                        } else {
-                            Toast.makeText(this, "No removed entrants found.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "Error loading removed entrants", e));
+    // Helper method to send notification to selected users
+    private void sendNotificationToSelected(List<String> selectedList) {
+        NotificationService notificationService = new NotificationService();
+        for (String userId : selectedList) {
+            Notification notification = new Notification(userId, "You have been selected!", true, false);
+            notificationService.sendNotification(notification);
+        }
     }
 }
