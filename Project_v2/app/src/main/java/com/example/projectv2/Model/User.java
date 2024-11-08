@@ -15,8 +15,8 @@ public class User {
     private long phoneNumber;
     private String profileImage;
     private String deviceID;
-    private ArrayList<Map>  adminNotifList;
-    private ArrayList<Map>  organizerNotifList;
+    private ArrayList<Map<String, Object>>  adminNotifList;
+    private ArrayList<Map<String, Object>>  organizerNotifList;
     private String name;
     public User(){}
 
@@ -37,8 +37,8 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.deviceID=deviceID;
         this.profileImage="";
-        this.adminNotifList=new ArrayList<Map>();
-        this.organizerNotifList=new ArrayList<Map>();
+        this.adminNotifList=new ArrayList<Map<String, Object>>();
+        this.organizerNotifList=new ArrayList<Map<String, Object>>();
     }
 
     // Getters
@@ -75,10 +75,10 @@ public class User {
     public String getDeviceID(){
         return deviceID;
     }
-    public ArrayList<Map> getAdminNotifList(){
+    public ArrayList<Map<String, Object>> getAdminNotifList(){
         return adminNotifList;
     }
-    public ArrayList<Map> getOrganizerNotifList(){
+    public ArrayList<Map<String, Object>> getOrganizerNotifList(){
         return organizerNotifList;}
 
     // Setters
@@ -116,10 +116,10 @@ public class User {
     public void setDeviceID(String deviceID){
         this.deviceID=deviceID;
     }
-    public void setAdminNotifList(ArrayList<Map> adminNotifList){
+    public void setAdminNotifList(ArrayList<Map<String, Object>> adminNotifList){
         this.adminNotifList=adminNotifList;
     }
-public void setOrganizerNotifList(ArrayList<Map> organizerNotifList){
+public void setOrganizerNotifList(ArrayList<Map<String, Object>> organizerNotifList){
         this.organizerNotifList=organizerNotifList;
 }
 }
