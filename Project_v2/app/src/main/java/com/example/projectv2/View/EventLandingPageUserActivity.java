@@ -144,6 +144,20 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                                 joinEventButton.setEnabled(true);
                                 e.printStackTrace();
                             });
+
+                    eventRef.update("entrantList.Waiting", FieldValue.arrayRemove(userID))
+                            .addOnSuccessListener(aVoid -> {
+                                Snackbar.make(view, "Successfully left the event", Snackbar.LENGTH_LONG).show();
+
+                                joinEventButton.setText("Join");
+                                joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.joinevent_icon, 0, 0, 0);
+                                joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiAccent)));
+                            })
+                            .addOnFailureListener(e -> {
+                                Snackbar.make(view, "Failed to leave event: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                joinEventButton.setEnabled(true);
+                                e.printStackTrace();
+                            });
                 });
 
                 builder.setNegativeButton("No", (dialog, which) -> {
