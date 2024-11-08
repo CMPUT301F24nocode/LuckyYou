@@ -31,7 +31,7 @@ import java.util.Objects;
 public class EventLandingPageUserActivity extends AppCompatActivity {
 
     private ImageView eventImageView;
-    private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
+    private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView, geolocationWarningView;
     private Button joinEventButton;
     private FirebaseFirestore db;
     private int entrantsNum;
@@ -54,6 +54,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         eventCountdownView = findViewById(R.id.event_countdown_view);
         eventPriceView = findViewById(R.id.event_price_view);
         joinEventButton = findViewById(R.id.event_join_button);
+        geolocationWarningView=findViewById(R.id.geolocation_warning_view);
 
         // Retrieve event data from intent and provide fallback values
         Intent intent = getIntent();
@@ -118,6 +119,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 }
             });
         });
+        checkGeolocationEnabled(eventID);
 
         joinEventButton.setOnLongClickListener(view -> {
 //                joinEventButton.setEnabled(false);
@@ -168,5 +170,26 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.event_overlay);
         dialog.show();
+    }
+
+    private void checkGeolocationEnabled(String eventId) {
+        DocumentReference eventRef = db.collection("events").document(eventId);
+
+        eventRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Boolean geolocationEnabled = documentSnapshot.getBoolean("geolocationEnabled");
+                        if (geolocationEnabled != null && geolocationEnabled) {
+                            // Set TextView visible if geolocation is enabled
+                            geolocationWarningView.setVisibility(View.VISIBLE);
+                        } else {
+                            // Set TextView gone if geolocation is not enabled
+                            geolocationWarningView.setVisibility(View.GONE);
+                        }
+                    } else {
+                        Log.d("EventLandingPageUser", "No such event found");
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("EventLandingPageUser", "Error checking geolocation: ", e));
     }
 }
