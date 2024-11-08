@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Obtain the user's device ID for identification
         @SuppressLint("HardwareIds") String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
@@ -61,11 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         drawerLayout = findViewById(R.id.homescreen_drawer_layout);
-//        userNameTextView = findViewById(R.id.textView19);
-//        userNameTextView.setText("");
-
-
-
         ImageView profilePicture = findViewById(R.id.homescreen_profile_pic);
         ImageView notificationBell = findViewById(R.id.homescreen_notification_bell);
         navigationView = findViewById(R.id.navigation_view);
