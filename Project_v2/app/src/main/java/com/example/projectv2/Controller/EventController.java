@@ -61,11 +61,11 @@ public class EventController {
 
         // Add empty lists for entrant subfields
         Map<String, Object> entrantListMap = new HashMap<>();
-        entrantListMap.put("Attendees", new ArrayList<>());
-        entrantListMap.put("Unlucky", new ArrayList<>());
-        entrantListMap.put("Declined", new ArrayList<>());
-        entrantListMap.put("Removed", new ArrayList<>());
         entrantListMap.put("EntrantList", new ArrayList<>());
+        entrantListMap.put("Waiting", new ArrayList<>());
+        entrantListMap.put("Selected", new ArrayList<>());
+        entrantListMap.put("Cancelled", new ArrayList<>());
+        entrantListMap.put("Attendee", new ArrayList<>());
         eventMap.put("entrantList", entrantListMap);
 
         // Use the eventID as the document ID in Firestore
