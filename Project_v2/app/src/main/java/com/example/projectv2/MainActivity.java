@@ -80,12 +80,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Button facilityListButton = findViewById(R.id.facility_list_button);
-        facilityListButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, FacilityListActivity.class);
-            startActivity(intent);
-        });
-
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
             startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
