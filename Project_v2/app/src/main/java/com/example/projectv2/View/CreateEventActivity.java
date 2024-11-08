@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +22,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventCreatorActivity extends AppCompatActivity {
+public class CreateEventActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_EVENT_OPTIONS = 2;
     private static final int REQUEST_CODE_SELECT_IMAGE = 3;
@@ -53,7 +52,7 @@ public class EventCreatorActivity extends AppCompatActivity {
         // Set up the Back button to return to MainActivity (homescreen)
         ImageButton backButton = findViewById(R.id.event_back_button);
         backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventCreatorActivity.this, MainActivity.class);
+            Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         });
@@ -68,7 +67,7 @@ public class EventCreatorActivity extends AppCompatActivity {
         // Set up the Next button to open EventOptionsActivity
         Button nextButton = findViewById(R.id.create_event_next_button);
         nextButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EventCreatorActivity.this, CreateEventOptionsActivity.class);
+            Intent intent = new Intent(CreateEventActivity.this, CreateEventOptionsActivity.class);
             intent.putExtra("name", eventNameView.getText().toString());
             intent.putExtra("detail", eventDetailsView.getText().toString());
             intent.putExtra("rules", eventRulesView.getText().toString());

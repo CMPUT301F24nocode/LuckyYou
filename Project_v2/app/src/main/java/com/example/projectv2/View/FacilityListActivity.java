@@ -64,7 +64,7 @@ public class FacilityListActivity extends AppCompatActivity {
         // Set up the Back button to return to MainActivity (homescreen)
         ImageButton backButton = findViewById(R.id.facility_edit_back_button);
         backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FacilityListActivity.this, EventHomeActivity.class);
+            Intent intent = new Intent(FacilityListActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         });

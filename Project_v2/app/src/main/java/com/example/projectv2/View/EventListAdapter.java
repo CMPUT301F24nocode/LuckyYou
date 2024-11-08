@@ -1,8 +1,12 @@
+// EventListAdapter.java is an adapter class for displaying Events in homescreen.xml via recycler view.
+
 package com.example.projectv2.View;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +16,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.projectv2.Controller.ImageDownloaderTask;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+import com.example.projectv2.View.EventLandingPageOrganizerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
     private Context context;
-    private List<Event> eventList;
+    private List<Event> eventList; // List of events to display
 
     public EventListAdapter(Context context, ArrayList<Event> events) {
         this.context = context;
@@ -40,15 +45,25 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventList.get(position);
 
-        // Load image using ImageDownloaderTask
-        if (event.getImageUri() != null) {
-            String imageUrl = event.getImageUri().toString();
-            new ImageDownloaderTask(holder.backgroundImageView).execute(imageUrl);
-        } else {
+        // Load image directly using URI with a try-catch block for safety
+        try {
+            if (event.getImageUri() != null) {
+                Uri imageUri = event.getImageUri();
+                holder.backgroundImageView.setImageURI(imageUri);
+
+                // Check if the image failed to load and set a default image
+                if (holder.backgroundImageView.getDrawable() == null) {
+                    holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
+                }
+            } else {
+                holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
+            }
+        } catch (Exception e) {
             holder.backgroundImageView.setImageResource(R.drawable.placeholder_event);
+            e.printStackTrace();
         }
 
-        // Set other fields
+        // Set event details on UI elements
         holder.eventNameTextView.setText(event.getName());
         holder.eventDateTextView.setText(event.getDeadline());
         holder.eventDetailTextView.setText(event.getDetail());
@@ -58,22 +73,34 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
                         : "Free"
         );
 
-        // Set click listener to open EventDetailsActivity with data
+        // Set click listener to open EventDetailsActivity with consistent keys
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventLandingPageActivity.class);
+//            @SuppressLint("HardwareIds") String deviceID= Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//            Intent intent ;
+//            if (Objects.equals(event.getOwner(), deviceID)) {
+//                intent = new Intent(context, EventLandingPageOrganizerActivity.class);
+//            } else {
+//                intent = new Intent(context, EventLandingPageUserActivity.class);
+//            }
+            Intent intent ;
+            intent = new Intent(context, EventLandingPageOrganizerActivity.class);
             intent.putExtra("name", event.getName());
             intent.putExtra("details", event.getDetail());
             intent.putExtra("rules", event.getRules());
             intent.putExtra("deadline", event.getDeadline());
             intent.putExtra("startDate", event.getStartDate());
             intent.putExtra("price", event.getTicketPrice());
+            intent.putExtra("eventID", event.getEventID());
+            intent.putExtra("owner", event.getOwner());
+            intent.putExtra("event", event);
+            //intent.putExtra("user",deviceID);
+            intent.putExtra("eventID", event.getEventID());
             if (event.getImageUri() != null) {
                 intent.putExtra("imageUri", event.getImageUri().toString());
             }
             context.startActivity(intent);
         });
     }
-
 
     @Override
     public int getItemCount() {
