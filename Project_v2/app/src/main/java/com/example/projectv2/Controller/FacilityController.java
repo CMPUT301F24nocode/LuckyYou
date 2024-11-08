@@ -25,9 +25,9 @@ public class FacilityController {
     }
 
     // Method to create a Facility and store it in Firebase
-    public void createFacility(String name, String description, Uri imageUri, FacilityCallback callback) {
+    public void createFacility(String name, String description, FacilityCallback callback) {
         // Create a new Facility object
-        Facility newFacility = new Facility(name, description, imageUri);
+        Facility newFacility = new Facility(name, description);
 
         // Add the new facility to Firebase
         addFacilityToFirestore(newFacility, callback);
@@ -58,9 +58,8 @@ public class FacilityController {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String name = document.getString("name");
                             String description = document.getString("description");
-                            Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
 
-                            Facility facility = new Facility(name, description, imageUri);
+                            Facility facility = new Facility(name, description);
                             facilityList.add(facility);
                         }
                         callback.onFacilityListLoaded(facilityList);

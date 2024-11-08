@@ -1,12 +1,10 @@
 package com.example.projectv2.View;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -16,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Controller.FacilityController;
 import com.example.projectv2.Controller.topBarUtils;
-import com.example.projectv2.MainActivity;
 import com.example.projectv2.Model.Facility;
 import com.example.projectv2.R;
 
@@ -67,7 +64,7 @@ public class FacilityListActivity extends AppCompatActivity {
         // Set up button to create a new facility
         Button createFacilityButton = findViewById(R.id.create_facility_button);
         createFacilityButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FacilityListActivity.this, FacilityCreateEditActivity.class);
+            Intent intent = new Intent(FacilityListActivity.this, FacilityCreateActivity.class);
             startActivityForResult(intent, REQUEST_CODE_CREATE_FACILITY);
         });
     }
@@ -78,14 +75,12 @@ public class FacilityListActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_CREATE_FACILITY && resultCode == RESULT_OK && data != null) {
             String name = data.getStringExtra("facility_name");
             String description = data.getStringExtra("facility_description");
-            Uri imageUri = data.getStringExtra("facility_image") != null ?
-                    Uri.parse(data.getStringExtra("facility_image")) : null;
 
             // Log data to ensure correctness
             Log.d("FacilityListActivity", "New Facility: " + name + ", " + description);
 
             // Create and save the new facility in Firebase
-            facilityController.createFacility(name, description, imageUri, new FacilityController.FacilityCallback() {
+            facilityController.createFacility(name, description, new FacilityController.FacilityCallback() {
                 @Override
                 public void onFacilityListLoaded(ArrayList<Facility> facilities) {
                     facilityList.clear();

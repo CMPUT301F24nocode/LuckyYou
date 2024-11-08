@@ -33,7 +33,8 @@
         <activity android:name=".View.CreateEventActivity" />
         <activity android:name=".View.EventLandingPageUserActivity" />
         <activity android:name=".View.EventLandingPageOrganizerActivity" />
-        <activity android:name=".View.FacilityCreateEditActivity" />
+        <activity android:name=".View.FacilityCreateActivity" />
+        <activity android:name=".View.FacilityEditActivity" />
         <activity android:name=".View.FacilityLandingPageActivity" />
         <activity android:name=".View.QrOrganiserActivity" />
         <activity android:name=".View.EntrantListActivity"/>
