@@ -33,12 +33,6 @@
         android:layout_margin="4dp">
 
         <!-- Image Thumbnail -->
-        <ImageView
-            android:id="@+id/imageThumbnail"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/placeholder_event" />
 
         <!-- Delete Icon Overlay (Visible for delete feature) -->
         <ImageButton
@@ -51,6 +45,13 @@
             android:contentDescription="Delete Image"
             android:src="@drawable/ic_delete" />
     </FrameLayout>
+
+    <ImageView
+        android:id="@+id/imageThumbnail"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_event" />
 
 </RelativeLayout>
 
