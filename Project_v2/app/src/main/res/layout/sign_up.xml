@@ -71,11 +71,12 @@
         style="@style/RoundedEditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
+        android:hint="Last Name"
         android:inputType="textPersonName"
-        android:hint="Second Name"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_firstname" />
 
@@ -92,37 +93,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_secondname" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_phonenumber">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/airbnbcereal_w_bd"
-            android:text="Are you an Organizer?"
-            android:textColor="@color/lucky_white"
-            android:textSize="18sp"
-            android:layout_marginRight="120dp"/>
-
-        <CheckBox
-            android:id="@+id/is_organizer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusedSearchResultHighlightColor="@color/lucky_uiAccent"/>
-    </LinearLayout>
-
     <Button
         android:id="@+id/signup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="36dp"
         android:backgroundTint="@color/lucky_uiAccent"
         android:drawableEnd="@drawable/right_arrow"
         android:fontFamily="@font/airbnbcereal_w_bd"
@@ -134,6 +109,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/signup_phonenumber" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

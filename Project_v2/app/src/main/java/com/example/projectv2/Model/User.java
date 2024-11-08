@@ -19,8 +19,8 @@ public class User {
     private ArrayList<Map>  organizerNotifList;
 
     //partial constructor that defaults to isAdmin=false and callls the full constructor, call this partial constructor if the user is not intended to be an admin
-    public User( String email,String firstName,String lastName,boolean isOrganizer,long phoneNumber,String deviceID){
-        this(false,true,email,firstName,lastName,isOrganizer,true,phoneNumber,deviceID);
+    public User( String email,String firstName,String lastName,long phoneNumber,String deviceID){
+        this(false,true,email,firstName,lastName,false,true,phoneNumber,deviceID);
     }
 
     // Constructor

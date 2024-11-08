@@ -66,13 +66,13 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
 
         joinEventButton.setOnClickListener(view -> {
-            Log.d("bgvefdfvjghbbhdvfbdhfvhbvfdbhfvdbhgjdfv", "ITS REACHING HUZZAH");
+
                 DocumentReference eventRef = db.collection("events").document(eventID);
                 eventRef.update("entrantList.EntrantList", FieldValue.arrayUnion(userID))
                         .addOnSuccessListener(aVoid -> {
                             // Success feedback
                             Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
-                            joinEventButton.setEnabled(false);
+//                            joinEventButton.setEnabled(false);
                         joinEventButton.setText("Leave");
                         joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon,0,0,0);
                     joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
@@ -85,8 +85,9 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                     });
         });
 
-        joinEventButton.setOnLongClickListener(view -> {
-//                joinEventButton.setEnabled(false);
+        joinEventButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(EventLandingPageUserActivity.this);
                 builder.setTitle("Leave Event");
                 builder.setMessage("Are you sure you want to leave this event?");
@@ -94,18 +95,23 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                     DocumentReference eventRef = db.collection("events").document(eventID);
                     eventRef.update("entrantList.EntrantList", FieldValue.arrayRemove(userID))
                             .addOnSuccessListener(aVoid -> {
-
                                 Snackbar.make(view, "Successfully left the event", Snackbar.LENGTH_LONG).show();
-                                joinEventButton.setEnabled(true);
+                                joinEventButton.setText("Join");
+                                joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.joinevent_icon, 0, 0, 0);
+                                joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
                             })
                             .addOnFailureListener(e -> {
                                 Snackbar.make(view, "Failed to leave event: " + e.getMessage(),
                                         Snackbar.LENGTH_LONG).show();
-                                joinEventButton.setEnabled(true);
                                 e.printStackTrace();
-                            });});
+                            });
+                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
-            });
+            }
+        });
 
 
         // Set data to views with null-checks
