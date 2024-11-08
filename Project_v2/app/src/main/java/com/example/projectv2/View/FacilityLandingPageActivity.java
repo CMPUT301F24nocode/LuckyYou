@@ -40,7 +40,7 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
         // Get data from the intent
         String facilityName = getIntent().getStringExtra("facility_name");
         String facilityDescription = getIntent().getStringExtra("facility_description");
-        String facilityID = "uEvf7fYo9VrNto1cBUcP";
+        String facilityID = getIntent().getStringExtra("facility_id");
 
         // Set data to views
         facilityNameTextView.setText(facilityName);
