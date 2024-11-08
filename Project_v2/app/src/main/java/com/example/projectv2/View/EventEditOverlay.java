@@ -1,3 +1,10 @@
+/**
+ * Activity for managing the selection of attendees from a waiting list for an event. 
+ * Based on available slots, it moves a random selection of entrants from the waiting list 
+ * to the selected list and updates the Firestore database accordingly.
+ *
+ * <p>Outstanding Issues: None currently identified.</p>
+ */
 package com.example.projectv2.View;
 
 import android.content.Intent;
@@ -7,17 +14,13 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.projectv2.Controller.EntrantListController;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EventEditOverlay extends AppCompatActivity {
 
@@ -26,6 +29,13 @@ public class EventEditOverlay extends AppCompatActivity {
     private int attendeeListSize;
     private int remainingSlots;
 
+    /**
+     * Called when the activity is created. Initializes Firebase Firestore, retrieves
+     * event details from Firestore, and sets up a button to choose attendees based on
+     * available slots.
+     *
+     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,57 +45,42 @@ public class EventEditOverlay extends AppCompatActivity {
         Button chooseAttendee = findViewById(R.id.choose_attendees_button);
 
         Intent intent = getIntent();
-//        String eventID = intent.getStringExtra("eventID");
-        String eventID = intent.getStringExtra("1104124");
-//        String userID=intent.getStringExtra("user");
-
+        String eventID = intent.getStringExtra("1104124");  // Sample event ID for testing
 
         chooseAttendee.setOnClickListener(view -> {
             DocumentReference eventRef = db.collection("events").document(eventID);
             eventRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    Log.d("fbkjdcsnv", "Doc success?");
+                    Log.d("fbkjdcsnv", "Document fetch successful");
+
                     if (document.exists()) {
-                        Log.d("fbkjdcsnv", "Doc exists");
-                        // Get the 'entrantsNum' field and store it in a variable
+                        Log.d("fbkjdcsnv", "Document exists in Firestore");
+                        // Retrieve the 'attendees' field as a target number of attendees
                         attendeeNum = Integer.parseInt(document.getString("attendees"));
 
                         List<String> attendeeList = (List<String>) document.get("entrantList.Attendee");
                         if (attendeeList != null) {
                             attendeeListSize = attendeeList.size();
-                            Log.d("fbkjdcsnv", "Number of entries in AttendeeList: " + attendeeListSize);
+                            Log.d("fbkjdcsnv", "Current number of attendees: " + attendeeListSize);
                         }
-                        // Log or use the variable as needed
-                        Log.d("fbkjdcsnv", "Entrants: " + attendeeNum);
-
                         remainingSlots = attendeeNum - attendeeListSize;
 
                         List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
                         if (waitingList != null && !waitingList.isEmpty()) {
                             Collections.shuffle(waitingList);
                             List<String> selectedList = waitingList.size() > remainingSlots ? waitingList.subList(0, remainingSlots) : waitingList;
-//                            EntrantListController controller = new EntrantListController();
-//                            controller.updateSelectedList(eventID, selectedList);
 
-                            // Set the data in Firestore
+                            // Update the selected list in Firestore
                             eventRef.update("entrantList.Selected", selectedList)
-                                    .addOnSuccessListener(aVoid -> {
-                                        // Document successfully written
-                                        Log.d("fbkjdcsnv", "DocumentSnapshot successfully written!");
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        // Handle the error
-                                        Log.w("fbkjdcsnv", "Error writing document", e);
-                                    });
-
+                                    .addOnSuccessListener(aVoid -> Log.d("fbkjdcsnv", "Selected list updated successfully in Firestore"))
+                                    .addOnFailureListener(e -> Log.w("fbkjdcsnv", "Error updating selected list in Firestore", e));
                         }
 
-                        // Choose attendeeNum - attendeeSize (remaining slots) of deviceIDs from waiting list and put them in Selected.
-                        // Send notification to them all
-                        // If anyone accepts, send them to attendee and reduce size of remaining slots
-                        // If anyone declines, send them to cancelled, remove them from waiting list, and pick another deviceID
+                        // Additional logic for attendee management, including notifications, can be added here
                     }
+                } else {
+                    Log.e("fbkjdcsnv", "Error fetching document", task.getException());
                 }
             });
         });
