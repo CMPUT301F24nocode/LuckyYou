@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@+id/notification_top_bar" />
 
     <EditText
-        android:id="@+id/facility_create_name_view"
+        android:id="@+id/facility_edit_name_view"
         style="@style/RoundedEditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -63,10 +63,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/facility_create_name_view" />
+        app:layout_constraintTop_toBottomOf="@+id/facility_edit_name_view" />
 
     <EditText
-        android:id="@+id/facility_create_description_view"
+        android:id="@+id/facility_edit_description_view"
         style="@style/RoundedEditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -81,15 +81,15 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <Button
-        android:id="@+id/facility_create_button"
+        android:id="@+id/facility_edit_confirm_button"
         style="@style/ActiveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/airbnbcereal_w_md"
-        android:text="Save Facility"
+        android:text="Edit Facility"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/facility_create_description_view" />
+        app:layout_constraintTop_toBottomOf="@+id/facility_edit_description_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

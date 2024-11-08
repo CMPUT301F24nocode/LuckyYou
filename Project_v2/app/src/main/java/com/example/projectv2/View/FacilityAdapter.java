@@ -40,9 +40,6 @@ public class FacilityAdapter extends RecyclerView.Adapter<FacilityAdapter.Facili
             Intent intent = new Intent(context, FacilityLandingPageActivity.class);
             intent.putExtra("facility_name", facility.getName());
             intent.putExtra("facility_description", facility.getDescription());
-            if (facility.getImageUri() != null) {
-                intent.putExtra("facility_image", facility.getImageUri().toString());
-            }
             context.startActivity(intent);
         });
     }
