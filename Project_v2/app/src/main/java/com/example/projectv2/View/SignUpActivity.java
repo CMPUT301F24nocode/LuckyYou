@@ -61,6 +61,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
         @SuppressLint("HardwareIds") String deviceID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
         User newUser = new User(email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(),phoneNumberValue,deviceID);
+        newUser.setName(firstName.getText().toString()+" "+lastName.getText().toString());
         db.collection("Users").document(newUser.getDeviceID()).set(newUser).addOnSuccessListener(aVoid -> {
             Log.d("User", "DocumentSnapshot added with ID: " + newUser.getDeviceID());
         }).addOnFailureListener(e -> {

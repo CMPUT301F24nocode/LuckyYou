@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (itemId == R.id.nav_profile) {
                 //User should see their details
-                intent = getIntent();
-                String userID = intent.getStringExtra("deviceID");
+                Intent intent2 = getIntent();
+                String userID = intent2.getStringExtra("deviceID");
                 intent = new Intent(MainActivity.this, ProfileActivity.class);
                 intent.putExtra("userID", userID);
             } else if (itemId == R.id.nav_facilities) {
