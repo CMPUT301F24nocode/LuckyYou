@@ -34,13 +34,13 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
         // Initialize views
         qrcodeButton = findViewById(R.id.qrcode_button);
-        eventImageView = findViewById(R.id.event_picture);
-        eventNameView = findViewById(R.id.event_name_view);
+        eventImageView = findViewById(R.id.event_picture_organiser);
+        eventNameView = findViewById(R.id.event_name_view_organiser);
         eventDetailsView = findViewById(R.id.event_details_view_organiser);
-        eventRulesView = findViewById(R.id.event_rules_view);
-        eventDeadlineView = findViewById(R.id.event_deadline_view);
-        eventCountdownView = findViewById(R.id.event_countdown_view);
-        eventPriceView = findViewById(R.id.event_price_view);
+        eventRulesView = findViewById(R.id.event_rules_view_organiser);
+        eventDeadlineView = findViewById(R.id.event_deadline_view_organiser);
+        eventCountdownView = findViewById(R.id.event_countdown_view_organiser);
+        eventPriceView = findViewById(R.id.event_price_view_organiser);
 
         // Retrieve event data from intent and provide fallback values
         Intent intent = getIntent();

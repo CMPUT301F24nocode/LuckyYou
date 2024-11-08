@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             // Navigate to MainActivity
                             Log.d(TAG, "Navigating to MainActivity");
-                            Intent intent = new Intent(this, EventHomeActivity.class);
+                            Intent intent = new Intent(this, MainActivity.class);
                             startActivity(intent);
                             finish();
                         } else {

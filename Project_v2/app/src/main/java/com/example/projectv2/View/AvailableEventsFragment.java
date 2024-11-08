@@ -122,6 +122,8 @@ public class AvailableEventsFragment extends Fragment {
                         }
                     }
             );
+
+
         }
     }
 }
