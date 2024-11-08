@@ -106,7 +106,7 @@ public class User {
         this.organizerNotif = organizerNotif;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
     public void setProfileImage(String imageLink){
