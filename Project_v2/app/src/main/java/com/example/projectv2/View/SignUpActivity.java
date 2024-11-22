@@ -44,29 +44,51 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signUpUser();
+                boolean success=signUpUser();
+                if (success) {
                 Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                startActivity(intent);
+                startActivity(intent);}
             }
         });
 
     }
 
-    private void signUpUser() {
-        long phoneNumberValue;
-        try {
-            phoneNumberValue=Long.parseLong(phoneNumber.getText().toString());
-        }catch (NumberFormatException e){
-            phoneNumberValue=0000000000;
+    private boolean signUpUser() {
+        int phoneNumberError = isValidPhoneNumber(phoneNumber.getText().toString());
+        if (phoneNumberError != 0) {
+            if (phoneNumberError == 1) {
+                phoneNumber.setError("Phone number must be 10 digits long");
+                return false;
+            } else {
+                phoneNumber.setError("Phone number must contain only digits");
+                return false;
+            }
+
         }
         @SuppressLint("HardwareIds") String deviceID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
-        User newUser = new User(email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(),phoneNumberValue,deviceID);
+        User newUser = new User(email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(),phoneNumber.getText().toString(),deviceID);
         newUser.setName(firstName.getText().toString()+" "+lastName.getText().toString());
         db.collection("Users").document(newUser.getDeviceID()).set(newUser).addOnSuccessListener(aVoid -> {
             Log.d("User", "DocumentSnapshot added with ID: " + newUser.getDeviceID());
         }).addOnFailureListener(e -> {
             Log.d("User", "Error adding document", e);
         });
+        return true;
 
+    }
+    private int isValidPhoneNumber(String phoneNumber) {
+        // Check if the phone number is empty
+        if (phoneNumber.length() != 10) {
+            return 1;
+        }
+        // Check if the phone number contains only digits
+        for (int i = 0; i < phoneNumber.length(); i++) {
+            if (!Character.isDigit(phoneNumber.charAt(i))) {
+                return 2;
+            }
+        }
+
+        // Phone number is valid
+        return 0;
     }
 }
