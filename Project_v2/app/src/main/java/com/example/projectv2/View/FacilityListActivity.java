@@ -6,8 +6,10 @@
  */
 package com.example.projectv2.View;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -97,6 +99,8 @@ public class FacilityListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CREATE_FACILITY && resultCode == RESULT_OK && data != null) {
+            @SuppressLint("HardwareIds")
+            String ownerID = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
             String name = data.getStringExtra("facility_name");
             String description = data.getStringExtra("facility_description");
             String facilityID = data.getStringExtra("facility_ID");
@@ -104,7 +108,7 @@ public class FacilityListActivity extends AppCompatActivity {
             Log.d("FacilityListActivity", "New Facility: " + name + ", " + description);
 
             // Create and save the new facility in Firebase
-            facilityController.createFacility(name, description, facilityID, new FacilityController.FacilityCallback() {
+            facilityController.createFacility(ownerID, name, description, facilityID, new FacilityController.FacilityCallback() {
                 @Override
                 public void onFacilityListLoaded(ArrayList<Facility> facilities) {
                     facilityList.clear();

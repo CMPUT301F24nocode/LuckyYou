@@ -9,9 +9,11 @@ package com.example.projectv2.View;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -127,6 +129,8 @@ public class AvailableEventsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_CODE_CREATE_EVENT && resultCode == RESULT_OK && data != null) {
+            @SuppressLint("HardwareIds")
+            String ownerID = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.ANDROID_ID);
             String name = data.getStringExtra("name");
             String detail = data.getStringExtra("detail");
             String rules = data.getStringExtra("rules");
@@ -143,7 +147,7 @@ public class AvailableEventsFragment extends Fragment {
             Toast.makeText(getActivity(), "Event Created: " + name, Toast.LENGTH_SHORT).show();
 
             eventController.createEvent(
-                    name, detail, rules, deadline, attendees, entrants, startDate, ticketPrice, geolocationEnabled, notificationsEnabled, imageUri, facility,
+                    ownerID, name, detail, rules, deadline, attendees, entrants, startDate, ticketPrice, geolocationEnabled, notificationsEnabled, imageUri, facility,
                     new EventController.EventCallback() {
                         @Override
                         public void onEventListLoaded(ArrayList<Event> events) {
