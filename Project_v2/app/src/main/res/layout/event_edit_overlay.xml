@@ -7,141 +7,20 @@
     android:background="@color/lucky_background"
     android:padding="24dp">
 
-    <EditText
-        android:id="@+id/edit_event_attendees_num_view"
-        style="@style/RoundedEditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:hint="@string/create_event_attendees_num_text"
-        android:inputType="number"
-        android:padding="8dp"
-        android:text="@string/edit_event_attendees_num_text"
-        android:textAlignment="textStart"
-        android:textColor="@color/lucky_white"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
-
-    <TextView
-        android:id="@+id/textView9"
-        style="@style/GenericText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:text="Number of Attendees"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView10"
-        style="@style/GenericText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:text="Number of Entrants (Optional)"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_event_attendees_num_view" />
-
-    <EditText
-        android:id="@+id/edit_event_entrants_num_view"
-        style="@style/RoundedEditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:hint="@string/create_event_entrants_num_text"
-        android:inputType="number"
-        android:padding="8dp"
-        android:text="@string/edit_event_entrants_num_text"
-        android:textAlignment="textStart"
-        android:textColor="@color/lucky_white"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
-
-    <TextView
-        android:id="@+id/textView8"
-        style="@style/GenericText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:text="Enable Geolocation"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_event_entrants_num_view" />
-
-    <CheckBox
-        android:id="@+id/create_event_geolocation_checkbox_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:buttonTint="@color/lucky_uiAccent"
-        android:checked="false"
-        app:layout_constraintBottom_toBottomOf="@+id/textView8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView8" />
-
-    <TextView
-        android:id="@+id/textView7"
-        style="@style/GenericText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:text="Send Notifications"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-    <CheckBox
-        android:id="@+id/create_event_notification_checkbox_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:buttonTint="@color/lucky_uiAccent"
-        android:checked="true"
-        app:layout_constraintBottom_toBottomOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView7" />
-
     <Button
         android:id="@+id/choose_attendees_button"
         style="@style/InactiveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="Choose Attendees"
         android:textAllCaps="false"
         android:textColor="@color/lucky_white"
         android:textSize="20sp"
         app:cornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.567"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-    <Button
-        android:id="@+id/entrant_list_button"
-        style="@style/ActiveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:drawableEnd="@drawable/right_arrow"
-        android:text="Entrant List"
-        android:textAllCaps="false"
-        android:textColor="@color/lucky_white"
-        android:textSize="20sp"
-        app:cornerRadius="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/choose_attendees_button"
-        app:layout_constraintVertical_bias="0.08" />
+        tools:layout_editor_absoluteY="166dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

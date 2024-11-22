@@ -146,11 +146,14 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    entrantsNum = Integer.parseInt(Objects.requireNonNull(document.getString("entrants")));
+                    String entrantsString = document.getString("entrants");
+                    entrantsNum = entrantsString != null && !entrantsString.isEmpty()
+                            ? Integer.parseInt(entrantsString)
+                            : Integer.MAX_VALUE; // No restriction if entrants is empty or null
                     List<String> entrantList = (List<String>) document.get("entrantList.EntrantList");
                     entrantListSize = (entrantList != null) ? entrantList.size() : 0;
 
-                    if (entrantListSize <= entrantsNum) {
+                    if (entrantListSize <= (entrantsNum - 1)) {
                         eventRef.update("entrantList.EntrantList", FieldValue.arrayUnion(userID))
                                 .addOnSuccessListener(aVoid -> showJoinSuccess(view))
                                 .addOnFailureListener(e -> showJoinFailure(view, e));

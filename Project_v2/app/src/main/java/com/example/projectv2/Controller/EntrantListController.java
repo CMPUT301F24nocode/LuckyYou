@@ -1,14 +1,8 @@
-/**
- * EntrantListController is responsible for managing entrant lists for events stored in Firestore.
- * This includes creating and updating various entrant lists such as selected, cancelled, and attendee lists
- * associated with an event.
- *
- * <p>Outstanding Issues: None currently identified.</p>
- */
 package com.example.projectv2.Controller;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -35,82 +29,114 @@ public class EntrantListController {
     }
 
     /**
-     * Adds an entrant list field with empty arrays for EntrantList, WaitingList,
-     * SelectedList, CancelledList, and AttendeeList to the Firestore document of the specified event.
+     * Adds an entrant list field with empty arrays for EntrantList, Waiting, Selected, Cancelled, and Attendee
+     * to the Firestore document of the specified event.
      *
      * @param eventId the ID of the event to which the entrant list field will be added
      */
     public void addEntrantListField(String eventId) {
-        List<String> emptyList = new ArrayList<>();
-
         Map<String, Object> entrantListMap = new HashMap<>();
-        entrantListMap.put("EntrantList", emptyList);
-        entrantListMap.put("WaitingList", emptyList);
-        entrantListMap.put("SelectedList", emptyList);
-        entrantListMap.put("CancelledList", emptyList);
-        entrantListMap.put("AttendeeList", emptyList);
+        entrantListMap.put("EntrantList", new ArrayList<>());
+        entrantListMap.put("Waiting", new ArrayList<>());
+        entrantListMap.put("Selected", new ArrayList<>());
+        entrantListMap.put("Cancelled", new ArrayList<>());
+        entrantListMap.put("Attendee", new ArrayList<>());
 
         db.collection("events").document(eventId)
                 .set(new HashMap<String, Object>() {{
                     put("entrantList", entrantListMap);
                 }}, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> {
-                    System.out.println("Entrant list field with empty arrays added successfully!");
+                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", "Entrant list field added successfully"))
+                .addOnFailureListener(e -> Log.e("EntrantListController", "Error adding entrant list field: " + e.getMessage()));
+    }
+
+    public void fetchEvent(String eventId, OnFetchEventListener listener) {
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> listener.onSuccess(documentSnapshot))
+                .addOnFailureListener(listener::onFailure);
+    }
+
+    /**
+     * Listener interface for event fetch operations.
+     */
+    public interface OnFetchEventListener {
+        void onSuccess(DocumentSnapshot documentSnapshot);
+
+        void onFailure(Exception e);
+    }
+
+    /**
+     * Adds a specified user ID to a given list (e.g., Waiting, Selected) in Firestore.
+     *
+     * @param eventId the ID of the event
+     * @param listName the name of the list to update (e.g., "Selected", "Waiting")
+     * @param userId  the user ID to add to the list
+     */
+    public void addUserToList(String eventId, String listName, String userId) {
+        db.collection("events").document(eventId)
+                .update("entrantList." + listName, FieldValue.arrayUnion(userId))
+                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", "User added to " + listName + " successfully"))
+                .addOnFailureListener(e -> Log.e("EntrantListController", "Error adding user to " + listName + ": " + e.getMessage()));
+    }
+
+    /**
+     * Removes a specified user ID from a given list (e.g., Waiting) in Firestore.
+     *
+     * @param eventId the ID of the event
+     * @param listName the name of the list to update (e.g., "Waiting", "Cancelled")
+     * @param userId  the user ID to remove from the list
+     */
+    public void removeUserFromList(String eventId, String listName, String userId) {
+        db.collection("events").document(eventId)
+                .update("entrantList." + listName, FieldValue.arrayRemove(userId))
+                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", "User removed from " + listName + " successfully"))
+                .addOnFailureListener(e -> Log.e("EntrantListController", "Error removing user from " + listName + ": " + e.getMessage()));
+    }
+
+    /**
+     * Updates a specific list in Firestore with a new set of values.
+     * This method overwrites the entire list, so it should be used cautiously.
+     *
+     * @param eventId    the ID of the event
+     * @param listName   the name of the list to update (e.g., "Selected", "Waiting")
+     * @param updatedList the new list of users to replace the existing list
+     */
+    public void updateList(String eventId, String listName, List<String> updatedList) {
+        db.collection("events").document(eventId)
+                .update("entrantList." + listName, updatedList)
+                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", listName + " updated successfully"))
+                .addOnFailureListener(e -> Log.e("EntrantListController", "Error updating " + listName + ": " + e.getMessage()));
+    }
+
+    /**
+     * Initializes a missing list in Firestore if it doesn't exist.
+     *
+     * @param eventId the ID of the event
+     * @param listName the name of the list to initialize
+     */
+    public void initializeListIfMissing(String eventId, String listName) {
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.contains("entrantList." + listName)) {
+                        db.collection("events").document(eventId)
+                                .update("entrantList." + listName, new ArrayList<>())
+                                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", listName + " initialized successfully"))
+                                .addOnFailureListener(e -> Log.e("EntrantListController", "Error initializing " + listName + ": " + e.getMessage()));
+                    }
                 })
-                .addOnFailureListener(e -> {
-                    System.err.println("Error adding entrant list field: " + e.getMessage());
-                });
+                .addOnFailureListener(e -> Log.e("EntrantListController", "Error checking list existence: " + e.getMessage()));
     }
 
     /**
-     * Updates the SelectedList for a specified event in the Firestore database.
+     * Moves a user from one list to another (e.g., from Waiting to Selected).
      *
-     * @param eventId      the ID of the event whose SelectedList will be updated
-     * @param selectedList the list of selected entrants to update in the Firestore
+     * @param eventId the ID of the event
+     * @param fromList the name of the source list
+     * @param toList   the name of the destination list
+     * @param userId   the user ID to move
      */
-    public void updateSelectedList(String eventId, List<String> selectedList) {
-        db.collection("events").document(eventId)
-                .update("entrantList.Selected", selectedList)
-                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", "Selected List updated successfully"))
-                .addOnFailureListener(e -> Log.e("EntrantListController", "Error updating Selected List", e));
-    }
-
-    /**
-     * Updates the CancelledList for a specified event in the Firestore database.
-     *
-     * @param eventId       the ID of the event whose CancelledList will be updated
-     * @param cancelledList the list of cancelled entrants to update in the Firestore
-     */
-    public void updateCancelledList(String eventId, List<String> cancelledList) {
-        db.collection("events").document(eventId)
-                .update("entrantList.CancelledList", cancelledList)
-                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", "Cancelled List updated successfully"))
-                .addOnFailureListener(e -> Log.e("EntrantListController", "Error updating Cancelled List", e));
-    }
-
-    /**
-     * Updates the AttendeeList for a specified event in the Firestore database.
-     *
-     * @param eventId      the ID of the event whose AttendeeList will be updated
-     * @param attendeeList the list of attendees to update in the Firestore
-     */
-    public void updateAttendeeList(String eventId, List<String> attendeeList) {
-        db.collection("events").document(eventId)
-                .update("entrantList.AttendeeList", attendeeList)
-                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", "Attendee List updated successfully"))
-                .addOnFailureListener(e -> Log.e("EntrantListController", "Error updating Attendee List", e));
-    }
-
-    /**
-     * Adds a specified user ID to the CancelledList for a specified event in the Firestore database.
-     *
-     * @param eventId the ID of the event to update
-     * @param userId  the user ID to add to the CancelledList
-     */
-    public void addToCancelledList(String eventId, String userId) {
-        db.collection("events").document(eventId)
-                .update("entrantList.CancelledList", FieldValue.arrayUnion(userId))
-                .addOnSuccessListener(aVoid -> Log.d("EntrantListController", "User added to Cancelled List"))
-                .addOnFailureListener(e -> Log.e("EntrantListController", "Error adding to Cancelled List", e));
+    public void moveUserBetweenLists(String eventId, String fromList, String toList, String userId) {
+        removeUserFromList(eventId, fromList, userId);
+        addUserToList(eventId, toList, userId);
     }
 }

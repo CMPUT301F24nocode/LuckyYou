@@ -42,7 +42,12 @@ public class EntrantListActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private Spinner filterSpinner;
     private Button sendNotifAllView;
+    private List<String> entrantList = new ArrayList<>();
     private List<String> waitingList = new ArrayList<>();
+    private List<String> selectedList = new ArrayList<>();
+    private List<String> cancelledList = new ArrayList<>();
+    private List<String> attendees = new ArrayList<>();
+
 
     /**
      * Called when the activity is created. Sets up the entrant list RecyclerView,
@@ -69,8 +74,6 @@ public class EntrantListActivity extends AppCompatActivity {
         filterSpinner = findViewById(R.id.entrant_list_dropdown);
         sendNotifAllView = findViewById(R.id.send_notification_toAll_button);
         setupFilterSpinner();
-
-        loadEntrantList();
     }
 
     /**
@@ -90,7 +93,7 @@ public class EntrantListActivity extends AppCompatActivity {
                 String selectedOption = (String) parent.getItemAtPosition(position);
                 switch (selectedOption) {
                     case "Entrant List":
-                        loadEntrantList();
+                        loadEntrantList(sendNotifAllView);
                         break;
                     case "Waiting List":
                         loadWaitingList(sendNotifAllView);
@@ -109,7 +112,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                loadEntrantList();
+                loadEntrantList(sendNotifAllView);
             }
         });
     }
@@ -117,13 +120,13 @@ public class EntrantListActivity extends AppCompatActivity {
     /**
      * Loads the full entrant list from Firestore for the event and updates the RecyclerView adapter.
      */
-    private void loadEntrantList() {
+    private void loadEntrantList(Button sendNotifAll) {
         String eventId = getIntent().getStringExtra("eventId");
 
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        List<String> entrantList = (List<String>) documentSnapshot.get("entrantList.EntrantList");
+                        entrantList = (List<String>) documentSnapshot.get("entrantList.EntrantList");
                         if (entrantList != null) {
                             adapter.updateEntrantList(entrantList);
                         } else {
@@ -135,36 +138,13 @@ public class EntrantListActivity extends AppCompatActivity {
                     Log.e(TAG, "Error loading entrant list", e);
                     Toast.makeText(this, "Failed to load entrant list", Toast.LENGTH_SHORT).show();
                 });
-    }
-
-    /**
-     * Loads the attendee list from Firestore for the event and updates the RecyclerView adapter.
-     * Sends a notification to all attendees in the list.
-     *
-     * @param sendNotifAll the button to trigger sending notifications to all attendees
-     */
-    private void loadAttendeeList(Button sendNotifAll) {
-        String eventId = getIntent().getStringExtra("eventId");
-
-        db.collection("events").document(eventId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> attendees = (List<String>) documentSnapshot.get("entrantList.Attendee");
-                        if (attendees != null) {
-                            adapter.updateEntrantList(attendees);
-                        } else {
-                            Toast.makeText(this, "No attendees found.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "Error loading attendees", e));
 
         sendNotifAll.setOnClickListener(view -> {
             NotificationService notificationService = new NotificationService();
             String eventName = getIntent().getStringExtra("name");
 
-            for (String userId : waitingList) {
-                Notification notification = new Notification(userId, "Welcome to " + eventName, true, false);
+            for (String userId : entrantList) {
+                Notification notification = new Notification(userId, "You're in the entrant list for " + eventName, true, false);
                 notificationService.sendNotification(notification);
             }
         });
@@ -204,42 +184,6 @@ public class EntrantListActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads the cancelled list from Firestore for the event and updates the RecyclerView adapter.
-     * Sends a notification to all users in the cancelled list.
-     *
-     * @param sendNotifAll the button to trigger sending notifications to all cancelled users
-     */
-    private void loadCancelled(Button sendNotifAll) {
-        String eventId = getIntent().getStringExtra("eventId");
-
-        db.collection("events").document(eventId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> cancelledList = (List<String>) documentSnapshot.get("entrantList.Cancelled");
-                        if (cancelledList != null) {
-                            adapter.updateEntrantList(cancelledList);
-                        } else {
-                            Toast.makeText(this, "No cancelled entrants found.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading cancelled list", e);
-                    Toast.makeText(this, "Failed to load cancelled list", Toast.LENGTH_SHORT).show();
-                });
-
-        sendNotifAll.setOnClickListener(view -> {
-            NotificationService notificationService = new NotificationService();
-            String eventName = getIntent().getStringExtra("name");
-
-            for (String userId : waitingList) {
-                Notification notification = new Notification(userId, "Your cancellation of " + eventName + " is confirmed.", true, false);
-                notificationService.sendNotification(notification);
-            }
-        });
-    }
-
-    /**
      * Loads the selected list from Firestore for the event and updates the RecyclerView adapter.
      * Sends a notification to all selected users.
      *
@@ -251,7 +195,7 @@ public class EntrantListActivity extends AppCompatActivity {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        List<String> selectedList = (List<String>) documentSnapshot.get("entrantList.Selected");
+                        selectedList = (List<String>) documentSnapshot.get("entrantList.Selected");
                         if (selectedList != null) {
                             adapter.updateEntrantList(selectedList);
                         } else {
@@ -268,8 +212,77 @@ public class EntrantListActivity extends AppCompatActivity {
             NotificationService notificationService = new NotificationService();
             String eventName = getIntent().getStringExtra("name");
 
-            for (String userId : waitingList) {
+            for (String userId : selectedList) {
                 Notification notification = new Notification(userId, "You have been chosen to attend " + eventName, true, false);
+                notificationService.sendNotification(notification);
+            }
+        });
+    }
+
+    /**
+     * Loads the cancelled list from Firestore for the event and updates the RecyclerView adapter.
+     * Sends a notification to all users in the cancelled list.
+     *
+     * @param sendNotifAll the button to trigger sending notifications to all cancelled users
+     */
+    private void loadCancelled(Button sendNotifAll) {
+        String eventId = getIntent().getStringExtra("eventId");
+
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        cancelledList = (List<String>) documentSnapshot.get("entrantList.Cancelled");
+                        if (cancelledList != null) {
+                            adapter.updateEntrantList(cancelledList);
+                        } else {
+                            Toast.makeText(this, "No cancelled entrants found.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error loading cancelled list", e);
+                    Toast.makeText(this, "Failed to load cancelled list", Toast.LENGTH_SHORT).show();
+                });
+
+        sendNotifAll.setOnClickListener(view -> {
+            NotificationService notificationService = new NotificationService();
+            String eventName = getIntent().getStringExtra("name");
+
+            for (String userId : cancelledList) {
+                Notification notification = new Notification(userId, "Your cancellation of " + eventName + " is confirmed.", true, false);
+                notificationService.sendNotification(notification);
+            }
+        });
+    }
+
+    /**
+     * Loads the attendee list from Firestore for the event and updates the RecyclerView adapter.
+     * Sends a notification to all attendees in the list.
+     *
+     * @param sendNotifAll the button to trigger sending notifications to all attendees
+     */
+    private void loadAttendeeList(Button sendNotifAll) {
+        String eventId = getIntent().getStringExtra("eventId");
+
+        db.collection("events").document(eventId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        attendees = (List<String>) documentSnapshot.get("entrantList.Attendee");
+                        if (attendees != null) {
+                            adapter.updateEntrantList(attendees);
+                        } else {
+                            Toast.makeText(this, "No attendees found.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error loading attendees", e));
+
+        sendNotifAll.setOnClickListener(view -> {
+            NotificationService notificationService = new NotificationService();
+            String eventName = getIntent().getStringExtra("name");
+
+            for (String userId : attendees) {
+                Notification notification = new Notification(userId, "Welcome to " + eventName, true, false);
                 notificationService.sendNotification(notification);
             }
         });
