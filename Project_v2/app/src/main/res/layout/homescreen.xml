@@ -77,6 +77,8 @@
         android:layout_gravity="start"
         android:background="@color/lucky_background"
         app:headerLayout="@layout/homescreen_nav_bar_header"
-        app:menu="@menu/homescreen_nav_bar_menu" />
+        app:menu="@menu/homescreen_nav_bar_menu"
+        app:itemTextColor="@color/lucky_white"
+        app:itemIconTint="@color/lucky_white"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
