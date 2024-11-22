@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * Activity for displaying notifications to the user in a RecyclerView.
@@ -29,6 +30,7 @@ public class NotificationActivity extends AppCompatActivity {
     private FirebaseFirestore db; // FireStore instance for database operations
     private List<Notification> notificationList; // List of notifications to display
     private NotificationAdapter adapter; // Adapter for managing notifications in RecyclerView
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     /**
      * Called when the activity is first created.
@@ -42,6 +44,7 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.notification);
 
         topBarUtils.topBarSetup(this, "Notifications", View.INVISIBLE);
+        swipeRefreshLayout = findViewById(R.id.notification_swipe_refresh);
 
         RecyclerView recyclerView = findViewById(R.id.notification_recylcerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -61,6 +64,13 @@ public class NotificationActivity extends AppCompatActivity {
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         loadNotifications(deviceID); // Figure out who to display notifications for
+
+        // Set up swipe-to-refresh functionality
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            notificationList.clear(); // Clear existing notifications
+            loadNotifications(deviceID); // Reload notifications
+            swipeRefreshLayout.setRefreshing(false); // Stop refreshing animation
+        });
     }
 
     /**

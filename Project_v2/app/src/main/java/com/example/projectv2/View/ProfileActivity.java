@@ -22,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private TextView name, email, phoneNumber;
     private Button editProfileButton;
+    private SwipeRefreshLayout swipeRefreshLayout;
 //    private CheckBox needOrganizerNotifs, needAdminNotifs;
 
 
@@ -44,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
         email = findViewById(R.id.profile_email_box);
         phoneNumber = findViewById(R.id.profile_phone_box);
         editProfileButton = findViewById(R.id.profile_edit_button);
+        swipeRefreshLayout = findViewById(R.id.profile_swipe_refresh);
 
 
         db=FirebaseFirestore.getInstance();
@@ -70,6 +73,14 @@ public class ProfileActivity extends AppCompatActivity {
         ImageButton moreButton = findViewById(R.id.more_settings_button);
         moreButton.setOnClickListener(v -> showPopup(userID));
 
+        // Set up swipe refresh listener
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (userID != null) {
+                fetchUserData(userID);
+            }
+            // Stop the refreshing animation
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
     }
     private void fetchUserData(String userID) {
