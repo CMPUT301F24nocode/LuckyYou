@@ -39,6 +39,7 @@ dependencies {
 
     implementation(libs.circleimageview)
     implementation (libs.cardview)
+    implementation("com.google.firebase:firebase-storage:20.2.1")
     implementation (libs.zxing.android.embedded)
     implementation (libs.core)
     implementation(libs.swiperefreshlayout)
