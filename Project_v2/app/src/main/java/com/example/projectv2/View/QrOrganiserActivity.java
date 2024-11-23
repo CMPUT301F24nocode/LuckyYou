@@ -1,5 +1,7 @@
 package com.example.projectv2.View;
 
+import static android.content.Intent.getIntent;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -38,7 +40,7 @@ public class QrOrganiserActivity extends AppCompatActivity {
         String eventPosterUrl = intent.getStringExtra("posterUrl");
 
         // Generate QR code based on event description and poster URL
-        generateQrCode(  "Event ID: " + eventID + "\nEvent Description: " + eventDescription + "\nEvent PosterURL: " + eventPosterUrl);
+        generateQrCode(  eventID );
     }
     private void generateQrCode(String data) {
         try {

@@ -18,9 +18,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
@@ -30,6 +32,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +48,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private int entrantsNum;
     private int entrantListSize;
+
+    String eventID, name, details, rules, deadline, startDate, price, imageUriString,userID;
+    DBUtils dbUtils = new DBUtils();
+
+
 
     /**
      * Called when the activity is created. Initializes views with event data and configures buttons
@@ -73,15 +81,23 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
         // Retrieve event data from intent
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        String details = intent.getStringExtra("details");
-        String rules = intent.getStringExtra("rules");
-        String deadline = intent.getStringExtra("deadline");
-        String startDate = intent.getStringExtra("startDate");
-        String price = intent.getStringExtra("price");
-        String imageUriString = intent.getStringExtra("imageUri");
-        String userID = intent.getStringExtra("user");
-        String eventID = intent.getStringExtra("eventID");
+        Bundle extras = intent.getExtras();
+//        Log.d("EventLandingPageUser", "Extras: " + extras + String.valueOf(extras.size()));
+
+        if (extras!=null && extras.size()<2){
+            eventID = intent.getStringExtra("eventID");
+            fetchEventDetails(eventID);
+        }else{
+            eventID = intent.getStringExtra("eventID");
+        name = intent.getStringExtra("name");
+        details = intent.getStringExtra("details");
+        rules = intent.getStringExtra("rules");
+        deadline = intent.getStringExtra("deadline");
+        startDate = intent.getStringExtra("startDate");
+        price = intent.getStringExtra("price");
+        imageUriString = intent.getStringExtra("imageUri");
+        userID = intent.getStringExtra("user");}
+
 
         // Configure the join event button
         joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
@@ -100,6 +116,43 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         // Set up the additional settings popup
         ImageButton moreButton = findViewById(R.id.more_settings_button);
         moreButton.setOnClickListener(v -> showPopup());
+    }
+
+    private void fetchEventDetails(String eventid) {
+        dbUtils.fetchEvent(eventid, eventDetails -> {
+            if (eventDetails != null) {
+
+                name = eventDetails.get("name");
+                details = eventDetails.get("details");
+                rules = eventDetails.get("rules");
+                deadline = eventDetails.get("deadline");
+                startDate = eventDetails.get("startDate");
+                price = eventDetails.get("price");
+                imageUriString = eventDetails.get("imageUri");
+                userID = eventDetails.get("user");
+
+                // Update UI with the fetched data
+                runOnUiThread(() -> {
+                    setEventData(name, details, rules, deadline, startDate, price, imageUriString);
+
+                    // Configure the join event button after data is loaded
+                    joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
+                    checkGeolocationEnabled(eventID);
+
+                    // Configure the long-click listener to leave the event
+                    joinEventButton.setOnLongClickListener(view -> {
+                        promptLeaveEvent(view, eventID, userID);
+                        return true;
+                    });
+                });
+            } else {
+                runOnUiThread(() -> {
+                    Toast.makeText(EventLandingPageUserActivity.this,
+                            "Failed to load event details", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+            }
+        });
     }
 
     /**
