@@ -43,6 +43,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.google.android.gms:play-services-maps:18.0.2")
     implementation (libs.zxing.android.embedded)
     implementation (libs.core)
     implementation(libs.swiperefreshlayout)

@@ -75,6 +75,15 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
             startActivity(qrIntent);
         });
 
+        // Configure Location button to navigate to LocationActivity
+        Button locationButton = findViewById(R.id.location_button);
+        locationButton.setOnClickListener(v -> {
+            Intent locationIntent = new Intent(EventLandingPageOrganizerActivity.this, LocationActivity.class);
+            locationIntent.putExtra("eventId", eventID);
+            startActivity(locationIntent);
+        });
+
+
         // Configure button to navigate to EntrantListActivity with eventID
         Button viewEntrantListButton = findViewById(R.id.view_entrant_list_button);
         viewEntrantListButton.setOnClickListener(v -> {
