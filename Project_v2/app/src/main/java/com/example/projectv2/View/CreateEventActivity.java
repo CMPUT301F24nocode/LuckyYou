@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -80,20 +81,53 @@ public class CreateEventActivity extends AppCompatActivity {
         // Set up the Next button to open CreateEventOptionsActivity
         Button nextButton = findViewById(R.id.create_event_next_button);
         nextButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CreateEventActivity.this, CreateEventOptionsActivity.class);
-            intent.putExtra("name", eventNameView.getText().toString());
-            intent.putExtra("detail", eventDetailsView.getText().toString());
-            intent.putExtra("rules", eventRulesView.getText().toString());
-            String selectedFacility = facilitySpinner.getSelectedItem() != null ? facilitySpinner.getSelectedItem().toString() : "Online";
-            intent.putExtra("facility", selectedFacility);
-
-            if (selectedImageUri != null) {
-                intent.putExtra("imageUri", selectedImageUri.toString());
+            // Validate that the event name is not empty
+            String eventName = eventNameView.getText().toString().trim();
+            if (eventName.isEmpty()) {
+                Toast.makeText(CreateEventActivity.this, "Event name cannot be empty", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            startActivityForResult(intent, REQUEST_CODE_EVENT_OPTIONS);
+            // Check if an image is selected
+            if (selectedImageUri != null) {
+                uploadImageAndProceed(eventName, selectedImageUri);
+            } else {
+                proceedToNextActivity(eventName, null); // Proceed without image
+            }
         });
     }
+    private void uploadImageAndProceed(String eventName, Uri imageUri) {
+        ImageController imageController = new ImageController();
+        String folderName = "event_posters/" + eventName.replace(" ", "_"); // Replace spaces with underscores
+
+        imageController.uploadImage(imageUri, folderName, new ImageController.ImageUploadCallback() {
+            @Override
+            public void onUploadSuccess(String downloadUrl) {
+                // On successful upload, proceed to the next activity with the download URL
+                proceedToNextActivity(eventName, downloadUrl);
+            }
+
+            @Override
+            public void onUploadFailure(Exception e) {
+                // Handle upload failure gracefully
+                Toast.makeText(CreateEventActivity.this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void proceedToNextActivity(String eventName, @Nullable String imageUrl) {
+        Intent intent = new Intent(CreateEventActivity.this, CreateEventOptionsActivity.class);
+        intent.putExtra("name", eventName);
+        intent.putExtra("detail", eventDetailsView.getText().toString().trim());
+        intent.putExtra("rules", eventRulesView.getText().toString().trim());
+        intent.putExtra("facility", facilitySpinner.getSelectedItem().toString());
+        if (imageUrl != null) {
+            intent.putExtra("imageUrl", imageUrl); // Pass the image URL if available
+        }
+        startActivityForResult(intent, REQUEST_CODE_EVENT_OPTIONS);
+    }
+
+
+
 
     /**
      * Loads the list of available facilities from Firebase Firestore and populates the facility spinner.

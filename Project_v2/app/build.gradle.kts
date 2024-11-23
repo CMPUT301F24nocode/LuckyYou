@@ -39,6 +39,10 @@ dependencies {
 
     implementation(libs.circleimageview)
     implementation (libs.cardview)
+    implementation("com.google.firebase:firebase-storage:20.2.1")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation (libs.zxing.android.embedded)
     implementation (libs.core)
     implementation(libs.swiperefreshlayout)
