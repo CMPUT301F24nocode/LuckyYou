@@ -26,6 +26,7 @@ import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -89,14 +90,14 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             fetchEventDetails(eventID);
         }else{
             eventID = intent.getStringExtra("eventID");
-        name = intent.getStringExtra("name");
-        details = intent.getStringExtra("details");
-        rules = intent.getStringExtra("rules");
-        deadline = intent.getStringExtra("deadline");
-        startDate = intent.getStringExtra("startDate");
-        price = intent.getStringExtra("price");
-        imageUriString = intent.getStringExtra("imageUri");
-        userID = intent.getStringExtra("user");}
+            name = intent.getStringExtra("name");
+            details = intent.getStringExtra("details");
+            rules = intent.getStringExtra("rules");
+            deadline = intent.getStringExtra("deadline");
+            startDate = intent.getStringExtra("startDate");
+            price = intent.getStringExtra("price");
+            imageUriString = intent.getStringExtra("imageUri");
+            userID = intent.getStringExtra("user");}
 
 
         // Configure the join event button

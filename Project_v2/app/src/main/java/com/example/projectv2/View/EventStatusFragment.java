@@ -35,29 +35,35 @@ public class EventStatusFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // Inflate the fragment layout
         View view = inflater.inflate(R.layout.fragment_event_status, container, false);
 
+        // Initialize views
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEventStatus);
         loadingIndicator = view.findViewById(R.id.loadingIndicator);
         emptyStateView = view.findViewById(R.id.emptyStateView);
 
+        // Set up RecyclerView with the adapter
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new EventStatusAdapter(new ArrayList<>());
+        adapter = new EventStatusAdapter(new ArrayList<>(), getContext());
         recyclerView.setAdapter(adapter);
 
+        // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
+        // Fetch event statuses from Firestore
         fetchEventStatuses();
-
         return view;
     }
 
     private void fetchEventStatuses() {
         loadingIndicator.setVisibility(View.VISIBLE);
+
         db.collection("events")
                 .get()
                 .addOnCompleteListener(task -> {
                     loadingIndicator.setVisibility(View.GONE);
+
                     if (task.isSuccessful()) {
                         List<String> eventNames = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
@@ -66,11 +72,12 @@ public class EventStatusFragment extends Fragment {
                                 eventNames.add(eventName);
                             }
                         }
+
                         if (eventNames.isEmpty()) {
                             emptyStateView.setVisibility(View.VISIBLE);
                         } else {
                             emptyStateView.setVisibility(View.GONE);
-                            adapter.updateEventList(eventNames);
+                            adapter.updateEventList(eventNames); // Update the adapter
                         }
                     } else {
                         Log.e("EventStatusFragment", "Error fetching events", task.getException());
