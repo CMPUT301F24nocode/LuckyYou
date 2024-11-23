@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private String userName;
     private boolean isOrganizer;
 
-    private static final int REQUEST_CODE_CREATE_EVENT = 2;
-    private static final int REQUEST_CODE_QR_SCANNER = 1;
+    private static final int REQUEST_CODE_CREATE_EVENT = 1;
+    private static final int REQUEST_CODE_QR_SCANNER = 2;
 
     private DrawerLayout drawerLayout;
     private ViewPager2 viewPager;
