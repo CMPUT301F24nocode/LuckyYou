@@ -9,9 +9,11 @@ package com.example.projectv2.View;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,64 +105,5 @@ public class AvailableEventsFragment extends Fragment {
                 Log.e("AvailableEventsFragment", "Error fetching events", e);
             }
         });
-    }
-
-    /**
-     * Launches the CreateEventActivity for creating a new event.
-     */
-    public void startCreateEventActivity() {
-        Intent intent = new Intent(getActivity(), CreateEventActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
-    }
-
-    /**
-     * Handles the result from the CreateEventActivity. If an event is created successfully,
-     * it retrieves the event details from the Intent, creates the event in Firebase,
-     * and updates the RecyclerView.
-     *
-     * @param requestCode the request code used when starting the activity
-     * @param resultCode  the result code returned by the activity
-     * @param data        the Intent containing the created event's data
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_CREATE_EVENT && resultCode == RESULT_OK && data != null) {
-            String name = data.getStringExtra("name");
-            String detail = data.getStringExtra("detail");
-            String rules = data.getStringExtra("rules");
-            String deadline = data.getStringExtra("deadline");
-            String facility = data.getStringExtra("facility");
-            String attendees = data.getStringExtra("attendees");
-            String entrants = data.getStringExtra("entrants");
-            String startDate = data.getStringExtra("startDate");
-            String ticketPrice = data.getStringExtra("ticketPrice");
-            boolean geolocationEnabled = data.getBooleanExtra("geolocationEnabled", false);
-            boolean notificationsEnabled = data.getBooleanExtra("notificationsEnabled", false);
-            Uri imageUri = data.getStringExtra("imageUri") != null ? Uri.parse(data.getStringExtra("imageUri")) : null;
-
-            Toast.makeText(getActivity(), "Event Created: " + name, Toast.LENGTH_SHORT).show();
-
-            eventController.createEvent(
-                    name, detail, rules, deadline, attendees, entrants, startDate, ticketPrice, geolocationEnabled, notificationsEnabled, imageUri, facility,
-                    new EventController.EventCallback() {
-                        @Override
-                        public void onEventListLoaded(ArrayList<Event> events) {
-                            adapter.updateEventList(events);
-                        }
-
-                        @Override
-                        public void onEventCreated(String eventId) {
-                            Log.d("AvailableEventsFragment", "Event created successfully with ID: " + eventId);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e("AvailableEventsFragment", "Error adding event", e);
-                        }
-                    }
-            );
-        }
     }
 }

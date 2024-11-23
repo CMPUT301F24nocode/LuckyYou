@@ -22,7 +22,7 @@ public class UserTest {
     @Before
     public void setUp() {
         // Initialize User with default constructor
-        userWithDefaultConstructor = new User();
+        userWithDefaultConstructor = new User("test@example.com", "John", "Doe", 1234567890L, "deviceID123");
 
         // Initialize User with partial constructor (non-admin by default)
         userWithPartialConstructor = new User("test@example.com", "John", "Doe", 1234567890L, "deviceID123");

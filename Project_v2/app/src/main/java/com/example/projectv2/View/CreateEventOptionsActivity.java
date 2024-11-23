@@ -7,14 +7,22 @@
  */
 package com.example.projectv2.View;
 
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+import android.provider.Settings;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.projectv2.Controller.EventController;
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+
+import java.util.ArrayList;
 
 /**
  * CreateEventOptionsActivity allows users to input additional options for an event.
@@ -22,12 +30,11 @@ import com.example.projectv2.R;
  * optional geolocation and notification settings.
  */
 public class CreateEventOptionsActivity extends AppCompatActivity {
-    private EditText eventDeadline, eventAttendees, eventEntrants;
-    private EditText eventStartDate, eventTicketPrice;
+    private EditText eventDeadline, eventAttendees, eventEntrants, eventStartDate, eventTicketPrice;
     private CheckBox geolocationCheckbox, notificationsCheckbox;
-    private String name, detail, rules, facility;
+    private String name, detail, rules, facility, imageUri;
     private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$";
-
+    private EventController eventController;
     /**
      * Called when the activity is created. Sets up UI elements for inputting event options
      * and retrieves initial event details passed via Intent.
@@ -53,49 +60,77 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
         detail = getIntent().getStringExtra("detail");
         rules = getIntent().getStringExtra("rules");
         facility = getIntent().getStringExtra("facility");
+        imageUri = getIntent().getStringExtra("imageUri");
+
+        // Initialize EventController
+        eventController = new EventController(this);
+
+        // Set up the "Create Event" button
 
         Button createEventButton = findViewById(R.id.create_event_button);
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Collect data
-                String deadline = eventDeadline.getText().toString();
-                String attendees = eventAttendees.getText().toString();
-                String entrants = eventEntrants.getText().toString();
-                String startDate = eventStartDate.getText().toString();
-                String ticketPrice = eventTicketPrice.getText().toString();
-                boolean geolocationEnabled = geolocationCheckbox.isChecked();
-                boolean notificationsEnabled = notificationsCheckbox.isChecked();
+        createEventButton.setOnClickListener(v -> createEvent());
+    }
+    /**
+     * Collects data from input fields, validates it, and creates an event using the EventController.
+     */
+    private void createEvent() {
+        String deadline = eventDeadline.getText().toString();
+        String attendees = eventAttendees.getText().toString();
+        String entrants = eventEntrants.getText().toString();
+        String startDate = eventStartDate.getText().toString();
+        String ticketPrice = eventTicketPrice.getText().toString();
+        boolean geolocationEnabled = geolocationCheckbox.isChecked();
+        boolean notificationsEnabled = notificationsCheckbox.isChecked();
+        // Validate date format
+        if (!isValidDate(deadline)) {
+            eventDeadline.setError("Invalid date format. Use DD-MM-YYYY");
+            return;
+        }
+        if (!isValidDate(startDate)) {
+            eventStartDate.setError("Invalid date format. Use DD-MM-YYYY");
+            return;
+        }
+        // Ensure deadline is before start date
+        if (!isDeadlineBeforeStartDate(deadline, startDate)) {
+            eventDeadline.setError("Deadline must be before the event start date.");
+            return;
+        }
 
-                // Validate date format
-                if (!isValidDate(deadline)) {
-                    eventDeadline.setError("Invalid date format. Use DD-MM-YYYY");
-                    return;
+        // Get device owner ID
+        String owner = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        // Call EventController to create the event
+        eventController.createEvent(
+                owner,
+                name,
+                detail,
+                rules,
+                deadline,
+                attendees,
+                entrants,
+                startDate,
+                ticketPrice,
+                geolocationEnabled,
+                notificationsEnabled,
+                imageUri != null ? Uri.parse(imageUri) : null,
+                facility,
+                new EventController.EventCallback() {
+                    @Override
+                    public void onEventListLoaded(ArrayList<Event> events) {
+                        // Not used in this context
+                    }
+                    @Override
+                    public void onEventCreated(String eventId) {
+                        Log.d("CreateEventOptions", "Event created with ID: " + eventId);
+                        Toast.makeText(CreateEventOptionsActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("CreateEventOptions", "Error creating event", e);
+                        Toast.makeText(CreateEventOptionsActivity.this, "Failed to create event: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
                 }
-                if (!isValidDate(startDate)) {
-                    eventStartDate.setError("Invalid date format. Use DD-MM-YYYY");
-                    return;
-                }
-
-                // Create intent to pass data back to EventCreatorActivity
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("name", name);
-                resultIntent.putExtra("detail", detail);
-                resultIntent.putExtra("rules", rules);
-                resultIntent.putExtra("facility", facility);
-                resultIntent.putExtra("deadline", deadline);
-                resultIntent.putExtra("attendees", attendees);
-                resultIntent.putExtra("entrants", entrants);
-                resultIntent.putExtra("startDate", startDate);
-                resultIntent.putExtra("ticketPrice", ticketPrice);
-                resultIntent.putExtra("geolocationEnabled", geolocationEnabled);
-                resultIntent.putExtra("notificationsEnabled", notificationsEnabled);
-
-                // Set result and finish activity
-                setResult(RESULT_OK, resultIntent);
-                finish();
-            }
-        });
+        );
     }
 
     /**
@@ -105,6 +140,33 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
      * @return true if the date matches the expected pattern, false otherwise
      */
     private boolean isValidDate(String date) {
-        return date.matches(DATE_PATTERN);
+        return date.matches(CreateEventOptionsActivity.DATE_PATTERN);
+    }
+
+    /**
+ * Ensures that the deadline date is before the start date.
+ *
+ * @param deadline the deadline date in DD-MM-YYYY format
+ * @param startDate the start date in DD-MM-YYYY format
+ * @return true if the deadline is before the start date, false otherwise
+ */
+private boolean isDeadlineBeforeStartDate(String deadline, String startDate) {
+    try {
+        String[] deadlineParts = deadline.split("-");
+        String[] startDateParts = startDate.split("-");
+        int deadlineYear = Integer.parseInt(deadlineParts[2]);
+        int deadlineMonth = Integer.parseInt(deadlineParts[1]);
+        int deadlineDay = Integer.parseInt(deadlineParts[0]);
+        int startYear = Integer.parseInt(startDateParts[2]);
+        int startMonth = Integer.parseInt(startDateParts[1]);
+        int startDay = Integer.parseInt(startDateParts[0]);
+        if (startYear > deadlineYear) return true;
+        if (startYear == deadlineYear && startMonth > deadlineMonth) return true;
+        return startYear == deadlineYear && startMonth == deadlineMonth && startDay > deadlineDay;
+    } catch (Exception e) {
+        Log.e("DateValidation", "Error parsing dates: " + e.getMessage());
+        return false;
     }
 }
+}
+

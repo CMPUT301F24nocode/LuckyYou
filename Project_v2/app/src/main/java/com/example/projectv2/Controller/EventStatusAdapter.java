@@ -70,6 +70,17 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
     public int getItemCount() {
         return eventList.size();
     }
+    /**
+     * Updates the event list with a new list of events and notifies the adapter to refresh the view.
+     *
+     * @param newEvents the new list of events to display
+     */
+    public void updateEventList(List<String> newEvents) {
+        this.eventList.clear();
+        this.eventList.addAll(newEvents);
+        notifyDataSetChanged();
+    }
+
 
     /**
      * ViewHolder class to hold and recycle views for each event item in the RecyclerView.

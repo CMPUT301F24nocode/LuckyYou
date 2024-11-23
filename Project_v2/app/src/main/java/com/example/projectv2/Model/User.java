@@ -31,7 +31,7 @@ public class User {
     /**
      * Default constructor for creating a User object with no initial data.
      */
-    public User() {}
+    public User(String mail, String john, String doe, long l, String deviceID123) {}
 
     /**
      * Partial constructor that defaults to a non-admin user. Calls the full constructor
