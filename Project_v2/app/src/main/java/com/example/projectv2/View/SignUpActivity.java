@@ -57,7 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
         int phoneNumberError = isValidPhoneNumber(phoneNumber.getText().toString());
         if (phoneNumberError != 0) {
             if (phoneNumberError == 1) {
-                phoneNumber.setError("Phone number must be 10 digits long");
+                phoneNumber.setError("Phone number must be 10 digits long or empty");
                 return false;
             } else {
                 phoneNumber.setError("Phone number must contain only digits");
@@ -77,11 +77,14 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
     private int isValidPhoneNumber(String phoneNumber) {
-        // Check if the phone number is empty
-        if (phoneNumber.length() != 10) {
-            return 1;
+        // Check if the phone number is empty or 10 digits long
+        if (phoneNumber.isBlank()){
+            return 0;
+        }else{
+            if (phoneNumber.length() != 10) {
+                return 1;
+            }
         }
-        // Check if the phone number contains only digits
         for (int i = 0; i < phoneNumber.length(); i++) {
             if (!Character.isDigit(phoneNumber.charAt(i))) {
                 return 2;

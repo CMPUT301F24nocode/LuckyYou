@@ -15,6 +15,7 @@
     <color name="lucky_green_alert">#29D657</color>
     <color name="lucky_grey">#888891</color>
     <color name="lucky_white">#FFFFFFFF</color>
+    <color name="lucky_offwhite">#EDEDED</color>
 
 
 </resources>

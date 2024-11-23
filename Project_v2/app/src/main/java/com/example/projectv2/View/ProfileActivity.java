@@ -32,8 +32,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView name, email, phoneNumber;
     private Button editProfileButton;
     private SwipeRefreshLayout swipeRefreshLayout;
-//    private CheckBox needOrganizerNotifs, needAdminNotifs;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
         editProfileButton = findViewById(R.id.profile_edit_button);
         swipeRefreshLayout = findViewById(R.id.profile_swipe_refresh);
 
-
-        db=FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // Get the intent that was used to start this activity
         Intent intent = getIntent();
@@ -60,16 +57,16 @@ public class ProfileActivity extends AppCompatActivity {
             // Handle the case where the userID is not provided
             Log.e("ProfileActivity", "userID is null");
         }
-        editProfileButton.setOnClickListener(view-> {
 
-                if (editProfile(userID)){
-                    Snackbar.make(view, "Profile Updated Successfully!", Snackbar.LENGTH_LONG).show();}
-                }
-                );
+        editProfileButton.setOnClickListener(view -> {
+            if (editProfile(userID)) {
+                Snackbar.make(view, "Profile Updated Successfully!", Snackbar.LENGTH_LONG).show();
+            }
+        });
 
+        fetchUserData(userID);
 
-//        fetchUserData();
-        //three dot menu
+        // Three dot menu
         ImageButton moreButton = findViewById(R.id.more_settings_button);
         moreButton.setOnClickListener(v -> showPopup(userID));
 
@@ -81,8 +78,8 @@ public class ProfileActivity extends AppCompatActivity {
             // Stop the refreshing animation
             swipeRefreshLayout.setRefreshing(false);
         });
-
     }
+
     private void fetchUserData(String userID) {
         db.collection("Users").document(userID)
                 .get()
@@ -96,21 +93,33 @@ public class ProfileActivity extends AppCompatActivity {
                                 if (user != null) {
                                     name.setText(user.getName());
                                     email.setText(user.getEmail());
-                                    phoneNumber.setText(String.valueOf(user.getPhoneNumber()));
+
+                                    // Handle phoneNumber as either Long or String
+                                    Object phoneObject = document.get("phoneNumber");
+                                    if (phoneObject instanceof Long) {
+                                        phoneNumber.setText(String.valueOf(phoneObject));
+                                    } else if (phoneObject instanceof String) {
+                                        phoneNumber.setText((String) phoneObject);
+                                    } else {
+                                        phoneNumber.setText(""); // Default to empty if null
+                                    }
                                 }
                             }
+                        } else {
+                            Log.e("ProfileActivity", "Failed to fetch user data: " + task.getException());
                         }
                     }
                 });
     }
 
-    private void showPopup(String userID){
+    private void showPopup(String userID) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.profile_overlay);
-        CheckBox needOrganizerNotifs=dialog.findViewById(R.id.profile_notification_organiser_checkbox_view);
-        CheckBox needAdminNotifs=dialog.findViewById(R.id.profile_notification_admin_checkbox_view);
-        Button savePreferencesButton=dialog.findViewById(R.id.save_preferences);
-        if (userID!=null) {
+        CheckBox needOrganizerNotifs = dialog.findViewById(R.id.profile_notification_organiser_checkbox_view);
+        CheckBox needAdminNotifs = dialog.findViewById(R.id.profile_notification_admin_checkbox_view);
+        Button savePreferencesButton = dialog.findViewById(R.id.save_preferences);
+
+        if (userID != null) {
             db.collection("Users").document(userID)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -129,14 +138,15 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         }
                     });
-
         }
-        savePreferencesButton.setOnClickListener(v->{
+
+        savePreferencesButton.setOnClickListener(v -> {
             boolean newOrganizerNotif = needOrganizerNotifs.isChecked();
             boolean newAdminNotif = needAdminNotifs.isChecked();
             Map<String, Object> updates = new HashMap<>();
             updates.put("organizerNotif", newOrganizerNotif);
             updates.put("adminNotif", newAdminNotif);
+
             assert userID != null;
             db.collection("Users").document(userID)
                     .update(updates)
@@ -152,34 +162,28 @@ public class ProfileActivity extends AppCompatActivity {
                                 Snackbar.LENGTH_SHORT).show();
                         Log.e("ProfileActivity", "Error updating notification preferences: " + e.getMessage());
                     });
-
         });
 
-dialog.show();
-
+        dialog.show();
     }
 
-    private boolean editProfile(String userID){
-        try{DocumentReference userRef = db.collection("Users").document(userID);
-        userRef.update("name", name.getText().toString());
-        userRef.update("email", email.getText().toString());
-        long phone;
-        try{
-        phone = Long.parseLong(phoneNumber.getText().toString());}catch (NumberFormatException e){
-            Log.e("ProfileActivity", "Invalid phone number format");
-            phone=0;
+    private boolean editProfile(String userID) {
+        try {
+            DocumentReference userRef = db.collection("Users").document(userID);
+            userRef.update("name", name.getText().toString());
+            userRef.update("email", email.getText().toString());
 
+            String phoneNumberInput = phoneNumber.getText().toString();
+            if (!phoneNumberInput.isBlank() && phoneNumberInput.length() != 10) {
+                phoneNumber.setError("Phone number should be either empty or 10 digits");
+                return false;
+            } else {
+                userRef.update("phoneNumber", phoneNumberInput);
+                return true;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        userRef.update("phoneNumber", phone); return true;} catch (Exception e){
-            Log.e("ProfileActivity", "Error updating user profile: " + e.getMessage());
-            return false;
-        }
-
-
     }
-//    private void updateUser(User user){
-//        User newUser = new User(user.isAdmin(),user.isAdminNotif(),user.getEmail(),user.getName(),user.getPhoneNumber());
-//
-//    }
 }
