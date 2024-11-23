@@ -93,16 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 if (user != null) {
                                     name.setText(user.getName());
                                     email.setText(user.getEmail());
-
-                                    // Handle phoneNumber as either Long or String
-                                    Object phoneObject = document.get("phoneNumber");
-                                    if (phoneObject instanceof Long) {
-                                        phoneNumber.setText(String.valueOf(phoneObject));
-                                    } else if (phoneObject instanceof String) {
-                                        phoneNumber.setText((String) phoneObject);
-                                    } else {
-                                        phoneNumber.setText(""); // Default to empty if null
-                                    }
+                                    phoneNumber.setText(user.getPhoneNumber());
                                 }
                             }
                         } else {
