@@ -36,7 +36,6 @@ public class EntrantListController {
      */
     public void addEntrantListField(String eventId) {
         Map<String, Object> entrantListMap = new HashMap<>();
-        entrantListMap.put("EntrantList", new ArrayList<>());
         entrantListMap.put("Waiting", new ArrayList<>());
         entrantListMap.put("Selected", new ArrayList<>());
         entrantListMap.put("Cancelled", new ArrayList<>());

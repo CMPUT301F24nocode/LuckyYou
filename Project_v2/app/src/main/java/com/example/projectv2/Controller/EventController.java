@@ -97,7 +97,6 @@ public class EventController {
         eventMap.put("eventID", eventID);
 
         Map<String, Object> entrantListMap = new HashMap<>();
-        entrantListMap.put("EntrantList", new ArrayList<>());
         entrantListMap.put("Waiting", new ArrayList<>());
         entrantListMap.put("Selected", new ArrayList<>());
         entrantListMap.put("Cancelled", new ArrayList<>());
@@ -181,27 +180,27 @@ public class EventController {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        List<Map<String, String>> currentEntrantList = (List<Map<String, String>>) documentSnapshot.get("entrantList.EntrantList");
+                        List<Map<String, String>> currentWaitingList = (List<Map<String, String>>) documentSnapshot.get("entrantList.Waiting");
                         int entrantsLimit = documentSnapshot.getLong("entrants").intValue();
 
-                        if (currentEntrantList == null) {
-                            currentEntrantList = new ArrayList<>();
+                        if (currentWaitingList == null) {
+                            currentWaitingList = new ArrayList<>();
                         }
 
-                        if (currentEntrantList.size() < entrantsLimit) {
+                        if (currentWaitingList.size() < entrantsLimit) {
                             Map<String, String> userDetails = new HashMap<>();
                             userDetails.put("name", name);
                             userDetails.put("email", email);
                             userDetails.put("phoneNumber", phoneNumber);
 
                             db.collection("events").document(eventId)
-                                    .update("entrantList.EntrantList", FieldValue.arrayUnion(userDetails))
+                                    .update("entrantList.Waiting", FieldValue.arrayUnion(userDetails))
                                     .addOnSuccessListener(aVoid -> {
-                                        Log.d("EventController", "User with details added to EntrantList successfully.");
+                                        Log.d("EventController", "User with details added to Waiting List successfully.");
                                         callback.onEventCreated(eventId);
                                     })
                                     .addOnFailureListener(e -> {
-                                        Log.e("EventController", "Error adding user to EntrantList: " + e.getMessage());
+                                        Log.e("EventController", "Error adding user to Waiting List: " + e.getMessage());
                                         callback.onError(e);
                                     });
                         } else {

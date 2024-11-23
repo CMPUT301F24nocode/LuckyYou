@@ -203,14 +203,10 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                     entrantsNum = entrantsString != null && !entrantsString.isEmpty()
                             ? Integer.parseInt(entrantsString)
                             : Integer.MAX_VALUE; // No restriction if entrants is empty or null
-                    List<String> entrantList = (List<String>) document.get("entrantList.EntrantList");
-                    entrantListSize = (entrantList != null) ? entrantList.size() : 0;
+                    List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
+                    entrantListSize = (waitingList != null) ? waitingList.size() : 0;
 
                     if (entrantListSize <= (entrantsNum - 1)) {
-                        eventRef.update("entrantList.EntrantList", FieldValue.arrayUnion(userID))
-                                .addOnSuccessListener(aVoid -> showJoinSuccess(view))
-                                .addOnFailureListener(e -> showJoinFailure(view, e));
-
                         eventRef.update("entrantList.Waiting", FieldValue.arrayUnion(userID))
                                 .addOnSuccessListener(aVoid -> showJoinSuccess(view))
                                 .addOnFailureListener(e -> showJoinFailure(view, e));
@@ -247,10 +243,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
      */
     private void leaveEvent(View view, String eventID, String userID) {
         DocumentReference eventRef = db.collection("events").document(eventID);
-
-        eventRef.update("entrantList.EntrantList", FieldValue.arrayRemove(userID))
-                .addOnSuccessListener(aVoid -> showLeaveSuccess(view))
-                .addOnFailureListener(e -> showLeaveFailure(view, e));
 
         eventRef.update("entrantList.Waiting", FieldValue.arrayRemove(userID))
                 .addOnSuccessListener(aVoid -> showLeaveSuccess(view))

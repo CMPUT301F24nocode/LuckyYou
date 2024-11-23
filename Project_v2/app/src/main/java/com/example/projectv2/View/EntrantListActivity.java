@@ -83,7 +83,7 @@ public class EntrantListActivity extends AppCompatActivity {
      */
     private void setupFilterSpinner() {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, new String[]{"Entrant List", "Waiting List", "Selected List", "Cancelled List", "Attendee List"});
+                android.R.layout.simple_spinner_item, new String[]{"Waiting List", "Selected List", "Cancelled List", "Attendee List"});
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(spinnerAdapter);
 
@@ -92,9 +92,6 @@ public class EntrantListActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedOption = (String) parent.getItemAtPosition(position);
                 switch (selectedOption) {
-                    case "Entrant List":
-                        loadEntrantList(sendNotifAllView);
-                        break;
                     case "Waiting List":
                         loadWaitingList(sendNotifAllView);
                         break;
@@ -112,40 +109,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                loadEntrantList(sendNotifAllView);
-            }
-        });
-    }
-
-    /**
-     * Loads the full entrant list from Firestore for the event and updates the RecyclerView adapter.
-     */
-    private void loadEntrantList(Button sendNotifAll) {
-        String eventId = getIntent().getStringExtra("eventId");
-
-        db.collection("events").document(eventId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        entrantList = (List<String>) documentSnapshot.get("entrantList.EntrantList");
-                        if (entrantList != null) {
-                            adapter.updateEntrantList(entrantList);
-                        } else {
-                            Toast.makeText(this, "No entrants found.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error loading entrant list", e);
-                    Toast.makeText(this, "Failed to load entrant list", Toast.LENGTH_SHORT).show();
-                });
-
-        sendNotifAll.setOnClickListener(view -> {
-            NotificationService notificationService = new NotificationService();
-            String eventName = getIntent().getStringExtra("name");
-
-            for (String userId : entrantList) {
-                Notification notification = new Notification(userId, "You're in the entrant list for " + eventName, true, false);
-                notificationService.sendNotification(notification);
+                loadWaitingList(sendNotifAllView);
             }
         });
     }
