@@ -27,6 +27,8 @@ public class User {
     private ArrayList<Map<String, Object>> adminNotifList;
     private ArrayList<Map<String, Object>> organizerNotifList;
     private String name;
+    private double latitude;
+    private double longitude;
 
     /**
      * Default constructor for creating a User object with no initial data.
@@ -73,6 +75,8 @@ public class User {
         this.profileImage = "";
         this.adminNotifList = new ArrayList<>();
         this.organizerNotifList = new ArrayList<>();
+        this.latitude = 0.0;
+        this.longitude = 0.0;
     }
 
     // Getters
@@ -176,6 +180,14 @@ public class User {
         return organizerNotifList;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
     // Setters
 
     /**
@@ -275,5 +287,13 @@ public class User {
      */
     public void setOrganizerNotifList(ArrayList<Map<String, Object>> organizerNotifList) {
         this.organizerNotifList = organizerNotifList;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }
