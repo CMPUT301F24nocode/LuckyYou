@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectv2.Controller.EventController;
+import com.example.projectv2.MainActivity;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
@@ -126,6 +127,13 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
                     public void onEventCreated(String eventId) {
                         Log.d("CreateEventOptions", "Event created with ID: " + eventId);
                         Toast.makeText(CreateEventOptionsActivity.this, "Event created successfully!", Toast.LENGTH_SHORT).show();
+
+                        // Navigate back to the home screen
+                        Intent intent = new Intent(CreateEventOptionsActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+
+                        // Finish the current activity
                         finish();
                     }
 
