@@ -1,3 +1,9 @@
+/**
+ * Activity that manages user login. Verifies if a user exists in Firebase Firestore by checking the device ID.
+ * If the user exists, they are redirected to the main activity. If not, they are prompted to sign up.
+ *
+ * <p>Outstanding Issues: None currently identified.</p>
+ */
 package com.example.projectv2.View;
 
 import android.annotation.SuppressLint;
@@ -20,11 +26,22 @@ import android.provider.Settings.Secure;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * LoginActivity handles user login by checking if a user exists in Firebase Firestore based on the device ID.
+ * If the user exists, it navigates to the main activity. Otherwise, it provides an option to sign up.
+ */
 public class LoginActivity extends AppCompatActivity {
+
     private TextView signUpButton;
     private FirebaseFirestore db;
     private static final String TAG = "LoginActivity";
 
+    /**
+     * Called when the activity is created. Initializes Firebase, retrieves the device ID,
+     * and checks if a user exists in the Firebase Firestore based on the device ID.
+     *
+     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check if user exists in the database
         checkUserExists(deviceID);
 
+        // Set up sign-up button to navigate to SignUpActivity
         signUpButton = findViewById(R.id.signup_button);
         signUpButton.setOnClickListener(view -> {
             Intent intent = new Intent(this, SignUpActivity.class);
@@ -49,6 +67,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Checks if a user document with the given device ID exists in the "Users" collection in Firestore.
+     * If found, navigates to the main activity. If not, attempts a query fallback to search for the user.
+     *
+     * @param deviceID the unique identifier of the device, used as the document ID in Firestore
+     */
     private void checkUserExists(String deviceID) {
         Log.d(TAG, "Starting user existence check for device ID: " + deviceID);
 
@@ -62,14 +86,11 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "Document lookup completed. Exists: " + document.exists());
 
                         if (document.exists()) {
-                            // Document exists - log its data
                             Log.d(TAG, "Document data: " + document.getData());
 
                             // Navigate to MainActivity
-                            Log.d(TAG, "Navigating to MainActivity");
                             Intent intent = new Intent(this, MainActivity.class);
                             intent.putExtra("deviceID", deviceID);
-
                             startActivity(intent);
                             finish();
                         } else {
@@ -79,13 +100,18 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } else {
                         Log.e(TAG, "Error getting document: ", task.getException());
-                        // Show error to user
                         Toast.makeText(this, "Error checking user status: " +
                                 task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
 
+    /**
+     * Queries the "Users" collection in Firestore for a document with the given device ID.
+     * If found, navigates to the main activity. If not, navigates to the SignUpActivity.
+     *
+     * @param deviceID the unique identifier of the device, used as the document ID in Firestore
+     */
     private void queryUserCollection(String deviceID) {
         db.collection("Users")
                 .whereEqualTo(FieldPath.documentId(), deviceID)
@@ -97,7 +123,6 @@ public class LoginActivity extends AppCompatActivity {
                                 " Size: " + querySnapshot.size());
 
                         if (!querySnapshot.isEmpty()) {
-                            // User exists
                             DocumentSnapshot document = querySnapshot.getDocuments().get(0);
                             Log.d(TAG, "User found. Document data: " + document.getData());
 
@@ -105,7 +130,6 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            // No user found
                             Log.d(TAG, "No user found with device ID: " + deviceID);
                             Intent intent = new Intent(this, SignUpActivity.class);
                             startActivity(intent);

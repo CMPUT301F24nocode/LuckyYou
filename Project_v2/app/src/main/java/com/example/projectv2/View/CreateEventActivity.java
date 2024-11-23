@@ -1,3 +1,9 @@
+/**
+ * Activity for creating a new event. Allows users to enter event details such as name, details,
+ * rules, facility, and an optional image. Users can also proceed to configure additional event options.
+ *
+ * <p>Outstanding Issues: None currently identified.</p>
+ */
 package com.example.projectv2.View;
 
 import android.content.Intent;
@@ -16,7 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectv2.Controller.topBarUtils;
-import com.example.projectv2.MainActivity;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -24,6 +29,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * CreateEventActivity allows users to input basic details for creating a new event.
+ * Users can provide event name, details, rules, and select a facility or image for the event.
+ * The activity also loads facilities from Firebase and lets users proceed to additional event configuration options.
+ */
 public class CreateEventActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_EVENT_OPTIONS = 2;
@@ -32,10 +42,17 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText eventNameView, eventDetailsView, eventRulesView;
     private ImageView eventImageView;
     private Spinner facilitySpinner;
-    private Uri selectedImageUri; // Store the image URI as a field
+    private Uri selectedImageUri;
     private List<String> facilityList = new ArrayList<>();
     private FirebaseFirestore db;
 
+    /**
+     * Called when the activity is created. Sets up the UI elements for inputting event details
+     * and configures the top bar and facility spinner. Allows image selection and navigating to
+     * additional event options.
+     *
+     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,18 +77,16 @@ public class CreateEventActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
         });
 
-        // Set up the Next button to open EventOptionsActivity
+        // Set up the Next button to open CreateEventOptionsActivity
         Button nextButton = findViewById(R.id.create_event_next_button);
         nextButton.setOnClickListener(v -> {
             Intent intent = new Intent(CreateEventActivity.this, CreateEventOptionsActivity.class);
             intent.putExtra("name", eventNameView.getText().toString());
             intent.putExtra("detail", eventDetailsView.getText().toString());
             intent.putExtra("rules", eventRulesView.getText().toString());
-            // Get the selected facility or set to "Online" by default
             String selectedFacility = facilitySpinner.getSelectedItem() != null ? facilitySpinner.getSelectedItem().toString() : "Online";
             intent.putExtra("facility", selectedFacility);
 
-            // Include the image URI if an image was selected
             if (selectedImageUri != null) {
                 intent.putExtra("imageUri", selectedImageUri.toString());
             }
@@ -80,6 +95,10 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Loads the list of available facilities from Firebase Firestore and populates the facility spinner.
+     * Adds "Online" as a default facility option.
+     */
     private void loadFacilities() {
         db.collection("facilities").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -100,6 +119,14 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles results from activities launched for result. Handles image selection for the event
+     * and passing event data back from the event options configuration.
+     *
+     * @param requestCode the request code used when starting the activity
+     * @param resultCode  the result code returned by the activity
+     * @param data        the Intent containing the result data from the launched activity
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -114,7 +141,6 @@ public class CreateEventActivity extends AppCompatActivity {
             String detail = eventDetailsView.getText().toString();
             String rules = eventRulesView.getText().toString();
             String facility = facilitySpinner.getSelectedItem().toString();
-
 
             if (data != null) {
                 data.putExtra("name", name);

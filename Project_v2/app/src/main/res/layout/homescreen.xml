@@ -22,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/lucky_background"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include"
@@ -66,19 +65,8 @@
             app:backgroundTint="@color/lucky_uiAccent"
             app:layout_constraintBottom_toBottomOf="@+id/viewPager2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <ImageButton
-            android:id="@+id/refreshButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:backgroundTint="#5669FF"
-            android:src="@drawable/refersh_button"
-            app:tint="@android:color/white"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="79dp"
-            tools:layout_editor_absoluteY="16dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -89,8 +77,6 @@
         android:layout_gravity="start"
         android:background="@color/lucky_background"
         app:headerLayout="@layout/homescreen_nav_bar_header"
-        app:menu="@menu/homescreen_nav_bar_menu"
-        app:itemIconTint="@color/lucky_white"
-        app:itemTextColor="@color/lucky_white"/>
+        app:menu="@menu/homescreen_nav_bar_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
