@@ -82,21 +82,38 @@ public class CreateEventActivity extends AppCompatActivity {
         Button nextButton = findViewById(R.id.create_event_next_button);
         nextButton.setOnClickListener(v -> {
             // Validate that the event name is not empty
-            String eventName = eventNameView.getText().toString().trim();
+            String eventName = eventNameView.getText().toString().trim();// Reset to default background
+
             if (eventName.isEmpty()) {
                 Toast.makeText(CreateEventActivity.this, "Event name cannot be empty", Toast.LENGTH_SHORT).show();
+                eventNameView.setBackgroundResource(R.drawable.edit_text_error_background); // Highlight in red
                 return;
             }
 
-            // Check if an image is selected
-            if (selectedImageUri != null) {
-                uploadImageAndProceed(eventName, selectedImageUri);
-            } else {
-                proceedToNextActivity(eventName, null); // Proceed without image
-            }
+            // Check uniqueness of the event name in Firestore
+            db.collection("events").whereEqualTo("name", eventName).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if (!task.getResult().isEmpty()) {
+                                // Event name already exists
+                                Toast.makeText(CreateEventActivity.this, "Event name already exists. Please choose a different name.", Toast.LENGTH_SHORT).show();
+                                eventNameView.setBackgroundResource(R.drawable.edit_text_error_background); // Highlight in red
+                            } else {
+                                // Event name is unique, proceed
+                                if (selectedImageUri != null) {
+                                    uploadImageAndProceed(eventName, selectedImageUri);
+                                } else {
+                                    proceedToNextActivity(eventName, null); // Proceed without image
+                                }
+                            }
+                        } else {
+                            // Handle Firestore query failure
+                            Toast.makeText(CreateEventActivity.this, "Error checking event name uniqueness. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
     }
-    private void uploadImageAndProceed(String eventName, Uri imageUri) {
+        private void uploadImageAndProceed(String eventName, Uri imageUri) {
         ImageController imageController = new ImageController();
         String folderName = "event_posters/" + eventName.replace(" ", "_"); // Replace spaces with underscores
 

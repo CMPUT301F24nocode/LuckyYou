@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.projectv2.R;
-import com.example.projectv2.Controller.ImageController;
 
 import java.util.List;
 

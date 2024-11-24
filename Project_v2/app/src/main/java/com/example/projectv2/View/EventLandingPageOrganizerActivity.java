@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -18,6 +19,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
@@ -30,6 +33,7 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
     private ImageView eventImageView;
     private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
+    private ImageButton eventEditPoster;
     private Button qrcodeButton;
 
     /**
@@ -46,85 +50,62 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         topBarUtils.topBarSetup(this, "Event", View.VISIBLE);
 
         // Initialize views
-        qrcodeButton = findViewById(R.id.qrcode_button);
         eventImageView = findViewById(R.id.event_picture_organiser);
-        eventNameView = findViewById(R.id.event_name_view_organiser);
-        eventDetailsView = findViewById(R.id.event_details_view_organiser);
-        eventRulesView = findViewById(R.id.event_rules_view_organiser);
-        eventDeadlineView = findViewById(R.id.event_deadline_view_organiser);
-        eventCountdownView = findViewById(R.id.event_countdown_view_organiser);
-        eventPriceView = findViewById(R.id.event_price_view_organiser);
+        eventEditPoster = findViewById(R.id.event_edit_button);
 
         // Retrieve event data from intent
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
+        String name = intent.getStringExtra("name"); // Event name
         String details = intent.getStringExtra("details");
         String rules = intent.getStringExtra("rules");
         String deadline = intent.getStringExtra("deadline");
         String startDate = intent.getStringExtra("startDate");
         String price = intent.getStringExtra("price");
-        String imageUriString = intent.getStringExtra("imageUri");
         String eventID = intent.getStringExtra("eventID");
 
-        // Configure QR Code button to navigate to QrOrganiserActivity
-        qrcodeButton.setOnClickListener(v -> {
-            Intent qrIntent = new Intent(EventLandingPageOrganizerActivity.this, QrOrganiserActivity.class);
-            qrIntent.putExtra("description", details);
-            qrIntent.putExtra("posterUrl", imageUriString);
-            qrIntent.putExtra("eventID", eventID);
-            startActivity(qrIntent);
+        // Load the event poster image
+        loadEventPoster(name);
+
+        // Set up event edit button
+        eventEditPoster.setOnClickListener(v -> {
+            Intent editIntent = new Intent(EventLandingPageOrganizerActivity.this, EventEditActivity.class);
+            editIntent.putExtra("name", name);
+            editIntent.putExtra("details", details);
+            editIntent.putExtra("rules", rules);
+            editIntent.putExtra("deadline", deadline);
+            editIntent.putExtra("startDate", startDate);
+            editIntent.putExtra("price", price);
+            editIntent.putExtra("eventID", eventID);
+            startActivity(editIntent);
         });
-
-        // Configure Location button to navigate to LocationActivity
-        Button locationButton = findViewById(R.id.location_button);
-        locationButton.setOnClickListener(v -> {
-            Intent locationIntent = new Intent(EventLandingPageOrganizerActivity.this, LocationActivity.class);
-            locationIntent.putExtra("eventId", eventID);
-            startActivity(locationIntent);
-        });
-
-
-        // Configure button to navigate to EntrantListActivity with eventID
-        Button viewEntrantListButton = findViewById(R.id.view_entrant_list_button);
-        viewEntrantListButton.setOnClickListener(v -> {
-            Intent entrantListIntent = new Intent(EventLandingPageOrganizerActivity.this, EntrantListActivity.class);
-            entrantListIntent.putExtra("eventId", eventID);
-            entrantListIntent.putExtra("name", name);
-            startActivity(entrantListIntent);
-        });
-
-        // Set UI components with event data or default values if data is missing
-        eventNameView.setText(name != null ? name : "No name");
-        eventDetailsView.setText(details != null ? details : "No details");
-        eventRulesView.setText(rules != null ? rules : "No rules provided");
-        eventDeadlineView.setText(deadline != null ? deadline : "No deadline");
-        eventCountdownView.setText(startDate != null ? "Starts in: " + startDate : "No start date");
-        eventPriceView.setText(price != null && !price.equals("0") ? "$" + price : "Free");
-
-        // Load event image if URI is available; otherwise, use a placeholder image
-        try {
-            if (imageUriString != null && !imageUriString.isEmpty()) {
-                Uri imageUri = Uri.parse(imageUriString);
-                eventImageView.setImageURI(imageUri);
-            } else {
-                eventImageView.setImageResource(R.drawable.placeholder_event);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            eventImageView.setImageResource(R.drawable.placeholder_event);
-        }
-
-        // Configure more options button to show a popup
-        ImageButton moreButton = findViewById(R.id.more_settings_button);
-        moreButton.setOnClickListener(v -> showPopup());
     }
 
     /**
-     * Displays a popup dialog with additional event options.
+     * Load the event poster using the ImageController.
+     *
+     * @param eventName The name of the event.
      */
-    private void showPopup() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.event_edit_overlay);
-        dialog.show();
+    private void loadEventPoster(String eventName) {
+        ImageController imageController = new ImageController();
+
+        imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
+            @Override
+            public void onRetrieveSuccess(String downloadUrl) {
+                // Use Glide to load the image into the ImageView
+                Glide.with(EventLandingPageOrganizerActivity.this)
+                        .load(downloadUrl)
+                        .placeholder(R.drawable.placeholder_event) // Placeholder while loading
+                        .error(R.drawable.placeholder_event) // Placeholder if loading fails
+                        .centerCrop()
+                        .into(eventImageView);
+            }
+
+            @Override
+            public void onRetrieveFailure(Exception e) {
+                // Log the error and show the placeholder image
+                Log.e("EventLandingPage", "Failed to load image for event: " + eventName, e);
+                eventImageView.setImageResource(R.drawable.placeholder_event);
+            }
+        });
     }
 }
