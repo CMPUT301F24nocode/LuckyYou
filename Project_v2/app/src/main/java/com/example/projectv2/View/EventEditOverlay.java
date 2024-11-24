@@ -13,6 +13,7 @@ import com.example.projectv2.Controller.EntrantListController;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -55,19 +56,25 @@ public class EventEditOverlay extends AppCompatActivity {
                     if (waitingList != null && !waitingList.isEmpty()) {
                         Collections.shuffle(waitingList);
 
+                        // Select the attendees based on the limit
                         List<String> selectedAttendees = waitingList.size() <= attendeesLimit
                                 ? new ArrayList<>(waitingList)
                                 : waitingList.subList(0, attendeesLimit);
 
-                        Log.d("EventEditOverlay", "Selected Attendees: " + selectedAttendees);
-
-                        // Use EntrantListController to update Firestore
-                        for (String attendee : selectedAttendees) {
-                            entrantListController.addUserToList(eventID, "Selected", attendee);
-                            entrantListController.removeUserFromList(eventID, "Waiting", attendee);
-                        }
-
-                        Toast.makeText(EventEditOverlay.this, "Attendees chosen successfully!", Toast.LENGTH_SHORT).show();
+                        // Add selected attendees to the "Selected" list and remove them from "Waiting"
+                        eventRef.update("entrantList.Selected", FieldValue.arrayUnion(selectedAttendees.toArray()))
+                                .addOnSuccessListener(aVoid -> {
+                                    for (String attendee : selectedAttendees) {
+                                        eventRef.update("entrantList.Waiting", FieldValue.arrayRemove(attendee))
+                                                .addOnSuccessListener(innerVoid -> Log.d("EventEditOverlay", "Attendee moved successfully: " + attendee))
+                                                .addOnFailureListener(e -> Log.e("EventEditOverlay", "Error removing attendee: ", e));
+                                    }
+                                    Toast.makeText(EventEditOverlay.this, "Attendees chosen successfully!", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(EventEditOverlay.this, "Failed to update selected attendees: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.e("EventEditOverlay", "Error updating selected list: ", e);
+                                });
                     } else {
                         Toast.makeText(EventEditOverlay.this, "No users in the waiting list to select.", Toast.LENGTH_SHORT).show();
                     }
@@ -79,4 +86,5 @@ public class EventEditOverlay extends AppCompatActivity {
             }
         });
     }
+
 }
