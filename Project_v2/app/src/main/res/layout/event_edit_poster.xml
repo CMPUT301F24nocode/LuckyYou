@@ -73,17 +73,6 @@
             app:tint="#404040"
             app:tintMode="multiply" />
 
-        <ImageButton
-            android:id="@+id/create_event_pic_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#00FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/create_event_pic_view"
-            app:layout_constraintEnd_toEndOf="@+id/create_event_pic_view"
-            app:layout_constraintStart_toStartOf="@+id/create_event_pic_view"
-            app:layout_constraintTop_toTopOf="@+id/create_event_pic_view"
-            app:srcCompat="@drawable/eventcreationpic_icon" />
-
         <!-- Edit Event Button -->
         <Button
             android:id="@+id/create_event_next_button"

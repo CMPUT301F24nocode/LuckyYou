@@ -113,11 +113,13 @@ public class CreateEventActivity extends AppCompatActivity {
                     });
         });
     }
-        private void uploadImageAndProceed(String eventName, Uri imageUri) {
+    private void uploadImageAndProceed(String eventName, Uri imageUri) {
         ImageController imageController = new ImageController();
-        String folderName = "event_posters/" + eventName.replace(" ", "_"); // Replace spaces with underscores
 
-        imageController.uploadImage(imageUri, folderName, new ImageController.ImageUploadCallback() {
+        // Construct the full file path here
+        String filePath = "event_posters/event_posters_" + eventName.replaceAll("[^a-zA-Z0-9_]", "_") + ".jpg";
+
+        imageController.uploadImage(imageUri, filePath, new ImageController.ImageUploadCallback() {
             @Override
             public void onUploadSuccess(String downloadUrl) {
                 // On successful upload, proceed to the next activity with the download URL

@@ -1,61 +1,47 @@
-/**
- * Activity that displays detailed information about an event when selected from the home screen.
- * Provides options for viewing entrant lists, generating QR codes, and additional event options.
- *
- * <p>Outstanding Issues: None currently identified.</p>
- */
 package com.example.projectv2.View;
 
-import android.app.Dialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.projectv2.Controller.ImageController;
-import com.example.projectv2.Controller.topBarUtils;
-import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
-/**
- * EventLandingPageOrganizerActivity displays event details for organizers and provides
- * options to view entrants, generate QR codes, and access additional event settings.
- */
 public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
+    private static final String TAG = "EventLandingPage";
     private ImageView eventImageView;
     private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView;
     private ImageButton eventEditPoster;
-    private Button qrcodeButton;
+    private String eventName;
 
-    /**
-     * Called when the activity is created. Sets up UI elements with event data and
-     * provides buttons for accessing QR codes, entrant lists, and additional settings.
-     *
-     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_landing_page_organiser);
 
-        topBarUtils.topBarSetup(this, "Event", View.VISIBLE);
-
         // Initialize views
         eventImageView = findViewById(R.id.event_picture_organiser);
+        eventNameView = findViewById(R.id.event_name_view_organiser);
+        eventDetailsView = findViewById(R.id.event_details_view_organiser);
+        eventRulesView = findViewById(R.id.event_rules_view_organiser);
+        eventDeadlineView = findViewById(R.id.event_deadline_view_organiser);
+        eventPriceView = findViewById(R.id.event_price_view_organiser);
+        eventCountdownView = findViewById(R.id.event_countdown_view_organiser);
         eventEditPoster = findViewById(R.id.event_edit_button);
 
         // Retrieve event data from intent
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name"); // Event name
+        eventName = intent.getStringExtra("name"); // Event name
         String details = intent.getStringExtra("details");
         String rules = intent.getStringExtra("rules");
         String deadline = intent.getStringExtra("deadline");
@@ -63,13 +49,31 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         String price = intent.getStringExtra("price");
         String eventID = intent.getStringExtra("eventID");
 
-        // Load the event poster image
-        loadEventPoster(name);
+        // Validate event name
+        if (eventName == null || eventName.isEmpty()) {
+            Toast.makeText(this, "Invalid event name", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Set up event edit button
+        // Log the event name for debugging
+        Log.d(TAG, "Event Name: " + eventName);
+
+        // Set data to views
+        eventNameView.setText(eventName);
+        eventDetailsView.setText(details != null ? details : "No details available");
+        eventRulesView.setText(rules != null ? rules : "No rules provided");
+        eventDeadlineView.setText(deadline != null ? deadline : "No deadline specified");
+        eventCountdownView.setText(startDate != null ? "Starts in: " + startDate : "No start date");
+        eventPriceView.setText(price != null && !price.equals("0") ? "$" + price : "Free");
+
+        // Load the event poster image
+        loadEventPoster(eventName);
+
+        // Set up the edit poster button
         eventEditPoster.setOnClickListener(v -> {
             Intent editIntent = new Intent(EventLandingPageOrganizerActivity.this, EventEditActivity.class);
-            editIntent.putExtra("name", name);
+            editIntent.putExtra("eventName", eventName);
             editIntent.putExtra("details", details);
             editIntent.putExtra("rules", rules);
             editIntent.putExtra("deadline", deadline);
@@ -103,7 +107,7 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
             @Override
             public void onRetrieveFailure(Exception e) {
                 // Log the error and show the placeholder image
-                Log.e("EventLandingPage", "Failed to load image for event: " + eventName, e);
+                Log.e(TAG, "Failed to load image for event: " + eventName, e);
                 eventImageView.setImageResource(R.drawable.placeholder_event);
             }
         });

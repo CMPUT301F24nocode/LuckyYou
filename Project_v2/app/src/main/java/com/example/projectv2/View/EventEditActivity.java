@@ -102,6 +102,9 @@ public class EventEditActivity extends AppCompatActivity {
     /**
      * Updates the event poster in Firebase Storage.
      */
+    /**
+     * Updates the event poster in Firebase Storage.
+     */
     private void updateEventPoster() {
         if (selectedImageUri == null) {
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
@@ -111,15 +114,23 @@ public class EventEditActivity extends AppCompatActivity {
         progressDialog.setMessage("Updating event poster...");
         progressDialog.show();
 
-        imageController.uploadImage(selectedImageUri, eventName, new ImageController.ImageUploadCallback() {
+        // Construct file path: event_posters_<eventName>.jpg
+        String filePath = "event_posters/event_posters_" + eventName.replaceAll("[^a-zA-Z0-9_]", "_") + ".jpg";
+
+        // Upload the new image and overwrite the existing file
+        imageController.uploadImage(selectedImageUri, filePath, new ImageController.ImageUploadCallback() {
             @Override
             public void onUploadSuccess(String downloadUrl) {
                 progressDialog.dismiss();
                 Toast.makeText(EventEditActivity.this, "Poster updated successfully", Toast.LENGTH_SHORT).show();
+
+                // Refresh the image in the ImageView
                 Glide.with(EventEditActivity.this)
                         .load(downloadUrl)
                         .placeholder(R.drawable.placeholder_event)
+                        .skipMemoryCache(true) // Bypass memory cache
                         .into(eventPosterImageView);
+                finish();
             }
 
             @Override
@@ -129,4 +140,5 @@ public class EventEditActivity extends AppCompatActivity {
             }
         });
     }
+
 }

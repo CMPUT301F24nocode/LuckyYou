@@ -28,18 +28,19 @@ public class ImageController {
      * Uploads an image to Firebase Storage with a filename based on the event name.
      *
      * @param imageUri  The URI of the image to be uploaded.
-     * @param eventName The name of the event (used as the filename).
+     * @param filePath
      * @param callback  Callback for success or failure.
      */
-    public void uploadImage(Uri imageUri, String eventName, ImageUploadCallback callback) {
-        String fileName = "event_posters/" + eventName.replaceAll("[^a-zA-Z0-9_]", "_") + ".jpg";
-        StorageReference imageRef = storageReference.child(fileName);
+    public void uploadImage(Uri imageUri, String filePath, ImageUploadCallback callback) {
+        // Use the passed filePath directly
+        StorageReference imageRef = storageReference.child(filePath);
 
-        Log.d(TAG, "Uploading image to: " + fileName);
+        Log.d(TAG, "Uploading image to: " + filePath);
 
+        // Upload the file, replacing any existing file at the path
         imageRef.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Log.d(TAG, "Image uploaded successfully: " + uri);
+                    Log.d(TAG, "Image uploaded successfully: " + uri.toString());
                     callback.onUploadSuccess(uri.toString());
                 }))
                 .addOnFailureListener(e -> {
@@ -48,6 +49,7 @@ public class ImageController {
                 });
     }
 
+
     /**
      * Retrieves the download URL of an image based on the event name.
      *
@@ -55,7 +57,7 @@ public class ImageController {
      * @param callback  Callback for success or failure.
      */
     public void retrieveImage(String eventName, ImageRetrieveCallback callback) {
-        // Construct file path in Firebase Storage
+        // Construct file path: event_posters_<eventName>.jpg
         String fileName = "event_posters/event_posters_" + eventName.replaceAll("[^a-zA-Z0-9_]", "_") + ".jpg";
         StorageReference imageRef = storageReference.child(fileName);
 
@@ -64,11 +66,11 @@ public class ImageController {
         // Retrieve the download URL
         imageRef.getDownloadUrl()
                 .addOnSuccessListener(uri -> {
-                    Log.d(TAG, "Image retrieved successfully: " + uri);
+                    Log.d(TAG, "Image retrieved successfully: " + uri.toString());
                     callback.onRetrieveSuccess(uri.toString());
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to retrieve image for event: " + eventName, e);
+                    Log.e(TAG, "Failed to retrieve image", e);
                     callback.onRetrieveFailure(new Exception("No image found for event: " + eventName));
                 });
     }
