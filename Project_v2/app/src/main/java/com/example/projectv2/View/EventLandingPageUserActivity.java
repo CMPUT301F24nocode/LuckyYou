@@ -5,7 +5,7 @@
  * <p>Outstanding Issues: None currently identified.</p>
  */
 package com.example.projectv2.View;
-
+import com.bumptech.glide.Glide;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
@@ -280,8 +280,35 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             e.printStackTrace();
             eventImageView.setImageResource(R.drawable.placeholder_event);
         }
+        loadEventImage(name);
     }
+    /**
+     * Loads the event image using the ImageController.
+     *
+     * @param eventName The name of the event.
+     */
+    private void loadEventImage(String eventName) {
+        ImageController imageController = new ImageController();
+        imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
+            @Override
+            public void onRetrieveSuccess(String downloadUrl) {
+                // Use Glide to load the image into the ImageView
+                Glide.with(EventLandingPageUserActivity.this)
+                        .load(downloadUrl)
+                        .placeholder(R.drawable.placeholder_event) // Placeholder while loading
+                        .error(R.drawable.placeholder_event) // Placeholder if loading fails
+                        .centerCrop()
+                        .into(eventImageView);
+            }
 
+            @Override
+            public void onRetrieveFailure(Exception e) {
+                // Log the error and show the placeholder image
+                Log.e("EventLandingPageUser", "Failed to load image for event: " + eventName, e);
+                eventImageView.setImageResource(R.drawable.placeholder_event);
+            }
+        });
+    }
     /**
      * Shows a success message when the user successfully joins the event.
      *
