@@ -67,7 +67,7 @@ public class YourEventsFragment extends Fragment {
      */
     private void fetchEvents() {
         Log.d("YourEventsFragment", "Fetching user's events...");
-        eventController.fetchEvents(new EventController.EventCallback() {
+        eventController.fetchCreatedEvents(new EventController.EventCallback() {
             @Override
             public void onEventListLoaded(ArrayList<Event> events) {
                 Log.d("YourEventsFragment", "Fetched " + events.size() + " events from Firebase.");
