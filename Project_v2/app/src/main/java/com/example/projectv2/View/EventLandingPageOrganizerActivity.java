@@ -116,15 +116,14 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
         // Configure more options button to show a popup
         ImageButton moreButton = findViewById(R.id.more_settings_button);
-        moreButton.setOnClickListener(v -> showPopup());
+        moreButton.setOnClickListener(v -> showPopup(eventID));
     }
 
     /**
      * Displays a popup dialog with additional event options.
      */
-    private void showPopup() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.event_edit_overlay);
-        dialog.show();
+    private void showPopup(String eventId) {
+        EventEditOverlay dialogFragment = EventEditOverlay.newInstance(eventId);
+        dialogFragment.show(getSupportFragmentManager(), "EventEditDialogFragment");
     }
 }
