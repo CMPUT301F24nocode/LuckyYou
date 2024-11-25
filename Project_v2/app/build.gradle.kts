@@ -38,8 +38,15 @@ android {
 dependencies {
 
     implementation(libs.circleimageview)
-    implementation ("androidx.cardview:cardview:1.0.0")
-    implementation ("com.journeyapps:zxing-android-embedded:4.1.0")
+    implementation (libs.cardview)
+    implementation("com.google.firebase:firebase-storage:20.2.1")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.google.android.gms:play-services-maps:18.0.2")
+    implementation (libs.zxing.android.embedded)
+    implementation (libs.core)
+    implementation(libs.swiperefreshlayout)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

@@ -24,6 +24,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.projectv2.Controller.EventsPagerAdapter;
 import com.example.projectv2.Model.User;
@@ -32,9 +33,11 @@ import com.example.projectv2.View.AdminImageListActivity;
 import com.example.projectv2.View.AdminProfileListActivity;
 import com.example.projectv2.View.AvailableEventsFragment;
 import com.example.projectv2.View.CreateEventActivity;
+import com.example.projectv2.View.EventLandingPageUserActivity;
 import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
+import com.example.projectv2.View.QRUserActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -43,6 +46,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * MainActivity provides a user interface for accessing and managing events, notifications,
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isOrganizer;
 
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
+    private static final int REQUEST_CODE_QR_SCANNER = 2;
 
     private DrawerLayout drawerLayout;
     private ViewPager2 viewPager;
@@ -77,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.navigation_view);
         viewPager = findViewById(R.id.viewPager2);
         TabLayout tabLayout = findViewById(R.id.tabLayout);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         FloatingActionButton fab = findViewById(R.id.homescreen_fab);
         fab.setVisibility(View.VISIBLE);
 
@@ -88,6 +94,15 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
+        });
+
+        // Set up refresh listener
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Perform refresh actions, like reloading data
+            refreshContent();
+
+            // Stop the refreshing animation
+            swipeRefreshLayout.setRefreshing(false);
         });
 
         notificationBell.setOnClickListener(view -> {
@@ -108,7 +123,13 @@ public class MainActivity extends AppCompatActivity {
                 String userID = getIntent().getStringExtra("deviceID");
                 intent = new Intent(MainActivity.this, ProfileActivity.class);
                 intent.putExtra("userID", userID);
-            } else if (itemId == R.id.nav_facilities) {
+            } else if(itemId == R.id.nav_qrScanner){
+                intent = new Intent(MainActivity.this, QRUserActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_QR_SCANNER);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+            else if (itemId == R.id.nav_facilities) {
                 intent = new Intent(MainActivity.this, FacilityListActivity.class);
             } else if (itemId == R.id.nav_browseProfiles) {
                 intent = new Intent(MainActivity.this, AdminProfileListActivity.class);
@@ -161,7 +182,26 @@ public class MainActivity extends AppCompatActivity {
             if (fragment != null) {
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
+        } else if (requestCode==REQUEST_CODE_QR_SCANNER && resultCode==RESULT_OK){
+            String qrResult = data.getStringExtra("qrResult");
+            Log.d("MainActivity", "QR Result: " + qrResult);
+            if (qrResult != null) {
+                navigateToEventLandingPage(qrResult);
+            }else{
+                Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+    private void navigateToEventLandingPage(String qrResult) {
+        if (qrResult == null || qrResult.trim().isEmpty()) {
+            Toast.makeText(this, "Invalid QR Code: Empty event ID", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(MainActivity.this, EventLandingPageUserActivity.class);
+        intent.putExtra("eventID", qrResult);
+        startActivity(intent);
     }
 
     /**
@@ -234,5 +274,13 @@ public class MainActivity extends AppCompatActivity {
          * @param isOrganizer true if the user is an organizer, false otherwise
          */
         void onComplete(boolean isOrganizer);
+    }
+
+    // Method to handle refresh logic
+    private void refreshContent() {
+        // Reload your data or update UI
+        // For example, fetch data for the ViewPager2
+        EventsPagerAdapter adapter = new EventsPagerAdapter(this);
+        viewPager.setAdapter(adapter);
     }
 }
