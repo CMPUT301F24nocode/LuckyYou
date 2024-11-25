@@ -10,8 +10,10 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -71,6 +73,27 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
     private void showPopup() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.facility_admin_overlay);
+
+        // Retrieve the facility ID
+        String facilityID = getIntent().getStringExtra("facility_id");
+
+        Button deleteButton = dialog.findViewById(R.id.delete_facility_button);
+        deleteButton.setOnClickListener(v -> deleteFacility(facilityID, dialog));
+
         dialog.show();
+    }
+
+    private void deleteFacility(String facilityID, Dialog dialog) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("facilities").document(facilityID)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Facility deleted successfully.", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss(); // Close the dialog
+                    finish(); // Close the activity and go back
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error deleting facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }
