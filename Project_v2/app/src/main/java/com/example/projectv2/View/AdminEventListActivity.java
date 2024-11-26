@@ -13,6 +13,7 @@ import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,7 @@ public class AdminEventListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private AdminEventsAdapter adapter;
     private EventController eventController;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,17 @@ public class AdminEventListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AdminEventsAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(adapter);
+
+        // Initialize SwipeRefreshLayout
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        // Set up refresh listener
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Perform refresh actions, like reloading data
+            fetchEvents();
+
+            // Stop the refreshing animation
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
         // Initialize EventController
         eventController = new EventController(this);

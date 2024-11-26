@@ -45,6 +45,7 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.gms:play-services-maps:18.0.2")
+    implementation ("androidx.work:work-runtime:2.8.1")
     implementation (libs.zxing.android.embedded)
     implementation (libs.core)
     implementation("com.google.firebase:firebase-storage:20.2.1")

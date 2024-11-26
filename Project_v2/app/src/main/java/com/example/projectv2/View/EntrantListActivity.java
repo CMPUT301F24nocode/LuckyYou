@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.EntrantListAdapter;
 import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Notification;
@@ -178,6 +179,17 @@ public class EntrantListActivity extends AppCompatActivity {
             for (String userId : selectedList) {
                 Notification notification = new Notification(userId, "You have been chosen to attend " + eventName, true, false);
                 notificationService.sendNotification(this, notification);
+            }
+
+            // Notify remaining users in the waiting list
+            if (waitingList != null) {
+                List<String> remainingWaitingList = new ArrayList<>(waitingList);
+                remainingWaitingList.removeAll(selectedList);
+
+                for (String userId : remainingWaitingList) {
+                    Notification notification = new Notification(userId, "You were unfortunately not selected for " + eventName, true, false);
+                    notificationService.sendNotification(this, notification);
+                }
             }
         });
     }
