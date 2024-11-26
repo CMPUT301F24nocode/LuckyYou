@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * AdminFacilityListActivity displays the list of events available for admin users to browse.
  * It initializes the UI layout and sets up the top bar with the title "Browse Events."
  */
-public class AdminFacilityListActivity extends AppCompatActivity {
+public class AdminEventListActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private AdminEventsAdapter adapter;
