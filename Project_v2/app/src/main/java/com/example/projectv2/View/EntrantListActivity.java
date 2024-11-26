@@ -42,7 +42,6 @@ public class EntrantListActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private Spinner filterSpinner;
     private Button sendNotifAllView;
-    private List<String> entrantList = new ArrayList<>();
     private List<String> waitingList = new ArrayList<>();
     private List<String> selectedList = new ArrayList<>();
     private List<String> cancelledList = new ArrayList<>();
@@ -142,7 +141,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             for (String userId : waitingList) {
                 Notification notification = new Notification(userId, "You're in the waiting list for " + eventName, true, false);
-                notificationService.sendNotification(notification);
+                notificationService.sendNotification(this, notification);
             }
         });
     }
@@ -178,7 +177,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             for (String userId : selectedList) {
                 Notification notification = new Notification(userId, "You have been chosen to attend " + eventName, true, false);
-                notificationService.sendNotification(notification);
+                notificationService.sendNotification(this, notification);
             }
         });
     }
@@ -214,7 +213,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             for (String userId : cancelledList) {
                 Notification notification = new Notification(userId, "Your cancellation of " + eventName + " is confirmed.", true, false);
-                notificationService.sendNotification(notification);
+                notificationService.sendNotification(this, notification);
             }
         });
     }
@@ -247,7 +246,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             for (String userId : attendees) {
                 Notification notification = new Notification(userId, "Welcome to " + eventName, true, false);
-                notificationService.sendNotification(notification);
+                notificationService.sendNotification(this,notification);
             }
         });
     }

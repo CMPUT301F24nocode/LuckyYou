@@ -24,9 +24,14 @@ import com.example.projectv2.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import android.provider.Settings.Secure;
 import android.location.Location;
 import android.location.LocationManager;
+
+import java.util.Collections;
 
 public class SignUpActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -128,11 +133,10 @@ public class SignUpActivity extends AppCompatActivity {
         if (phoneNumberError != 0) {
             if (phoneNumberError == 1) {
                 phoneNumber.setError("Phone number must be 10 digits long or empty");
-                return false;
             } else {
                 phoneNumber.setError("Phone number must contain only digits");
-                return false;
             }
+            return false;
 
         }
         @SuppressLint("HardwareIds") String deviceID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
@@ -146,8 +150,33 @@ public class SignUpActivity extends AppCompatActivity {
         }).addOnFailureListener(e -> {
             Log.d("User", "Error adding document", e);
         });
-        return true;
 
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w("fcmTokenResult", "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+
+                    // Get new FCM registration token
+                    String token = task.getResult();
+
+                    // Log and send the token to your server
+                    Log.d("fcmTokenResult", "FCM Token: " + token);
+
+                    db.collection("Users")
+                            .document(deviceID)
+                            .set(Collections.singletonMap("fcmToken", token), SetOptions.merge())
+                            .addOnSuccessListener(aVoid -> {
+                                // Success callback
+                                Log.d("fcmTokenResult", "fcmToken field successfully updated/created!");
+                            })
+                            .addOnFailureListener(e -> {
+                                // Failure callback
+                                Log.w("fcmTokenResult", "Error updating/creating fcmToken field", e);
+                            });
+                });
+        return true;
     }
     private int isValidPhoneNumber(String phoneNumber) {
         // Check if the phone number is empty or 10 digits long
