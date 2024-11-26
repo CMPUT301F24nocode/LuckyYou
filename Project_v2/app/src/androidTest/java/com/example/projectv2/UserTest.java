@@ -25,7 +25,7 @@ public class UserTest {
         userWithDefaultConstructor = new User();
 
         // Initialize User with partial constructor (non-admin by default)
-        userWithPartialConstructor = new User("test@example.com", "John", "Doe", 1234567890L, "deviceID123");
+        userWithPartialConstructor = new User("test@example.com", "John", "Doe", "1234567890L", "deviceID123");
 
         // Initialize User with full constructor
         userWithFullConstructor = new User(true, false, "admin@example.com", "Admin", "User", true, true, "9876543210", "deviceID456");

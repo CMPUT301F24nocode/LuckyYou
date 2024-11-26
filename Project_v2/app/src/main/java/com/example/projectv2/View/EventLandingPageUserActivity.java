@@ -120,7 +120,9 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     }
 
     private void fetchEventDetails(String eventid) {
+
         dbUtils.fetchEvent(eventid, eventDetails -> {
+            Log.d("HEHEHE",eventDetails.get("name"));
             if (eventDetails != null) {
 
                 name = eventDetails.get("name");

@@ -26,7 +26,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.EventsPagerAdapter;
+import com.example.projectv2.Controller.ProfileImageController;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.View.AdminFacilityListActivity;
 import com.example.projectv2.View.AdminImageListActivity;
@@ -38,6 +40,7 @@ import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
 import com.example.projectv2.View.QRUserActivity;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -48,6 +51,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * MainActivity provides a user interface for accessing and managing events, notifications,
  * user profile, and facilities. Includes a ViewPager for navigating event tabs and a
@@ -57,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String userName;
     private boolean isOrganizer;
+    private DBUtils dbUtils;
+    private ProfileImageController profileImageController;
+    private CircleImageView profilePic;
+
 
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
     private static final int REQUEST_CODE_QR_SCANNER = 2;
@@ -85,8 +94,10 @@ public class MainActivity extends AppCompatActivity {
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         FloatingActionButton fab = findViewById(R.id.homescreen_fab);
         fab.setVisibility(View.VISIBLE);
+        dbUtils = new DBUtils();
+        profileImageController = new ProfileImageController(this);
 
-        fetchAndDisplayUserName(navigationView, userId);
+        fetchAndDisplayUserNameAndImage(navigationView, userId);
 
         profilePicture.setOnClickListener(view -> {
             if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -210,25 +221,47 @@ public class MainActivity extends AppCompatActivity {
      * @param navigationView the navigation view containing the drawer layout and header
      * @param userID         the unique identifier of the user (device ID) used to retrieve the user document
      */
-    private void fetchAndDisplayUserName(NavigationView navigationView, String userID) {
-        db = FirebaseFirestore.getInstance();
-        db.collection("Users").document(userID)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            userName = document.getString("name");
-                            View headerView = navigationView.getHeaderView(0);
-                            TextView userNameTextView = headerView.findViewById(R.id.textView19);
-                            userNameTextView.setText(userName);
-                        } else {
-                            Log.d("MainActivity", "No such document");
-                        }
-                    } else {
-                        Log.d("MainActivity", "get failed with ", task.getException());
+    private void fetchAndDisplayUserNameAndImage(NavigationView navigationView, String userID) {
+//        db = FirebaseFirestore.getInstance();
+//        db.collection("Users").document(userID)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        if (document.exists()) {
+//                            userName = document.getString("name");
+//                            View headerView = navigationView.getHeaderView(0);
+//                            TextView userNameTextView = headerView.findViewById(R.id.textView19);
+//                            userNameTextView.setText(userName);
+//                        } else {
+//                            Log.d("MainActivity", "No such document");
+//                        }
+//                    } else {
+//                        Log.d("MainActivity", "get failed with ", task.getException());
+//                    }
+//                });
+        dbUtils.fetchUser(userID, user -> {
+            if (user != null) {
+                userName = user.getName();
+                View headerView = navigationView.getHeaderView(0);
+                TextView userNameTextView = headerView.findViewById(R.id.textView19);
+                userNameTextView.setText(userName);
+                String userImageUri=user.getProfileImage();
+                String savedImageUri= profileImageController.getImageUriLocally();
+                if (savedImageUri != null) {
+                    profileImageController.loadImage(savedImageUri, profilePic);
+                }else{
+                    if(userImageUri!=null){
+                        profileImageController.loadImage(userImageUri, profilePic);
+                    }else{
+                        profileImageController.loadImage(String.valueOf(R.drawable.placeholder_profile_picture), profilePic);
                     }
-                });
+                }
+
+
+            }
+        });
+
     }
 
     /**
