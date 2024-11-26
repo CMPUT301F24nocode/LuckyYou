@@ -11,7 +11,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,7 +27,7 @@ import android.widget.Toast;
 
 import com.example.projectv2.Controller.EventsPagerAdapter;
 import com.example.projectv2.Model.User;
-import com.example.projectv2.View.AdminFacilityListActivity;
+import com.example.projectv2.View.AdminEventListActivity;
 import com.example.projectv2.View.AdminImageListActivity;
 import com.example.projectv2.View.AdminProfileListActivity;
 import com.example.projectv2.View.AvailableEventsFragment;
@@ -38,8 +37,6 @@ import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
 import com.example.projectv2.View.QRUserActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -135,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this, AdminProfileListActivity.class);
             } else if (itemId == R.id.nav_browseImages) {
                 intent = new Intent(MainActivity.this, AdminImageListActivity.class);
-            } else if (itemId == R.id.nav_browseFacilities) {
-                intent = new Intent(MainActivity.this, AdminFacilityListActivity.class);
+            } else if (itemId == R.id.nav_browseEvents) {
+                intent = new Intent(MainActivity.this, AdminEventListActivity.class);
             }
 
             if (intent != null) {
