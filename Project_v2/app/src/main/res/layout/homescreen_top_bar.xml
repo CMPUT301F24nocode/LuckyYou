@@ -16,7 +16,9 @@
         android:src="@drawable/placeholder_profile_picture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:focusable="true"
+        android:clickable="true"/>
 
     <TextView
         android:id="@+id/appName"

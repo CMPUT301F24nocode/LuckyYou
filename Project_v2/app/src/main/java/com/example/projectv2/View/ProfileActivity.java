@@ -2,6 +2,7 @@ package com.example.projectv2.View;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,10 +10,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Controller.ProfileImageController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.R;
@@ -27,11 +31,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private TextView name, email, phoneNumber;
     private Button editProfileButton;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageButton editProfilePicButton;
+    private CircleImageView profilePic;
+    private ProfileImageController imageController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +54,11 @@ public class ProfileActivity extends AppCompatActivity {
         phoneNumber = findViewById(R.id.profile_phone_box);
         editProfileButton = findViewById(R.id.profile_edit_button);
         swipeRefreshLayout = findViewById(R.id.profile_swipe_refresh);
+        editProfilePicButton = findViewById(R.id.profile_pic_edit_button);
+        profilePic = findViewById(R.id.profile_pic_view);
 
         db = FirebaseFirestore.getInstance();
+        imageController = new ProfileImageController(this);
 
         // Get the intent that was used to start this activity
         Intent intent = getIntent();
@@ -78,6 +90,38 @@ public class ProfileActivity extends AppCompatActivity {
             // Stop the refreshing animation
             swipeRefreshLayout.setRefreshing(false);
         });
+
+        //Handling profile images
+        String savedImageUri= imageController.getImageUriLocally();
+        if (savedImageUri != null) {
+            imageController.loadImage(savedImageUri, profilePic);
+        }
+        editProfilePicButton.setOnClickListener(v -> {
+            imageController.openGallery(this, 1);
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+        profilePic.setImageURI(imageUri);
+        String userID = getIntent().getStringExtra("userID");
+        imageController.uploadImageToFirebase(imageUri, userID, new ProfileImageController.ImageUploadCallback() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Toast.makeText(ProfileActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                imageController.saveImageUriLocally(uri.toString());
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+                Log.e("ProfileActivity", "Image upload failed", e);
+            }
+        });
+        }
     }
 
     private void fetchUserData(String userID) {
@@ -99,6 +143,7 @@ public class ProfileActivity extends AppCompatActivity {
                         } else {
                             Log.e("ProfileActivity", "Failed to fetch user data: " + task.getException());
                         }
+
                     }
                 });
     }
@@ -127,6 +172,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     }
                                 }
                             }
+
                         }
                     });
         }

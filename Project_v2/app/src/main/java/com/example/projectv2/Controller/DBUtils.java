@@ -1,7 +1,13 @@
 package com.example.projectv2.Controller;
 
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.example.projectv2.Model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
@@ -12,6 +18,8 @@ public class DBUtils {
     public DBUtils() {
         db = FirebaseFirestore.getInstance();
     }
+
+
 
     public interface EventCallback {
         void onCallback(HashMap<String, String> eventDetails);
@@ -45,5 +53,46 @@ public class DBUtils {
                         callback.onCallback(null);
                     }
                 });
+    }
+    public interface UserCallback {
+        void onCallback(User user);
+    }
+
+    public void fetchUser(String userID, UserCallback callback) {
+        db.collection("Users").document(userID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Map the Firestore document fields to a User object
+                            User user=document.toObject(User.class);
+                            if (user == null) {
+
+                            callback.onCallback(null);}
+                            callback.onCallback(user);
+
+                        } else {
+                            Log.d("DBUtils", "No such document");
+                            callback.onCallback(null);
+                        }
+                    } else {
+                        Log.d("DBUtils", "get failed with ", task.getException());
+                        callback.onCallback(null);
+                    }
+                });
+    }
+
+    public void updateUser(String userID, User user) {
+        try{
+        DocumentReference userRef = db.collection("Users").document(userID);
+        userRef.update("profileImage", user.getProfileImage());
+        }
+        catch (Exception e){
+            Log.d("DBUtils", "get failed with ", e);
+            throw new RuntimeException(e);
+        }
+
+
     }
 }
