@@ -26,6 +26,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.DBUtils;
+import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
 import com.google.android.material.snackbar.Snackbar;
@@ -214,19 +215,53 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     private void addCancelled(String eventID, String userID) {
         Log.d("Selected", "addCancelled: " + userID);
 
+        // Add the rejecting user to the Cancelled list
         db.collection("events").document(eventID)
                 .update("entrantList.Cancelled", FieldValue.arrayUnion(userID))
                 .addOnSuccessListener(aVoid -> Log.d("Selected", "User added to Cancelled list"))
-                .addOnFailureListener(e -> Log.d("Selected", "Error adding user", e));
+                .addOnFailureListener(e -> Log.d("Selected", "Error adding user to Cancelled list", e));
 
+        // Remove the rejecting user from the Selected list
         db.collection("events").document(eventID)
                 .update("entrantList.Selected", FieldValue.arrayRemove(userID))
-                .addOnSuccessListener(aVoid -> Log.d("Selected", "User removed from Selected list"))
-                .addOnFailureListener(e -> Log.d("Selected", "Error removing user", e));
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Selected", "User removed from Selected list");
 
+                    // Fetch the current waiting list
+                    db.collection("events").document(eventID).get()
+                            .addOnSuccessListener(document -> {
+                                List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
+
+                                if (waitingList != null && !waitingList.isEmpty()) {
+                                    // Select a random user from the waiting list
+                                    String newSelectedUser = waitingList.get((int) (Math.random() * waitingList.size()));
+
+                                    // Add the new user to the Selected list
+                                    db.collection("events").document(eventID)
+                                            .update("entrantList.Selected", FieldValue.arrayUnion(newSelectedUser))
+                                            .addOnSuccessListener(innerVoid -> {
+                                                Log.d("Selected", "New user added to Selected list: " + newSelectedUser);
+
+                                                // Remove the new user from the Waiting list
+                                                db.collection("events").document(eventID)
+                                                        .update("entrantList.Waiting", FieldValue.arrayRemove(newSelectedUser))
+                                                        .addOnSuccessListener(innerInnerVoid -> Log.d("Selected", "New user removed from Waiting list: " + newSelectedUser))
+                                                        .addOnFailureListener(e -> Log.d("Selected", "Error removing new user from Waiting list", e));
+                                            })
+                                            .addOnFailureListener(e -> Log.d("Selected", "Error adding new user to Selected list", e));
+                                } else {
+                                    Log.d("Selected", "No users left in the Waiting list to move to Selected list");
+                                }
+                            })
+                            .addOnFailureListener(e -> Log.d("Selected", "Error fetching Waiting list", e));
+                })
+                .addOnFailureListener(e -> Log.d("Selected", "Error removing user from Selected list", e));
+
+        // Hide the accept and decline buttons
         accept_button.setVisibility(View.INVISIBLE);
         decline_button.setVisibility(View.INVISIBLE);
     }
+
 
     private void fetchEventDetails(String eventid) {
         dbUtils.fetchEvent(eventid, eventDetails -> {

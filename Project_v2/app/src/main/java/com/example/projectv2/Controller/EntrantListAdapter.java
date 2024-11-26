@@ -4,7 +4,7 @@
  *
  * <p>Outstanding Issues: None currently identified.</p>
  */
-package com.example.projectv2.View;
+package com.example.projectv2.Controller;
 
 import android.content.Context;
 import android.view.LayoutInflater;
