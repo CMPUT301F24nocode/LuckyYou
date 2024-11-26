@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Perform refresh actions, like reloading data
-            refreshContent();
+            refreshContent(navigationView,userId);
 
             // Stop the refreshing animation
             swipeRefreshLayout.setRefreshing(false);
@@ -303,10 +303,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Method to handle refresh logic
-    private void refreshContent() {
+    private void refreshContent(NavigationView navigationView, String userId) {
         // Reload your data or update UI
         // For example, fetch data for the ViewPager2
         EventsPagerAdapter adapter = new EventsPagerAdapter(this);
         viewPager.setAdapter(adapter);
+        fetchAndDisplayUserNameAndImage(navigationView, userId);
     }
 }
