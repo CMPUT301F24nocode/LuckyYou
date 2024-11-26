@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.example.projectv2.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public class DBUtils {
     }
 
     public void fetchUser(String userID, UserCallback callback) {
-        db.collection("users").document(userID)
+        db.collection("Users").document(userID)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -82,7 +83,16 @@ public class DBUtils {
                 });
     }
 
-    public void updateUser(User user) {
+    public void updateUser(String userID, User user) {
+        try{
+        DocumentReference userRef = db.collection("Users").document(userID);
+        userRef.update("profileImage", user.getProfileImage());
+        }
+        catch (Exception e){
+            Log.d("DBUtils", "get failed with ", e);
+            throw new RuntimeException(e);
+        }
+
 
     }
 }

@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -48,7 +50,7 @@ public class ProfileImageController {
         dbUtils.fetchUser(userID, user -> {
             if(user!=null){
                 user.setProfileImage(filePath);
-                dbUtils.updateUser(user);
+                dbUtils.updateUser(userID,user);
             }
         });
 
@@ -57,11 +59,19 @@ public class ProfileImageController {
 
     // Method to load an image into an ImageView using Glide
     public void loadImage(String imageUrl, ImageView imageView) {
+        if (imageUrl == null || imageView == null) {
+            Log.d("ProfileImageController", "Invalid imageUrl or imageView");
+            return;
+        }
+
         Glide.with(context)
                 .load(imageUrl)
-                .placeholder(R.drawable.placeholder_profile_picture) // Optional: Set a placeholder image
+                .placeholder(R.drawable.placeholder_profile_picture) // Optional placeholder
+                .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching
+                .skipMemoryCache(true) // Skip memory cache
                 .into(imageView);
     }
+
 
     // Method to save an image URI locally (e.g., SharedPreferences)
     public void saveImageUriLocally(String imageUri) {

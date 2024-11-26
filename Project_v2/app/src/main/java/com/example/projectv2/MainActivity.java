@@ -11,7 +11,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,9 +39,6 @@ import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
 import com.example.projectv2.View.QRUserActivity;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -64,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isOrganizer;
     private DBUtils dbUtils;
     private ProfileImageController profileImageController;
-    private CircleImageView profilePic;
+    private CircleImageView profilePic, profilePicture;
+
 
 
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
@@ -86,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.homescreen);
 
         drawerLayout = findViewById(R.id.homescreen_drawer_layout);
-        ImageView profilePicture = findViewById(R.id.homescreen_profile_pic);
+        profilePicture = findViewById(R.id.homescreen_profile_pic);
         ImageView notificationBell = findViewById(R.id.homescreen_notification_bell);
         NavigationView navigationView = findViewById(R.id.navigation_view);
         viewPager = findViewById(R.id.viewPager2);
@@ -96,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setVisibility(View.VISIBLE);
         dbUtils = new DBUtils();
         profileImageController = new ProfileImageController(this);
+        profilePic = navigationView.getHeaderView(0).findViewById(R.id.profile_pic_view);
 
         fetchAndDisplayUserNameAndImage(navigationView, userId);
 
@@ -241,24 +239,34 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                });
         dbUtils.fetchUser(userID, user -> {
+            Log.d("BLAH","I amd here");
             if (user != null) {
+                // Set user's name
                 userName = user.getName();
+                Log.d("BLAH",userName);
+
                 View headerView = navigationView.getHeaderView(0);
                 TextView userNameTextView = headerView.findViewById(R.id.textView19);
                 userNameTextView.setText(userName);
-                String userImageUri=user.getProfileImage();
-                String savedImageUri= profileImageController.getImageUriLocally();
+
+                // Set user's profile image
+                String userImageUri = user.getProfileImage();
+                String savedImageUri = profileImageController.getImageUriLocally();
+
                 if (savedImageUri != null) {
                     profileImageController.loadImage(savedImageUri, profilePic);
-                }else{
-                    if(userImageUri!=null){
-                        profileImageController.loadImage(userImageUri, profilePic);
-                    }else{
-                        profileImageController.loadImage(String.valueOf(R.drawable.placeholder_profile_picture), profilePic);
-                    }
+                    profileImageController.loadImage(userImageUri,profilePicture);
+                } else if (userImageUri != null) {
+                    profileImageController.loadImage(userImageUri, profilePic);
+                    profileImageController.loadImage(userImageUri,profilePicture);
+                    // Optionally save the fetched image URI locally for future use
+                    profileImageController.saveImageUriLocally(userImageUri);
+                } else {
+                    profilePicture.setImageResource(R.drawable.placeholder_profile_picture);
+                    profilePic.setImageResource(R.drawable.placeholder_profile_picture);
                 }
-
-
+            } else {
+                Log.d("BLAH", "User not found in Firestore");
             }
         });
 
