@@ -74,14 +74,19 @@ public class EventEditActivity extends AppCompatActivity {
     /**
      * Loads the current event poster from Firebase Storage.
      */
+    /**
+     * Loads the current event poster from Firebase Storage.
+     * If no poster exists, allow the user to edit and upload a new image.
+     */
     private void loadEventPoster() {
-        progressDialog.setMessage("Loading event poster...");
+        progressDialog.setMessage("Checking for existing event poster...");
         progressDialog.show();
 
         imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
                 progressDialog.dismiss();
+                // Poster exists, load it into the ImageView
                 Glide.with(EventEditActivity.this)
                         .load(downloadUrl)
                         .placeholder(R.drawable.placeholder_event)
@@ -92,13 +97,15 @@ public class EventEditActivity extends AppCompatActivity {
             @Override
             public void onRetrieveFailure(Exception e) {
                 progressDialog.dismiss();
-                String errorMessage = "Failed to load event poster. Please try again later.";
-                Toast.makeText(EventEditActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, errorMessage, e);
+                // Poster does not exist, allow user to edit and upload a new image
+                Log.e(TAG, "No existing poster found for event: " + eventName, e);
+                Toast.makeText(EventEditActivity.this, "No poster found. You can upload a new one.", Toast.LENGTH_SHORT).show();
+                // Set the placeholder image or keep the ImageView empty
                 eventPosterImageView.setImageResource(R.drawable.placeholder_event);
             }
         });
     }
+
 
     /**
      * Handles the result of the image selection.
