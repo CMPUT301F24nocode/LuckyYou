@@ -1,35 +1,69 @@
-/**
- * Activity for displaying the list of facilities in the admin view.
- * Sets up the top bar with a title and back button functionality.
- *
- * <p>Outstanding Issues: None currently identified.</p>
- */
 package com.example.projectv2.View;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.AdminEventsAdapter;
+import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
+import java.util.ArrayList;
+
 /**
- * AdminFacilityListActivity displays the list of facilities available for admin users to browse.
- * It initializes the UI layout and sets up the top bar with the title "Browse Facilities."
+ * AdminFacilityListActivity displays the list of events available for admin users to browse.
+ * It initializes the UI layout and sets up the top bar with the title "Browse Events."
  */
 public class AdminFacilityListActivity extends AppCompatActivity {
 
-    /**
-     * Called when the activity is created. Sets up the content view and configures the top bar
-     * with the title "Browse Facilities" and the "more" button visibility set to invisible.
-     *
-     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
-     */
+    private RecyclerView recyclerView;
+    private AdminEventsAdapter adapter;
+    private EventController eventController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.admin_facility_list);
-        topBarUtils.topBarSetup(this, "Browse Facilities", View.INVISIBLE);
+        setContentView(R.layout.admin_event_list);
+
+        // Setup top bar
+        topBarUtils.topBarSetup(this, "Browse Events", View.INVISIBLE);
+
+        // Initialize RecyclerView
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new AdminEventsAdapter(this, new ArrayList<>());
+        recyclerView.setAdapter(adapter);
+
+        // Initialize EventController
+        eventController = new EventController(this);
+
+        // Fetch and display events
+        fetchEvents();
+    }
+
+    private void fetchEvents() {
+        eventController.fetchEvents(new EventController.EventCallback() {
+            @Override
+            public void onEventListLoaded(ArrayList<Event> events) {
+                Log.d("AdminFacilityListActivity", "Fetched " + events.size() + " events.");
+                adapter.updateEventList(events);
+            }
+
+            @Override
+            public void onEventCreated(String eventId) {
+                // Not needed in this activity
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("AdminFacilityListActivity", "Error fetching events", e);
+            }
+        });
     }
 }

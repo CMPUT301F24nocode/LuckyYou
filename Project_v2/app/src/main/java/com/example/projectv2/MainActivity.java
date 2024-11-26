@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this, AdminProfileListActivity.class);
             } else if (itemId == R.id.nav_browseImages) {
                 intent = new Intent(MainActivity.this, AdminImageListActivity.class);
-            } else if (itemId == R.id.nav_browseFacilities) {
+            } else if (itemId == R.id.nav_browseEvents) {
                 intent = new Intent(MainActivity.this, AdminFacilityListActivity.class);
             }
 
