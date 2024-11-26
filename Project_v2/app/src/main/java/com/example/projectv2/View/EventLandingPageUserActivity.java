@@ -6,12 +6,15 @@
  */
 package com.example.projectv2.View;
 import com.bumptech.glide.Glide;
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,18 +27,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.topBarUtils;
-import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * EventLandingPageUserActivity displays event details and allows the user to join or leave the event.
@@ -45,7 +45,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
     private ImageView eventImageView;
     private TextView eventNameView, eventDetailsView, eventRulesView, eventDeadlineView, eventPriceView, eventCountdownView, geolocationWarningView;
-    private Button joinEventButton;
+    private Button joinEventButton, accept_button, decline_button, leaveEventButton;
     private FirebaseFirestore db;
     private int entrantsNum;
     private int entrantListSize;
@@ -79,6 +79,9 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         eventPriceView = findViewById(R.id.event_price_view);
         joinEventButton = findViewById(R.id.event_join_button);
         geolocationWarningView = findViewById(R.id.geolocation_warning_view);
+        leaveEventButton = findViewById(R.id.event_leave_button);
+        accept_button = findViewById(R.id.event_accept_button);
+        decline_button = findViewById(R.id.event_decline_button);
 
         // Retrieve event data from intent
         Intent intent = getIntent();
@@ -99,17 +102,41 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             imageUriString = intent.getStringExtra("imageUri");
             userID = intent.getStringExtra("user");}
 
+        checkGeolocationEnabled(eventID);
+
+        @SuppressLint("HardwareIds")
+        String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        // Check if the device is selected
+        isSelected(deviceID, isSelected -> {
+            if (isSelected) {
+                Log.d("Result", "Device is selected");
+                joinEventButton.setVisibility(View.GONE);
+                leaveEventButton.setVisibility(View.GONE);
+                accept_button.setVisibility(View.VISIBLE);
+                decline_button.setVisibility(View.VISIBLE);
+
+                accept_button.setOnClickListener(v -> addAttendee(eventID, deviceID));
+                decline_button.setOnClickListener(v -> addCancelled(eventID, deviceID));
+            } else{
+                // Check if the device is an entrant
+                isEntrant(deviceID, isEntrant -> {
+                    if (isEntrant) {
+                        Log.d("Result", "Device is an entrant");
+                        joinEventButton.setVisibility(View.GONE);
+                        leaveEventButton.setVisibility(View.VISIBLE);
+
+                        leaveEventButton.setOnLongClickListener(view -> {
+                            promptLeaveEvent(view, eventID, userID);
+                            return true;
+                        });
+                    }
+                });
+            }
+        });
 
         // Configure the join event button
         joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
-
-        checkGeolocationEnabled(eventID);
-
-        // Configure the long-click listener to leave the event
-        joinEventButton.setOnLongClickListener(view -> {
-            promptLeaveEvent(view, eventID, userID);
-            return true;
-        });
 
         // Set data to views with fallback if values are null
         setEventData(name, details, rules, deadline, startDate, price, imageUriString);
@@ -117,6 +144,88 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         // Set up the additional settings popup
         ImageButton moreButton = findViewById(R.id.more_settings_button);
         moreButton.setOnClickListener(v -> showPopup());
+    }
+
+    public interface SelectedCallback {
+        void onSelectedResult(boolean isSelected);
+    }
+
+    public interface EntrantCallback {
+        void onEntrantResult(boolean isEntrant);
+    }
+
+    private void isSelected(String deviceID, SelectedCallback callback) {
+        db.collection("events").document(eventID).get()
+                .addOnSuccessListener(document -> {
+                    List<String> selectedList = (List<String>) document.get("entrantList.Selected");
+
+                    if (selectedList != null && selectedList.contains(deviceID)) {
+                        Log.d("Selected", "Value exists in the list");
+                        callback.onSelectedResult(true);
+                    } else {
+                        Log.d("Selected", "Value does not exist in the list");
+                        callback.onSelectedResult(false);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("Selected", "Error fetching document", e);
+                    callback.onSelectedResult(false);
+                });
+    }
+
+    private void isEntrant(String deviceID, EntrantCallback callback) {
+        db.collection("events").document(eventID).get().addOnSuccessListener(document -> {
+            if (document.exists()) {
+                Map<String, List<String>> entrantList = (Map<String, List<String>>) document.get("entrantList");
+                if (entrantList != null) {
+                    boolean found = entrantList.values().stream().anyMatch(list -> list != null && list.contains(deviceID));
+                    callback.onEntrantResult(found);
+                } else {
+                    Log.d("Entrant", "entrantList is null");
+                    callback.onEntrantResult(false);
+                }
+            } else {
+                Log.d("Entrant", "Document does not exist");
+                callback.onEntrantResult(false);
+            }
+        }).addOnFailureListener(e -> {
+            Log.d("Entrant", "Error fetching document", e);
+            callback.onEntrantResult(false);
+        });
+    }
+
+    private void addAttendee(String eventID, String userID) {
+        Log.d("Selected", "addAttendee: " + userID);
+
+        db.collection("events").document(eventID)
+                .update("entrantList.Attendee", FieldValue.arrayUnion(userID))
+                .addOnSuccessListener(aVoid -> Log.d("Selected", "User added to Attendee list"))
+                .addOnFailureListener(e -> Log.d("Selected", "Error adding user", e));
+
+        db.collection("events").document(eventID)
+                .update("entrantList.Selected", FieldValue.arrayRemove(userID))
+                .addOnSuccessListener(aVoid -> Log.d("Selected", "User removed from Selected list"))
+                .addOnFailureListener(e -> Log.d("Selected", "Error removing user", e));
+
+        accept_button.setVisibility(View.INVISIBLE);
+        decline_button.setVisibility(View.INVISIBLE);
+    }
+
+    private void addCancelled(String eventID, String userID) {
+        Log.d("Selected", "addCancelled: " + userID);
+
+        db.collection("events").document(eventID)
+                .update("entrantList.Cancelled", FieldValue.arrayUnion(userID))
+                .addOnSuccessListener(aVoid -> Log.d("Selected", "User added to Cancelled list"))
+                .addOnFailureListener(e -> Log.d("Selected", "Error adding user", e));
+
+        db.collection("events").document(eventID)
+                .update("entrantList.Selected", FieldValue.arrayRemove(userID))
+                .addOnSuccessListener(aVoid -> Log.d("Selected", "User removed from Selected list"))
+                .addOnFailureListener(e -> Log.d("Selected", "Error removing user", e));
+
+        accept_button.setVisibility(View.INVISIBLE);
+        decline_button.setVisibility(View.INVISIBLE);
     }
 
     private void fetchEventDetails(String eventid) {
@@ -137,14 +246,38 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                     setEventData(name, details, rules, deadline, startDate, price, imageUriString);
 
                     // Configure the join event button after data is loaded
-                    joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
                     checkGeolocationEnabled(eventID);
 
-                    // Configure the long-click listener to leave the event
-                    joinEventButton.setOnLongClickListener(view -> {
-                        promptLeaveEvent(view, eventID, userID);
-                        return true;
+                    // Check if the device is selected
+                    isSelected(userID, isSelected -> {
+                        if (isSelected) {
+                            Log.d("Result", "Device is selected");
+                            joinEventButton.setVisibility(View.GONE);
+                            leaveEventButton.setVisibility(View.GONE);
+                            accept_button.setVisibility(View.VISIBLE);
+                            decline_button.setVisibility(View.VISIBLE);
+
+                            accept_button.setOnClickListener(v -> addAttendee(eventID, userID));
+                            decline_button.setOnClickListener(v -> addCancelled(eventID, userID));
+                        } else{
+                            // Check if the device is an entrant
+                            isEntrant(userID, isEntrant -> {
+                                if (isEntrant) {
+                                    Log.d("Result", "Device is an entrant");
+                                    joinEventButton.setVisibility(View.GONE);
+                                    leaveEventButton.setVisibility(View.VISIBLE);
+
+                                    leaveEventButton.setOnLongClickListener(view -> {
+                                        promptLeaveEvent(view, eventID, userID);
+                                        return true;
+                                    });
+                                }
+                            });
+                        }
                     });
+
+                    // Configure the join event button
+                    joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
                 });
             } else {
                 runOnUiThread(() -> {
@@ -217,6 +350,8 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 }
             }
         });
+        joinEventButton.setVisibility(View.GONE);
+        leaveEventButton.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -248,6 +383,9 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         eventRef.update("entrantList.Waiting", FieldValue.arrayRemove(userID))
                 .addOnSuccessListener(aVoid -> showLeaveSuccess(view))
                 .addOnFailureListener(e -> showLeaveFailure(view, e));
+
+        joinEventButton.setVisibility(View.VISIBLE);
+        leaveEventButton.setVisibility(View.GONE);
     }
 
     /**
@@ -316,9 +454,9 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
      */
     private void showJoinSuccess(View view) {
         Snackbar.make(view, "Successfully joined the event!", Snackbar.LENGTH_LONG).show();
-        joinEventButton.setText("Leave");
-        joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon, 0, 0, 0);
-        joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
+//        joinEventButton.setText("Leave");
+//        joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.leaveevent_icon, 0, 0, 0);
+//        joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiEmphasis)));
     }
 
     /**
@@ -339,9 +477,9 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
      */
     private void showLeaveSuccess(View view) {
         Snackbar.make(view, "Successfully left the event", Snackbar.LENGTH_LONG).show();
-        joinEventButton.setText("Join");
-        joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.joinevent_icon, 0, 0, 0);
-        joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiAccent)));
+//        joinEventButton.setText("Join");
+//        joinEventButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.joinevent_icon, 0, 0, 0);
+//        joinEventButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.lucky_uiAccent)));
     }
 
     /**
