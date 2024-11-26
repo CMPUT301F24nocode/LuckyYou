@@ -362,8 +362,7 @@ public class EventController {
                                     .update("entrantList.Cancelled", FieldValue.arrayUnion(selectedList.toArray()))
                                     .addOnSuccessListener(aVoid -> Log.d("EventController", "Users moved to Cancelled for event: " + eventId))
                                     .addOnFailureListener(e -> Log.e("EventController", "Error updating Cancelled list", e));
-
-                            // Clear the Selected list
+                            
                             db.collection("events").document(eventId)
                                     .update("entrantList.Selected", FieldValue.delete())
                                     .addOnSuccessListener(aVoid -> Log.d("EventController", "Cleared Selected list for event: " + eventId))
