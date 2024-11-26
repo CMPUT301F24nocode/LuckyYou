@@ -12,11 +12,15 @@ import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class AdminEventOverlayActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String eventID;
+    private String eventName;
+    private FirebaseStorage storage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,7 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
 
         // Retrieve the eventID from the intent
         eventID = getIntent().getStringExtra("eventID");
+        eventName=getIntent().getStringExtra("name");
 
         // Set up delete button listener
         Button deleteEventButton = findViewById(R.id.delete_event_button);
@@ -55,7 +60,13 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Log.d("AdminEventOverlay", "Event successfully deleted!");
                     Toast.makeText(this, "Event deleted successfully!", Toast.LENGTH_SHORT).show();
-                    finish(); // Close the activity after deletion
+                    if (eventName != null && !eventName.isEmpty()) {
+                        String posterPath = "event_posters/event_posters_" + eventName + ".jpg";
+                        deleteEventPoster(posterPath); // Efficiently delete the image
+                    } else {
+                        Log.d("AdminEventOverlay", "No event name provided, skipping poster deletion.");
+                        finish(); // Close the activity
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("AdminEventOverlay", "Error deleting event", e);
@@ -81,6 +92,22 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.e("AdminEventOverlay", "Error deleting QR Hash Data", e);
                     Toast.makeText(this, "Failed to delete QR Hash Data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void deleteEventPoster(String filePath) {
+        StorageReference posterRef = storage.getReference().child(filePath);
+
+        // Delete the poster from Firebase Storage
+        posterRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("AdminEventOverlay", "Event poster successfully deleted!");
+                    Toast.makeText(this, "Event poster deleted successfully!", Toast.LENGTH_SHORT).show();
+                    finish(); // Close the activity after all deletions
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("AdminEventOverlay", "Error deleting event poster", e);
+                    Toast.makeText(this, "Failed to delete event poster: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 }
