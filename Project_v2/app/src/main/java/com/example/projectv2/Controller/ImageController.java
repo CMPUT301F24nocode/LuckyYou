@@ -71,6 +71,11 @@ public class ImageController {
      */
     public void retrieveImage(String eventName, ImageRetrieveCallback callback) {
         // Construct file path: event_posters_<eventName>.jpg
+        if (eventName == null || eventName.isEmpty()) {
+            Log.e(TAG, "Event name is null or empty. Cannot retrieve image.");
+            callback.onRetrieveFailure(new IllegalArgumentException("Event name cannot be null or empty."));
+            return;
+        }
         String fileName = "event_posters/event_posters_" + eventName.replaceAll("[^a-zA-Z0-9_]", "_") + ".jpg";
         StorageReference imageRef = storageReference.child(fileName);
 
