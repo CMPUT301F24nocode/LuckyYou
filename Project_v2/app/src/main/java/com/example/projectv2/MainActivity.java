@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         dbUtils = new DBUtils();
         profileImageController = new ProfileImageController(this);
         profilePic = navigationView.getHeaderView(0).findViewById(R.id.profile_pic_view);
+        profilePicture.setImageResource(R.drawable.app_logo);
 
         fetchAndDisplayUserNameAndImage(navigationView, userId);
 
@@ -220,26 +221,8 @@ public class MainActivity extends AppCompatActivity {
      * @param userID         the unique identifier of the user (device ID) used to retrieve the user document
      */
     private void fetchAndDisplayUserNameAndImage(NavigationView navigationView, String userID) {
-//        db = FirebaseFirestore.getInstance();
-//        db.collection("Users").document(userID)
-//                .get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        if (document.exists()) {
-//                            userName = document.getString("name");
-//                            View headerView = navigationView.getHeaderView(0);
-//                            TextView userNameTextView = headerView.findViewById(R.id.textView19);
-//                            userNameTextView.setText(userName);
-//                        } else {
-//                            Log.d("MainActivity", "No such document");
-//                        }
-//                    } else {
-//                        Log.d("MainActivity", "get failed with ", task.getException());
-//                    }
-//                });
         dbUtils.fetchUser(userID, user -> {
-            Log.d("BLAH","I amd here");
+
             if (user != null) {
                 // Set user's name
                 userName = user.getName();
@@ -255,9 +238,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if (savedImageUri != null) {
                     profileImageController.loadImage(savedImageUri, profilePic);
-                    profileImageController.loadImage(userImageUri,profilePicture);
+
+                    profileImageController.loadImage(savedImageUri,profilePicture);
                 } else if (userImageUri != null) {
                     profileImageController.loadImage(userImageUri, profilePic);
+
                     profileImageController.loadImage(userImageUri,profilePicture);
                     // Optionally save the fetched image URI locally for future use
                     profileImageController.saveImageUriLocally(userImageUri);
