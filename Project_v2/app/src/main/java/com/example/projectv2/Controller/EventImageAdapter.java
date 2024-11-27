@@ -22,18 +22,13 @@ public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.Im
 
     private static final String TAG = "EventImageAdapter";
     private final Context context;
-    private final List<String> imageFilenames; // Use relative filenames directly
+    private final List<String> imageFilenames; // List of filenames
     private final ImageController imageController;
-    public EventImageAdapter(Context context, List<String> imageFilenames) {
-        // Filter out placeholder_event.png during initialization
-        this.context = context;
-        this.imageFilenames = filterPlaceholders(imageFilenames);
-        this.imageController = new ImageController(); // Initialize ImageController
-    }
 
-    private List<String> filterPlaceholders(List<String> filenames) {
-        filenames.removeIf(filename -> filename.contains("placeholder_event.png"));
-        return filenames;
+    public EventImageAdapter(Context context, List<String> imageFilenames) {
+        this.context = context;
+        this.imageFilenames = imageFilenames; // Assume placeholders are already filtered
+        this.imageController = new ImageController(); // Initialize ImageController
     }
 
     @NonNull
@@ -45,18 +40,12 @@ public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.Im
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        String filename = imageFilenames.get(position); // Get the filename directly
+        String filename = imageFilenames.get(position); // Get the filename
 
-        // Construct the download URL for displaying the image
+        // Fetch and display the image
         imageController.getDownloadUrl(filename, new ImageController.ImageRetrieveCallback() {
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
-                if (downloadUrl.contains("placeholder_event.png")) {
-                    Log.d(TAG, "Skipping placeholder image: " + filename);
-                    return; // Do not load placeholder images
-                }
-
-                // Load the image using Glide
                 Glide.with(context)
                         .load(downloadUrl)
                         .placeholder(R.drawable.placeholder_event)
@@ -65,43 +54,27 @@ public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.Im
 
             @Override
             public void onRetrieveFailure(Exception e) {
-                // Handle errors (e.g., set placeholder if the image URL cannot be retrieved)
-                Log.e(TAG, "Failed to fetch download URL for: " + filename, e);
-                holder.imageView.setImageResource(R.drawable.placeholder_event);
+                Log.e(TAG, "Failed to fetch image: " + filename, e);
+                holder.imageView.setImageResource(R.drawable.placeholder_event); // Set placeholder
             }
         });
 
+        // Handle delete button click
         holder.deleteButton.setOnClickListener(v -> {
-            String placeholderPath = "placeholder_event.png"; // Path to placeholder image
+            Log.d(TAG, "Attempting to delete image: " + filename);
 
-            Log.d(TAG, "Deleting image: " + filename);
-
-            // Step 1: Delete the original image
+            // Delete the image
             imageController.deleteImage(filename, new ImageController.ImageDeleteCallback() {
                 @Override
                 public void onDeleteSuccess() {
-                    Log.d(TAG, "Image deleted successfully: " + filename);
+                    Log.d(TAG, "Image deleted: " + filename);
 
-                    // Step 2: Replace with placeholder image
-                    imageController.copyImage(placeholderPath, filename, new ImageController.ImageDeleteCallback() {
-                        @Override
-                        public void onDeleteSuccess() {
-                            Log.d(TAG, "Placeholder copied successfully to: " + filename);
+                    // Update the UI
+                    imageFilenames.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, imageFilenames.size());
 
-                            // Step 3: Remove the item from the imageFilenames list
-                            imageFilenames.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, imageFilenames.size());
-
-                            Toast.makeText(context, "Image replaced with placeholder.", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onDeleteFailure(Exception e) {
-                            Log.e(TAG, "Failed to replace with placeholder: " + filename, e);
-                            Toast.makeText(context, "Failed to replace with placeholder: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Toast.makeText(context, "Image deleted successfully.", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

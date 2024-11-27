@@ -96,14 +96,17 @@ public class ImageController {
      * Deletes an image and replaces it with the placeholder image.
      */
     public void deleteImage(String filename, ImageDeleteCallback callback) {
+        if (filename == null || filename.trim().isEmpty()) {
+            callback.onDeleteFailure(new IllegalArgumentException("Filename cannot be null or empty"));
+            return;
+        }
+
         StorageReference imageRef = storageReference.child(filename);
 
         Log.d(TAG, "Attempting to delete file: " + filename);
 
-        // Check if the file exists before deleting
         imageRef.getMetadata()
                 .addOnSuccessListener(metadata -> {
-                    // File exists, proceed with deletion
                     imageRef.delete()
                             .addOnSuccessListener(aVoid -> {
                                 Log.d(TAG, "File deleted successfully: " + filename);
@@ -111,39 +114,12 @@ public class ImageController {
                             })
                             .addOnFailureListener(e -> {
                                 Log.e(TAG, "Failed to delete file: " + filename, e);
-                                callback.onDeleteFailure(e);
+                                callback.onDeleteFailure(new Exception("Deletion error: " + e.getMessage()));
                             });
                 })
                 .addOnFailureListener(e -> {
-                    // File does not exist
                     Log.e(TAG, "File does not exist: " + filename, e);
                     callback.onDeleteFailure(new Exception("File does not exist: " + filename));
-                });
-    }
-
-    /**
-     * Copies the placeholder image to replace the deleted image.
-     */
-    public void copyImage(String sourcePath, String targetPath, ImageDeleteCallback callback) {
-        StorageReference sourceRef = storageReference.child(sourcePath);
-        StorageReference targetRef = storageReference.child(targetPath);
-
-        sourceRef.getBytes(Long.MAX_VALUE) // Download placeholder image as bytes
-                .addOnSuccessListener(bytes -> {
-                    // Upload the bytes to the target path
-                    targetRef.putBytes(bytes)
-                            .addOnSuccessListener(taskSnapshot -> {
-                                Log.d(TAG, "Placeholder image copied to: " + targetPath);
-                                callback.onDeleteSuccess();
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e(TAG, "Failed to copy placeholder image to: " + targetPath, e);
-                                callback.onDeleteFailure(e);
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to download placeholder image from: " + sourcePath, e);
-                    callback.onDeleteFailure(e);
                 });
     }
     public void getDownloadUrl(String filename, ImageRetrieveCallback callback) {
