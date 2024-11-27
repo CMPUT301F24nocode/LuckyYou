@@ -28,6 +28,7 @@ import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
@@ -205,6 +206,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Log.d("Selected", "User removed from Selected list"))
                 .addOnFailureListener(e -> Log.d("Selected", "Error removing user", e));
 
+        NotificationService notificationService = new NotificationService();
+        String eventName = getIntent().getStringExtra("name");
+        Notification notification = new Notification(userID, "Welcome to " + eventName, true, false);
+        notificationService.sendNotification(this, notification, eventID);
+
         accept_button.setVisibility(View.INVISIBLE);
         decline_button.setVisibility(View.INVISIBLE);
     }
@@ -244,6 +250,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                                                         .update("entrantList.Waiting", FieldValue.arrayRemove(newSelectedUser))
                                                         .addOnSuccessListener(innerInnerVoid -> Log.d("Selected", "New user removed from Waiting list: " + newSelectedUser))
                                                         .addOnFailureListener(e -> Log.d("Selected", "Error removing new user from Waiting list", e));
+
+                                                NotificationService notificationService = new NotificationService();
+                                                String eventName = getIntent().getStringExtra("name");
+                                                Notification notification = new Notification(newSelectedUser, "Congratulations! You have been chosen to attend " + eventName, true, false);
+                                                notificationService.sendNotification(this, notification, eventID);
                                             })
                                             .addOnFailureListener(e -> Log.d("Selected", "Error adding new user to Selected list", e));
                                 } else {
@@ -253,6 +264,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                             .addOnFailureListener(e -> Log.d("Selected", "Error fetching Waiting list", e));
                 })
                 .addOnFailureListener(e -> Log.d("Selected", "Error removing user from Selected list", e));
+
+        NotificationService notificationService = new NotificationService();
+        String eventName = getIntent().getStringExtra("name");
+        Notification notification = new Notification(userID, "Your cancellation of " + eventName + " is confirmed.", true, false);
+        notificationService.sendNotification(this, notification, eventID);
 
         // Hide the accept and decline buttons
         accept_button.setVisibility(View.INVISIBLE);

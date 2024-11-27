@@ -197,6 +197,7 @@ public class EntrantListActivity extends AppCompatActivity {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         documentIds = (List<String>) documentSnapshot.get("entrantList.Selected");
+                        waitingList = (List<String>) documentSnapshot.get("entrantList.Waiting");
 
                         db = FirebaseFirestore.getInstance();
                         selectedList.clear();
@@ -248,7 +249,7 @@ public class EntrantListActivity extends AppCompatActivity {
             String eventName = getIntent().getStringExtra("name");
 
             for (String userId : documentIds) {
-                Notification notification = new Notification(userId, "You have been chosen to attend " + eventName, true, false);
+                Notification notification = new Notification(userId, "Congratulations! You have been chosen to attend " + eventName, true, false);
                 notificationService.sendNotification(this, notification, eventId);
             }
 
@@ -258,7 +259,7 @@ public class EntrantListActivity extends AppCompatActivity {
                 remainingWaitingList.removeAll(documentIds);
 
                 for (String userId : remainingWaitingList) {
-                    Notification notification = new Notification(userId, "You were unfortunately not selected for " + eventName, true, false);
+                    Notification notification = new Notification(userId, "You were unfortunately not selected for " + eventName + ", Don't worry. You may get another chance. Keep alert!", true, false);
                     notificationService.sendNotification(this, notification, eventId);
                 }
             }
@@ -408,3 +409,4 @@ public class EntrantListActivity extends AppCompatActivity {
         });
     }
 }
+
