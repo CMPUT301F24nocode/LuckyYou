@@ -178,6 +178,32 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }).attach();
+        // Check and request notification permission
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                // Request the POST_NOTIFICATIONS permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_NOTIFICATION_PERMISSION);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+                Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT).show();
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Notification permission denied.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
@@ -232,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
             if (user != null) {
                 // Set user's name
                 userName = user.getName();
-                Log.d("BLAH",userName);
+                Log.d("BLAH", userName);
 
                 View headerView = navigationView.getHeaderView(0);
                 TextView userNameTextView = headerView.findViewById(R.id.textView19);
@@ -245,11 +271,11 @@ public class MainActivity extends AppCompatActivity {
                 if (savedImageUri != null) {
                     profileImageController.loadImage(savedImageUri, profilePic);
 
-                    profileImageController.loadImage(savedImageUri,profilePicture);
+                    profileImageController.loadImage(savedImageUri, profilePicture);
                 } else if (userImageUri != null) {
                     profileImageController.loadImage(userImageUri, profilePic);
 
-                    profileImageController.loadImage(userImageUri,profilePicture);
+                    profileImageController.loadImage(userImageUri, profilePicture);
                     // Optionally save the fetched image URI locally for future use
                     profileImageController.saveImageUriLocally(userImageUri);
                 } else {
@@ -260,32 +286,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("BLAH", "User not found in Firestore");
             }
         });
-// Check and request notification permission
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                // Request the POST_NOTIFICATIONS permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        REQUEST_NOTIFICATION_PERMISSION);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted
-                Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT).show();
-            } else {
-                // Permission denied
-                Toast.makeText(this, "Notification permission denied.", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     /**
