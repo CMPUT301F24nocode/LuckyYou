@@ -68,7 +68,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         setContentView(R.layout.event_landing_page_user);
         db = FirebaseFirestore.getInstance();
 
-        topBarUtils.topBarSetup(this, "Event", View.VISIBLE);
+        topBarUtils.topBarSetup(this, "Event", View.INVISIBLE);
 
         // Initialize views
         eventImageView = findViewById(R.id.event_picture);
@@ -142,9 +142,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         // Set data to views with fallback if values are null
         setEventData(name, details, rules, deadline, startDate, price, imageUriString);
 
-        // Set up the additional settings popup
-        ImageButton moreButton = findViewById(R.id.more_settings_button);
-        moreButton.setOnClickListener(v -> showPopup());
     }
 
     public interface SelectedCallback {

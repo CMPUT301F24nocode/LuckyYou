@@ -9,6 +9,7 @@ package com.example.projectv2;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.ImageView;
 import android.view.View;
 import android.widget.TextView;
@@ -67,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private ProfileImageController profileImageController;
     private CircleImageView profilePic, profilePicture;
 
-
+    private SharedPreferences preferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
 
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
     private static final int REQUEST_CODE_QR_SCANNER = 2;
@@ -154,6 +157,36 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("FABListener", "Document does not exist.");
                     }
                 });
+
+        // Initialize SharedPreferences
+        preferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+
+        // Access the navigation menu
+        Menu menu = navigationView.getMenu();
+
+        // Register the listener for SharedPreferences changes
+        preferenceChangeListener = (sharedPreferences, key) -> {
+            if (key.equals("AdminMode")) {
+                boolean isAdminMode = sharedPreferences.getBoolean("AdminMode", false);
+
+                // Update visibility of admin-specific menu items
+                menu.findItem(R.id.nav_browseProfiles).setVisible(isAdminMode);
+                menu.findItem(R.id.nav_browseImages).setVisible(isAdminMode);
+                menu.findItem(R.id.nav_browseEvents).setVisible(isAdminMode);
+
+                // Log for debugging
+                Log.d("AdminCheckbox", "isAdminMode: " + isAdminMode);
+            }
+        };
+
+        // Register the listener
+        preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+
+        // Set initial visibility based on saved preference
+        boolean isAdminMode = preferences.getBoolean("AdminMode", false);
+        menu.findItem(R.id.nav_browseProfiles).setVisible(isAdminMode);
+        menu.findItem(R.id.nav_browseImages).setVisible(isAdminMode);
+        menu.findItem(R.id.nav_browseEvents).setVisible(isAdminMode);
 
         navigationView.setNavigationItemSelectedListener(item -> {
             Intent intent = null;

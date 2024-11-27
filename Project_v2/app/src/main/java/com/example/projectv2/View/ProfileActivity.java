@@ -2,6 +2,7 @@ package com.example.projectv2.View;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +31,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -153,7 +155,13 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
         dialog.setContentView(R.layout.profile_overlay);
         CheckBox needOrganizerNotifs = dialog.findViewById(R.id.profile_notification_organiser_checkbox_view);
         CheckBox needAdminNotifs = dialog.findViewById(R.id.profile_notification_admin_checkbox_view);
+        CheckBox adminMode = dialog.findViewById(R.id.profile_admin_mode_checkbox_view);
         Button savePreferencesButton = dialog.findViewById(R.id.save_preferences);
+
+        AtomicReference<SharedPreferences> preferences = new AtomicReference<>(getSharedPreferences("AppPreferences", MODE_PRIVATE));
+        boolean isAdminMode = preferences.get().getBoolean("AdminMode", false); // Default to false if not set
+
+        adminMode.setChecked(isAdminMode);
 
         if (userID != null) {
             db.collection("Users").document(userID)
@@ -177,12 +185,28 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
                     });
         }
 
+//        // Set a listener for checkbox state changes
+//        adminMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            Log.d("AdminCheckbox", "isChecked: " + isChecked);
+//            // Save the checkbox state to SharedPreferences
+//            preferences.set(getSharedPreferences("AppPreferences", MODE_PRIVATE));
+//            SharedPreferences.Editor editor = preferences.get().edit();
+//            editor.putBoolean("AdminMode", isChecked);
+//            editor.apply();
+//        });
+
         savePreferencesButton.setOnClickListener(v -> {
             boolean newOrganizerNotif = needOrganizerNotifs.isChecked();
             boolean newAdminNotif = needAdminNotifs.isChecked();
             Map<String, Object> updates = new HashMap<>();
             updates.put("organizerNotif", newOrganizerNotif);
             updates.put("adminNotif", newAdminNotif);
+
+            Log.d("AdminCheckbox", "isChecked: " + adminMode.isChecked());
+            preferences.set(getSharedPreferences("AppPreferences", MODE_PRIVATE));
+            SharedPreferences.Editor editor = preferences.get().edit();
+            editor.putBoolean("AdminMode", adminMode.isChecked());
+            editor.apply();
 
             assert userID != null;
             db.collection("Users").document(userID)
