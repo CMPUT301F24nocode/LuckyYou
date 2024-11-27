@@ -1,6 +1,9 @@
 package com.example.projectv2.Controller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +15,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.example.projectv2.Controller.ImageController;
+import com.example.projectv2.View.EventLandingPageOrganizerActivity;
+import com.example.projectv2.View.EventLandingPageUserActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adapter for displaying a list of event statuses in a RecyclerView.
@@ -23,12 +32,14 @@ import java.util.List;
 public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.ViewHolder> {
 
     private static final String TAG = "EventStatusAdapter";
-    private final List<String> eventList;
+    private final List<Event> eventList;
     private final Context context;
+    private FirebaseFirestore db;
 
-    public EventStatusAdapter(List<String> eventList, Context context) {
-        this.eventList = eventList;
+    public EventStatusAdapter(Context context, List<Event> eventList) {
         this.context = context;
+        this.eventList = eventList;
+        db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -41,28 +52,29 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String eventName = eventList.get(position);
-        holder.eventName.setText(eventName);
+        Event event = eventList.get(position);
+        String eventID = event.getEventID();
 
-        // Fetch and display the event image
-        ImageController imageController = new ImageController();
-        imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
-            @Override
-            public void onRetrieveSuccess(String downloadUrl) {
-                Glide.with(context)
-                        .load(downloadUrl)
-                        .placeholder(R.drawable.placeholder_event) // Show placeholder while loading
-                        .error(R.drawable.placeholder_event) // Show placeholder on error
-                        .centerCrop()
-                        .into(holder.eventImage);
-            }
+        int status = setTextStatus(eventID);
 
-            @Override
-            public void onRetrieveFailure(Exception e) {
-                Log.e(TAG, "Failed to retrieve image for event: " + eventName, e);
-                holder.eventImage.setImageResource(R.drawable.placeholder_event);
-            }
-        });
+        if (status == 0) {
+            holder.waiting.setVisibility(View.VISIBLE);
+        } else if (status == 1) {
+            holder.accepted.setVisibility(View.VISIBLE);
+        } else if (status == 2) {
+            holder.declined.setVisibility(View.VISIBLE);
+        }
+
+        // Bind event data to UI elements
+        holder.eventName.setText(event.getName());
+        holder.eventDate.setText(event.getDeadline());
+        holder.eventPrice.setText(event.getTicketPrice() != null && !event.getTicketPrice().equals("0") ? "$" + event.getTicketPrice() : "Free");
+
+        // Load event image
+        loadEventImage(event, holder.eventImage);
+
+        // Set OnClickListener to navigate to EventLandingPageOrganizerActivity
+        holder.itemView.setOnClickListener(v -> navigateToEventDetails(event));
     }
 
     @Override
@@ -75,20 +87,113 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
      *
      * @param newEvents the new list of events to display
      */
-    public void updateEventList(List<String> newEvents) {
+    public void updateEventList(List<Event> newEvents) {
         this.eventList.clear();
         this.eventList.addAll(newEvents);
         notifyDataSetChanged();
     }
 
+    private int setTextStatus(String eventID) {
+        @SuppressLint("HardwareIds")
+        String deviceID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        final int[] status = {0}; // Default status
+
+        db.collection("events").document(eventID).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot document = task.getResult();
+                        Map<String, List<String>> entrantList = (Map<String, List<String>>) document.get("entrantList");
+
+                        if (entrantList != null) {
+                            // Check if deviceID is in Waiting
+                            if (entrantList.get("Waiting") != null && entrantList.get("Waiting").contains(deviceID)) {
+                                status[0] = 0; // Waiting
+                            }
+                            // Check if deviceID is in Selected or Attendee
+                            else if ((entrantList.get("Selected") != null && entrantList.get("Selected").contains(deviceID)) ||
+                                    (entrantList.get("Attendee") != null && entrantList.get("Attendee").contains(deviceID))) {
+                                status[0] = 1; // Selected or Attendee
+                            }
+                            // Check if deviceID is in Cancelled
+                            else if (entrantList.get("Cancelled") != null && entrantList.get("Cancelled").contains(deviceID)) {
+                                status[0] = 2; // Cancelled
+                            }
+                        }
+                    } else {
+                        Log.e("setTextStatus", "Error fetching document or document does not exist", task.getException());
+                    }
+                });
+        return status[0];
+    }
+
+    private void loadEventImage(Event event, ImageView eventImage) {
+        ImageController imageController = new ImageController();
+        String eventName = event.getName();
+
+        imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
+            @Override
+            public void onRetrieveSuccess(String downloadUrl) {
+                Glide.with(context)
+                        .load(downloadUrl)
+                        .placeholder(R.drawable.placeholder_event) // Placeholder while loading
+                        .error(R.drawable.placeholder_event) // Placeholder on error
+                        .centerCrop()
+                        .into(eventImage);
+            }
+
+            @Override
+            public void onRetrieveFailure(Exception e) {
+                Log.e(TAG, "Failed to retrieve image for event: " + eventName, e);
+                eventImage.setImageResource(R.drawable.placeholder_event); // Set fallback image
+            }
+        });
+    }
+
+    /**
+     * Navigates to EventLandingPageUserActivity with the provided event details.
+     *
+     * @param event the event whose details are to be displayed
+     */
+    private void navigateToEventDetails(Event event) {
+        Intent intent = new Intent(context, EventLandingPageUserActivity.class);
+        intent.putExtra("name", event.getName());
+        intent.putExtra("details", event.getDetail());
+        intent.putExtra("rules", event.getRules());
+        intent.putExtra("deadline", event.getDeadline());
+        intent.putExtra("startDate", event.getStartDate());
+        intent.putExtra("price", event.getTicketPrice());
+        intent.putExtra("eventID", event.getEventID());
+        intent.putExtra("owner", event.getOwner());
+        if (event.getImageUri() != null) {
+            intent.putExtra("imageUri", event.getImageUri().toString());
+        }
+        context.startActivity(intent);
+    }
+
+    /**
+     * ViewHolder for holding and recycling event item views.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView eventName;
+        public TextView eventName, eventDate, eventPrice, declined, accepted, waiting;
         public ImageView eventImage;
 
+        /**
+         * Constructs a ViewHolder and initializes view elements.
+         *
+         * @param view the view containing the event item elements
+         */
         public ViewHolder(View view) {
             super(view);
             eventName = view.findViewById(R.id.event_status_name_text);
+            eventDate = view.findViewById(R.id.event_status_date_text);
+            eventPrice = view.findViewById(R.id.event_status_price_text);
             eventImage = view.findViewById(R.id.backgroundImage);
+
+            declined = view.findViewById(R.id.event_status_declined_text);
+            accepted = view.findViewById(R.id.event_status_confirmed_text);
+            waiting = view.findViewById(R.id.event_status_waiting_text);
+
         }
     }
 }

@@ -270,6 +270,58 @@ public class EventController {
     }
 
     /**
+     * Fetches a list of events where the user (deviceID) is in any part of the entrantList from Firestore
+     * and notifies the callback with the event data.
+     *
+     * @param callback callback to handle the loaded events or errors
+     */
+    public void fetchRelatedEvents(EventCallback callback) {
+        @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        Log.d("fetchRelatedEvents", "DeviceID => " + deviceID);
+
+        // Fetch all events from Firestore (filtering will be done client-side)
+        db.collection("events")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        eventList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, List<String>> entrantList = (Map<String, List<String>>) document.get("entrantList");
+                            if (entrantList != null) {
+                                // Check all subfields of entrantList for the deviceID
+                                boolean isInEntrantList =
+                                        (entrantList.get("Waiting") != null && entrantList.get("Waiting").contains(deviceID)) ||
+                                                (entrantList.get("Attendee") != null && entrantList.get("Attendee").contains(deviceID)) ||
+                                                (entrantList.get("Selected") != null && entrantList.get("Selected").contains(deviceID)) ||
+                                                (entrantList.get("Cancelled") != null && entrantList.get("Cancelled").contains(deviceID));
+
+                                if (isInEntrantList) {
+                                    String owner = document.getString("owner");
+                                    String name = document.getString("name");
+                                    String detail = document.getString("detail");
+                                    String rules = document.getString("rules");
+                                    String facility = document.getString("facility");
+                                    String deadline = document.getString("deadline");
+                                    String startDate = document.getString("startDate");
+                                    String ticketPrice = document.getString("ticketPrice");
+                                    String eventID = document.getString("eventID");
+                                    Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
+
+                                    Event event = new Event(eventID, owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
+                                    eventList.add(event);
+                                }
+                            }
+                        }
+                        callback.onEventListLoaded(eventList);
+                    } else {
+                        Log.w("EventController", "Error getting documents.", task.getException());
+                        callback.onError(task.getException());
+                    }
+                });
+    }
+
+
+    /**
      * Checks if an entrant can be added to an event, and if so, adds the entrant's details.
      * If the entrant list reaches its limit, an error is reported.
      *

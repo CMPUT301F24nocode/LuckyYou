@@ -1,8 +1,10 @@
 
 package com.example.projectv2.Controller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +19,11 @@ import com.bumptech.glide.Glide;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.example.projectv2.View.EventLandingPageOrganizerActivity;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adapter for displaying a list of events created by the user in a RecyclerView.
@@ -28,6 +33,7 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
     private static final String TAG = "YourEventsAdapter";
     private final List<Event> eventList;
     private final Context context;
+    private FirebaseFirestore db;
 
     /**
      * Constructs a YourEventsAdapter with the specified context and list of events.
@@ -38,6 +44,7 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
     public YourEventsAdapter(Context context, List<Event> eventList) {
         this.context = context;
         this.eventList = eventList;
+        db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -51,11 +58,16 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Event event = eventList.get(position);
+        String eventID = event.getEventID();
 
         // Bind event data to UI elements
         holder.eventName.setText(event.getName());
         holder.eventDate.setText(event.getDeadline());
         holder.eventPrice.setText(event.getTicketPrice() != null && !event.getTicketPrice().equals("0") ? "$" + event.getTicketPrice() : "Free");
+
+        waitingNum(eventID, size -> {
+            holder.waitingNum.setText(size + " Waiting");
+        });
 
         // Load event image
         loadEventImage(event, holder.eventImage);
@@ -78,6 +90,29 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
         this.eventList.clear();
         this.eventList.addAll(newEvents);
         notifyDataSetChanged();
+    }
+
+    private void waitingNum(String eventID, WaitingListCallback callback) {
+        db.collection("events").document(eventID).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot document = task.getResult();
+                        // Retrieve the Waiting list
+                        List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
+                        if (waitingList != null) {
+                            callback.onWaitingListSizeReceived(waitingList.size());
+                        } else {
+                            callback.onWaitingListSizeReceived(0); // No waiting list found
+                        }
+                    } else {
+                        Log.e("waitingNum", "Error fetching document or document does not exist", task.getException());
+                        callback.onWaitingListSizeReceived(-1); // Indicate an error
+                    }
+                });
+    }
+
+    public interface WaitingListCallback {
+        void onWaitingListSizeReceived(int size);
     }
 
     /**
@@ -134,7 +169,7 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
      * ViewHolder for holding and recycling event item views.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView eventName, eventDate, eventPrice;
+        public TextView eventName, eventDate, eventPrice, waitingNum;
         public ImageView eventImage;
 
         /**
@@ -148,6 +183,8 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
             eventDate = view.findViewById(R.id.your_event_date_text);
             eventPrice = view.findViewById(R.id.your_event_price_text);
             eventImage = view.findViewById(R.id.backgroundImage);
+
+            waitingNum = view.findViewById(R.id.your_event_waiting_text);
         }
     }
 }

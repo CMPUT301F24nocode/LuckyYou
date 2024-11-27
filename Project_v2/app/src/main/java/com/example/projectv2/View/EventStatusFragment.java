@@ -1,12 +1,10 @@
 package com.example.projectv2.View;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,73 +13,71 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Controller.EventStatusAdapter;
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class EventStatusFragment extends Fragment {
 
+    private RecyclerView recyclerView;
     private EventStatusAdapter adapter;
-    private FirebaseFirestore db;
-    private ProgressBar loadingIndicator;
-    private TextView emptyStateView;
+    private EventController eventController;
+    private ArrayList<Event> eventList;
 
-    @SuppressLint("MissingInflatedId")
+    public EventStatusFragment() {
+        // Required empty public constructor
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflate the fragment layout
         View view = inflater.inflate(R.layout.fragment_event_status, container, false);
 
-        // Initialize views
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEventStatus);
-        loadingIndicator = view.findViewById(R.id.loadingIndicator);
-        emptyStateView = view.findViewById(R.id.emptyStateView);
-
-        // Set up RecyclerView with the adapter
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.recyclerViewEventStatus);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new EventStatusAdapter(new ArrayList<>(), getContext());
+
+        // Initialize Event List
+        eventList = new ArrayList<>();
+
+        // Initialize Adapter
+        adapter = new EventStatusAdapter(getContext(), eventList);
         recyclerView.setAdapter(adapter);
 
-        // Initialize Firestore
-        db = FirebaseFirestore.getInstance();
+        // Initialize EventController
+        eventController = new EventController(getActivity());
 
-        // Fetch event statuses from Firestore
-        fetchEventStatuses();
+        // Fetch Events
+        fetchEvents();
+
         return view;
     }
 
-    private void fetchEventStatuses() {
-        loadingIndicator.setVisibility(View.VISIBLE);
+    /**
+     * Fetches events created by the user from Firebase and updates the adapter.
+     */
+    private void fetchEvents() {
+        Log.d("EventStatusFragment", "Fetching user's events...");
+        eventController.fetchRelatedEvents(new EventController.EventCallback() {
+            @Override
+            public void onEventListLoaded(ArrayList<Event> events) {
+                Log.d("EventStatusFragment", "Fetched " + events.size() + " events from Firebase.");
+                adapter.updateEventList(events); // Update adapter with fetched events
+            }
 
-        db.collection("events")
-                .get()
-                .addOnCompleteListener(task -> {
-                    loadingIndicator.setVisibility(View.GONE);
+            @Override
+            public void onEventCreated(String eventId) {
+                // Not applicable for this fragment
+            }
 
-                    if (task.isSuccessful()) {
-                        List<String> eventNames = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String eventName = document.getString("name");
-                            if (eventName != null) {
-                                eventNames.add(eventName);
-                            }
-                        }
-
-                        if (eventNames.isEmpty()) {
-                            emptyStateView.setVisibility(View.VISIBLE);
-                        } else {
-                            emptyStateView.setVisibility(View.GONE);
-                            adapter.updateEventList(eventNames); // Update the adapter
-                        }
-                    } else {
-                        Log.e("EventStatusFragment", "Error fetching events", task.getException());
-                    }
-                });
+            @Override
+            public void onError(Exception e) {
+                Log.e("EventStatusFragment", "Error fetching user's events", e);
+            }
+        });
     }
 }
