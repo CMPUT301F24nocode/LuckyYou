@@ -49,6 +49,7 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
         // Set onClickListener for navigating to AdminEventOverlayActivity
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, AdminEventOverlayActivity.class);
+            intent.putExtra("name",event.getName());
             intent.putExtra("eventID", event.getEventID());
             context.startActivity(intent);
         });

@@ -1,5 +1,8 @@
 package com.example.projectv2.View;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FieldValue;
@@ -21,6 +25,7 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
     private String eventID;
     private String eventName;
     private FirebaseStorage storage;
+    private ImageController imageController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,8 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
+        imageController = new ImageController();
+
 
         // Retrieve the eventID from the intent
         eventID = getIntent().getStringExtra("eventID");
@@ -94,20 +101,24 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to delete QR Hash Data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-
+    @SuppressLint("RestrictedApi")
     private void deleteEventPoster(String filePath) {
-        StorageReference posterRef = storage.getReference().child(filePath);
+        Log.d(TAG, "Attempting to delete poster at: " + filePath);
 
-        // Delete the poster from Firebase Storage
-        posterRef.delete()
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("AdminEventOverlay", "Event poster successfully deleted!");
-                    Toast.makeText(this, "Event poster deleted successfully!", Toast.LENGTH_SHORT).show();
-                    finish(); // Close the activity after all deletions
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("AdminEventOverlay", "Error deleting event poster", e);
-                    Toast.makeText(this, "Failed to delete event poster: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+        imageController.deleteImage(filePath, new ImageController.ImageDeleteCallback() {
+            @Override
+            public void onDeleteSuccess() {
+                Log.d(TAG, "Event poster successfully deleted!");
+                Toast.makeText(AdminEventOverlayActivity.this, "Event poster deleted successfully!", Toast.LENGTH_SHORT).show();
+                finish(); // Close the activity
+            }
+
+            @Override
+            public void onDeleteFailure(Exception e) {
+                Log.e(TAG, "Error deleting event poster", e);
+                Toast.makeText(AdminEventOverlayActivity.this, "Failed to delete event poster: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                finish(); // Close the activity even if poster deletion fails
+            }
+        });
     }
 }
