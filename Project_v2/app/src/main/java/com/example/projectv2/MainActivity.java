@@ -126,10 +126,61 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        fab.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
-        });
+//        Log.d("fabTask", "Right before db");
+//        db = FirebaseFirestore.getInstance();
+//        db.collection("Users").document(userId)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    Log.d("fabTask", "OnCompleteListener");
+//                    if (task.isSuccessful()) {
+//                        Log.d("fabTask", "Organiser");
+//                        DocumentSnapshot document = task.getResult();
+//                        if (document.exists() && document.getBoolean("organizer") != null && document.getBoolean("organizer")) {
+//                            Log.d("fabTask", "FAB made visible");
+//                            fab.setVisibility(View.VISIBLE); // Show FAB if the user is an organizer
+//                            fab.setOnClickListener(view -> {
+//                                Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+//                                startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
+//                            });
+//                        } else {
+//                            Log.d("fabTask", "Not organiser");
+////                            fab.setVisibility(View.INVISIBLE); // Hide FAB if the user is not an organizer
+//                            fab.setOnClickListener(view -> Toast.makeText(MainActivity.this, "Please make a facility.", Toast.LENGTH_SHORT).show());
+//                        }
+//                    } else {
+//                        Log.d("fabTask", "Unsuccessful task");
+////                        fab.setVisibility(View.INVISIBLE); // Hide FAB in case of query failure
+//                    }
+//                });
+
+        db = FirebaseFirestore.getInstance();
+
+        db.collection("Users").document(userId)
+                .addSnapshotListener((documentSnapshot, e) -> {
+                    if (e != null) {
+                        Log.e("FABListener", "Listen failed: ", e);
+                        Toast.makeText(MainActivity.this, "Failed to check organizer status in real-time.", Toast.LENGTH_SHORT).show();
+//                        fab.setVisibility(View.INVISIBLE);
+                        return;
+                    }
+
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        Boolean isOrganizer = documentSnapshot.getBoolean("organizer");
+                        if (isOrganizer != null && isOrganizer) {
+                            fab.setVisibility(View.VISIBLE);
+                            fab.setOnClickListener(view -> {
+                                Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+                                startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
+                            });
+                        } else {
+//                            fab.setVisibility(View.GONE); // Hide FAB if the user is not an organizer
+                            fab.setOnClickListener(view -> Toast.makeText(MainActivity.this, "Please make a facility.", Toast.LENGTH_SHORT).show());
+                        }
+                    } else {
+//                        fab.setVisibility(View.INVISIBLE); // Hide FAB if document doesn't exist
+                        Log.d("FABListener", "Document does not exist.");
+                    }
+                });
 
         navigationView.setNavigationItemSelectedListener(item -> {
             Intent intent = null;
