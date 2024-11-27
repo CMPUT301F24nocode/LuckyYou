@@ -40,7 +40,7 @@ public class NotificationService {
      *
      * @param notification The notification to be sent and stored in Firestore
      */
-    public void sendNotification(Activity activity, Notification notification) {
+    public void sendNotification(Activity activity, Notification notification, String eventID) {
         String userId = notification.getSendTo(); // Get document ID from sendTo attribute
         Map<String, Object> notificationData = new HashMap<>();
         notificationData.put("content", notification.getContent());
@@ -51,7 +51,7 @@ public class NotificationService {
             db.collection("Users").document(userId)
                     .update("organizerNotifList", FieldValue.arrayUnion(notificationData))
                     .addOnSuccessListener(aVoid -> {
-                        sendPushNotification(activity, userId, notification.getContent());
+                        sendPushNotification(activity, userId, eventID, notification.getContent());
                         Log.d("sendNotificationResult", "Notification sent to FireStore");
                     })
                     .addOnFailureListener(e -> {
@@ -64,7 +64,7 @@ public class NotificationService {
             db.collection("Users").document(userId)
                     .update("adminNotifList", FieldValue.arrayUnion(notificationData))
                     .addOnSuccessListener(aVoid -> {
-                        sendPushNotification(activity, userId, notification.getContent());
+                        sendPushNotification(activity, userId, eventID, notification.getContent());
                         Log.d("sendNotificationResult", "Notification sent to FireStore");
                     })
                     .addOnFailureListener(e -> {
@@ -73,7 +73,7 @@ public class NotificationService {
         }
     }
 
-    private void sendPushNotification (Activity activity, String userId, String pushNotifContent) {
+    private void sendPushNotification (Activity activity, String userId, String eventID, String pushNotifContent) {
         db.collection("Users")
                 .document(userId)
                 .get()
@@ -89,6 +89,7 @@ public class NotificationService {
 
                         NotificationRequest request = new NotificationRequest(
                                 fcmToken,
+                                eventID,
                                 pushNotifContent
                         );
 
@@ -121,10 +122,12 @@ public class NotificationService {
 
     static class NotificationRequest {
         String token;
+        String eventID;
         String body;
 
-        NotificationRequest(String token, String body) {
+        NotificationRequest(String token, String eventID, String body) {
             this.token = token;
+            this.eventID = eventID;
             this.body = body;
         }
     }

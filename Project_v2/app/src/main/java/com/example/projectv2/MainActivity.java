@@ -9,11 +9,16 @@ package com.example.projectv2;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.Manifest;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_CREATE_EVENT = 1;
     private static final int REQUEST_CODE_QR_SCANNER = 2;
+    private static final int REQUEST_NOTIFICATION_PERMISSION = 1;
 
     private DrawerLayout drawerLayout;
     private ViewPager2 viewPager;
@@ -254,7 +260,32 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("BLAH", "User not found in Firestore");
             }
         });
+// Check and request notification permission
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
 
+                // Request the POST_NOTIFICATIONS permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_NOTIFICATION_PERMISSION);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+                Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT).show();
+            } else {
+                // Permission denied
+                Toast.makeText(this, "Notification permission denied.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**

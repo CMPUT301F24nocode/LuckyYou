@@ -142,7 +142,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             for (String userId : waitingList) {
                 Notification notification = new Notification(userId, "You're in the waiting list for " + eventName, true, false);
-                notificationService.sendNotification(this, notification);
+                notificationService.sendNotification(this, notification, eventId);
             }
         });
     }
@@ -178,7 +178,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             for (String userId : selectedList) {
                 Notification notification = new Notification(userId, "You have been chosen to attend " + eventName, true, false);
-                notificationService.sendNotification(this, notification);
+                notificationService.sendNotification(this, notification, eventId);
             }
 
             // Notify remaining users in the waiting list
@@ -188,7 +188,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
                 for (String userId : remainingWaitingList) {
                     Notification notification = new Notification(userId, "You were unfortunately not selected for " + eventName, true, false);
-                    notificationService.sendNotification(this, notification);
+                    notificationService.sendNotification(this, notification, eventId);
                 }
             }
         });
@@ -225,7 +225,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             for (String userId : cancelledList) {
                 Notification notification = new Notification(userId, "Your cancellation of " + eventName + " is confirmed.", true, false);
-                notificationService.sendNotification(this, notification);
+                notificationService.sendNotification(this, notification, eventId);
             }
         });
     }
@@ -258,7 +258,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
             for (String userId : attendees) {
                 Notification notification = new Notification(userId, "Welcome to " + eventName, true, false);
-                notificationService.sendNotification(this,notification);
+                notificationService.sendNotification(this,notification, eventId);
             }
         });
     }
