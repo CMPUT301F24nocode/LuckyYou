@@ -177,7 +177,7 @@ public class EntrantListActivity extends AppCompatActivity {
             NotificationService notificationService = new NotificationService();
             String eventName = getIntent().getStringExtra("name");
 
-            for (String userId : waitingList) {
+            for (String userId : documentIds) {
                 Notification notification = new Notification(userId, "You're in the waiting list for " + eventName, true, false);
                 notificationService.sendNotification(this, notification, eventId);
             }
@@ -247,7 +247,7 @@ public class EntrantListActivity extends AppCompatActivity {
             NotificationService notificationService = new NotificationService();
             String eventName = getIntent().getStringExtra("name");
 
-            for (String userId : selectedList) {
+            for (String userId : documentIds) {
                 Notification notification = new Notification(userId, "You have been chosen to attend " + eventName, true, false);
                 notificationService.sendNotification(this, notification, eventId);
             }
@@ -255,7 +255,7 @@ public class EntrantListActivity extends AppCompatActivity {
             // Notify remaining users in the waiting list
             if (waitingList != null) {
                 List<String> remainingWaitingList = new ArrayList<>(waitingList);
-                remainingWaitingList.removeAll(selectedList);
+                remainingWaitingList.removeAll(documentIds);
 
                 for (String userId : remainingWaitingList) {
                     Notification notification = new Notification(userId, "You were unfortunately not selected for " + eventName, true, false);
@@ -328,7 +328,7 @@ public class EntrantListActivity extends AppCompatActivity {
             NotificationService notificationService = new NotificationService();
             String eventName = getIntent().getStringExtra("name");
 
-            for (String userId : cancelledList) {
+            for (String userId : documentIds) {
                 Notification notification = new Notification(userId, "Your cancellation of " + eventName + " is confirmed.", true, false);
                 notificationService.sendNotification(this, notification, eventId);
             }
@@ -401,7 +401,7 @@ public class EntrantListActivity extends AppCompatActivity {
             NotificationService notificationService = new NotificationService();
             String eventName = getIntent().getStringExtra("name");
 
-            for (String userId : attendees) {
+            for (String userId : documentIds) {
                 Notification notification = new Notification(userId, "Welcome to " + eventName, true, false);
                 notificationService.sendNotification(this,notification, eventId);
             }
