@@ -25,6 +25,7 @@ import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class EntrantListActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private Spinner filterSpinner;
     private Button sendNotifAllView;
+    private List<String> documentIds = new ArrayList<>();
     private List<String> waitingList = new ArrayList<>();
     private List<String> selectedList = new ArrayList<>();
     private List<String> cancelledList = new ArrayList<>();
@@ -126,11 +128,46 @@ public class EntrantListActivity extends AppCompatActivity {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        waitingList = (List<String>) documentSnapshot.get("entrantList.Waiting");
-                        if (waitingList != null) {
-                            adapter.updateEntrantList(waitingList);
-                        } else {
-                            Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
+                        documentIds = (List<String>) documentSnapshot.get("entrantList.Waiting");
+                        Log.d("FetchNames", "loadWaitingListIDs: " + documentIds);
+
+                        db = FirebaseFirestore.getInstance();
+                        waitingList.clear();
+
+                        // Counter to track completed Firestore tasks
+                        final int[] completedTasks = {0};
+
+                        for (String documentId : documentIds) {
+                            db.collection("Users").document(documentId)
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (!task.isSuccessful()) {
+                                            Log.e("FetchNames", "Error fetching document for ID: " + documentId, task.getException());
+                                            return;
+                                        }
+
+                                        DocumentSnapshot document = task.getResult();
+                                        String name = document != null ? document.getString("name") : null;
+                                        if (name != null) {
+                                            waitingList.add(name);
+                                            Log.d("FetchNames", "Name: " + name);
+                                        } else {
+                                            Log.d("FetchNames", "Document not found or name is null for ID: " + documentId);
+                                        }
+
+                                        // Increment completed tasks
+                                        completedTasks[0]++;
+
+                                        // When all tasks are done, update the adapter
+                                        if (completedTasks[0] == documentIds.size()) {
+                                            Log.d("FetchNames", "All names fetched: " + waitingList);
+                                            if (!waitingList.isEmpty()) {
+                                                adapter.updateEntrantList(waitingList);
+                                            } else {
+                                                Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         }
                     }
                 })
@@ -159,11 +196,45 @@ public class EntrantListActivity extends AppCompatActivity {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        selectedList = (List<String>) documentSnapshot.get("entrantList.Selected");
-                        if (selectedList != null) {
-                            adapter.updateEntrantList(selectedList);
-                        } else {
-                            Toast.makeText(this, "No selected entrants found.", Toast.LENGTH_SHORT).show();
+                        documentIds = (List<String>) documentSnapshot.get("entrantList.Selected");
+
+                        db = FirebaseFirestore.getInstance();
+                        selectedList.clear();
+
+                        // Counter to track completed Firestore tasks
+                        final int[] completedTasks = {0};
+
+                        for (String documentId : documentIds) {
+                            db.collection("Users").document(documentId)
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (!task.isSuccessful()) {
+                                            Log.e("FetchNames", "Error fetching document for ID: " + documentId, task.getException());
+                                            return;
+                                        }
+
+                                        DocumentSnapshot document = task.getResult();
+                                        String name = document != null ? document.getString("name") : null;
+                                        if (name != null) {
+                                            selectedList.add(name);
+                                            Log.d("FetchNames", "Name: " + name);
+                                        } else {
+                                            Log.d("FetchNames", "Document not found or name is null for ID: " + documentId);
+                                        }
+
+                                        // Increment completed tasks
+                                        completedTasks[0]++;
+
+                                        // When all tasks are done, update the adapter
+                                        if (completedTasks[0] == documentIds.size()) {
+                                            Log.d("FetchNames", "All names fetched: " + selectedList);
+                                            if (!selectedList.isEmpty()) {
+                                                adapter.updateEntrantList(selectedList);
+                                            } else {
+                                                Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         }
                     }
                 })
@@ -206,11 +277,45 @@ public class EntrantListActivity extends AppCompatActivity {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        cancelledList = (List<String>) documentSnapshot.get("entrantList.Cancelled");
-                        if (cancelledList != null) {
-                            adapter.updateEntrantList(cancelledList);
-                        } else {
-                            Toast.makeText(this, "No cancelled entrants found.", Toast.LENGTH_SHORT).show();
+                        documentIds = (List<String>) documentSnapshot.get("entrantList.Cancelled");
+
+                        db = FirebaseFirestore.getInstance();
+                        cancelledList.clear();
+
+                        // Counter to track completed Firestore tasks
+                        final int[] completedTasks = {0};
+
+                        for (String documentId : documentIds) {
+                            db.collection("Users").document(documentId)
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (!task.isSuccessful()) {
+                                            Log.e("FetchNames", "Error fetching document for ID: " + documentId, task.getException());
+                                            return;
+                                        }
+
+                                        DocumentSnapshot document = task.getResult();
+                                        String name = document != null ? document.getString("name") : null;
+                                        if (name != null) {
+                                            cancelledList.add(name);
+                                            Log.d("FetchNames", "Name: " + name);
+                                        } else {
+                                            Log.d("FetchNames", "Document not found or name is null for ID: " + documentId);
+                                        }
+
+                                        // Increment completed tasks
+                                        completedTasks[0]++;
+
+                                        // When all tasks are done, update the adapter
+                                        if (completedTasks[0] == documentIds.size()) {
+                                            Log.d("FetchNames", "All names fetched: " + cancelledList);
+                                            if (!cancelledList.isEmpty()) {
+                                                adapter.updateEntrantList(cancelledList);
+                                            } else {
+                                                Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         }
                     }
                 })
@@ -242,7 +347,47 @@ public class EntrantListActivity extends AppCompatActivity {
         db.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        attendees = (List<String>) documentSnapshot.get("entrantList.Attendee");
+                        documentIds = (List<String>) documentSnapshot.get("entrantList.Attendee");
+
+                        db = FirebaseFirestore.getInstance();
+                        attendees.clear();
+
+                        // Counter to track completed Firestore tasks
+                        final int[] completedTasks = {0};
+
+                        for (String documentId : documentIds) {
+                            db.collection("Users").document(documentId)
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (!task.isSuccessful()) {
+                                            Log.e("FetchNames", "Error fetching document for ID: " + documentId, task.getException());
+                                            return;
+                                        }
+
+                                        DocumentSnapshot document = task.getResult();
+                                        String name = document != null ? document.getString("name") : null;
+                                        if (name != null) {
+                                            attendees.add(name);
+                                            Log.d("FetchNames", "Name: " + name);
+                                        } else {
+                                            Log.d("FetchNames", "Document not found or name is null for ID: " + documentId);
+                                        }
+
+                                        // Increment completed tasks
+                                        completedTasks[0]++;
+
+                                        // When all tasks are done, update the adapter
+                                        if (completedTasks[0] == documentIds.size()) {
+                                            Log.d("FetchNames", "All names fetched: " + attendees);
+                                            if (!attendees.isEmpty()) {
+                                                adapter.updateEntrantList(attendees);
+                                            } else {
+                                                Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        }
+
                         if (attendees != null) {
                             adapter.updateEntrantList(attendees);
                         } else {

@@ -1,5 +1,6 @@
 package com.example.projectv2.View;
 
+import android.net.ParseException;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -15,9 +16,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
@@ -127,6 +134,39 @@ public class NotificationActivity extends AppCompatActivity {
         String content = (String) notifData.get("content");
         String timeSent = (String) notifData.get("timeSent");
 
-        return new Notification(sendTo, content, timeSent, isOrganiser, isAdmin);
+        // Compute relative time
+        String relativeTime = getRelativeTime(timeSent);
+
+        // Return a notification object with the relative time instead of the raw time
+        return new Notification(sendTo, content, relativeTime, isOrganiser, isAdmin);
+    }
+
+    private String getRelativeTime(String timeSent) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+        try {
+            Date sentTime = dateFormat.parse(timeSent);
+            if (sentTime == null) return "Unknown time";
+
+            long timeDiffMillis = System.currentTimeMillis() - sentTime.getTime();
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffMillis);
+            long hours = TimeUnit.MILLISECONDS.toHours(timeDiffMillis);
+            long days = TimeUnit.MILLISECONDS.toDays(timeDiffMillis);
+
+            if (seconds < 60) {
+                return seconds + " sec ago";
+            } else if (minutes < 60) {
+                return minutes + " min ago";
+            } else if (hours < 24) {
+                return hours + " hrs ago";
+            } else {
+                return days + " days ago";
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "Unknown time";
+        } catch (java.text.ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
