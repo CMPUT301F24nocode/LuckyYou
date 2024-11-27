@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.Manifest;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,7 @@ import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.EventsPagerAdapter;
 import com.example.projectv2.Controller.ProfileImageController;
 import com.example.projectv2.Model.User;
+import com.example.projectv2.Utils.ProfilePictureGenerator;
 import com.example.projectv2.View.AdminEventListActivity;
 import com.example.projectv2.View.AdminImageListActivity;
 import com.example.projectv2.View.AdminProfileListActivity;
@@ -326,9 +328,21 @@ public class MainActivity extends AppCompatActivity {
                 String savedImageUri = profileImageController.getImageUriLocally();
 
                 if (savedImageUri != null) {
-                    profileImageController.loadImage(savedImageUri, profilePic);
+                    //generate Image deterministically
 
-                    profileImageController.loadImage(savedImageUri, profilePicture);
+                    int imageSize = 200; // Image size in pixels (e.g., 200x200)
+
+// Generate profile picture
+                    Bitmap profilePicture = ProfilePictureGenerator.generateProfilePicture(this, userName, imageSize);
+
+// Set the generated image in an ImageView
+
+//                    profilePic.setImageBitmap(profilePicture);
+
+
+                    profileImageController.loadImageUsingBitmap(profilePicture, profilePic);
+//
+//                    profileImageController.loadImage(savedImageUri, profilePicture);
                 } else if (userImageUri != null) {
                     profileImageController.loadImage(userImageUri, profilePic);
 

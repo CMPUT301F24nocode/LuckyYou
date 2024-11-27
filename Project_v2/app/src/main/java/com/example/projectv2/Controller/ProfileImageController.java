@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -92,4 +93,17 @@ public class ProfileImageController {
         void onSuccess(Uri uri);
         void onFailure(Exception e);
     }
+    // Method to load a Bitmap into an ImageView using Glide
+    public void loadImageUsingBitmap(Bitmap bitmap, ImageView imageView) {
+        if (bitmap == null || imageView == null) {
+            Log.d("ProfileImageController", "Invalid bitmap or imageView");
+            return;
+        }
+
+        Glide.with(context)
+                .load(bitmap)
+                .placeholder(R.drawable.placeholder_profile_picture) // Optional placeholder
+                .into(imageView);
+    }
+
 }
