@@ -1,6 +1,7 @@
 package com.example.projectv2.Utils;
 
-import android.content.Context;
+
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,12 +9,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 
-import java.util.Random;
+import com.example.projectv2.Controller.ProfileImageController;
 
 public class ProfilePictureGenerator {
 
     // Generate a profile picture bitmap with initials and random background color
-    public static Bitmap generateProfilePicture(Context context, String name, int imageSize) {
+    public static Bitmap generateProfilePicture( String name, int imageSize) {
         // Split the name to get initials
         String[] nameParts = name.split(" ");
         String initials = "";
@@ -30,7 +31,7 @@ public class ProfilePictureGenerator {
 
         // Generate a random background color
         Paint backgroundPaint = new Paint();
-        backgroundPaint.setColor(getRandomColor());
+        backgroundPaint.setColor(getColor());
         backgroundPaint.setStyle(Paint.Style.FILL);
         canvas.drawRect(0, 0, imageSize, imageSize, backgroundPaint);
 
@@ -53,8 +54,8 @@ public class ProfilePictureGenerator {
     }
 
     // Generate a random color
-    private static int getRandomColor() {
-        Random random = new Random();
-        return Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+    private static int getColor() {
+//        Random random = new Random();
+        return Color.parseColor("#5669FF");
     }
 }

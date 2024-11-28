@@ -3,7 +3,6 @@ package com.example.projectv2.Controller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -12,11 +11,16 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.projectv2.Utils.ProfilePictureGenerator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+
 import com.example.projectv2.R;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileImageController {
     private final Context context;
     private final FirebaseStorage storage;
@@ -59,34 +63,54 @@ public class ProfileImageController {
 
 
     // Method to load an image into an ImageView using Glide
-    public void loadImage(String imageUrl, ImageView imageView) {
-        if (imageUrl == null || imageView == null) {
-            Log.d("ProfileImageController", "Invalid imageUrl or imageView");
+    public void loadImage(String userID, ImageView imageView) {
+        if (userID == null || imageView == null) {
+            Log.d("HUHUUUUU", "Invalid imageUrl or imageView");
             return;
         }
+        String filePath = "user_" + userID + ".jpg";
+        StorageReference fileRef = storageRef.child(filePath);
+        fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            Log.d("ProfileImageController", "Image URL: " + uri.toString());
+            Glide.with(context)
+                    .load(uri.toString())
+                    .placeholder(R.drawable.placeholder_profile_picture) // Optional placeholder
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching
+                    .skipMemoryCache(true) // Skip memory cache
+                    .into(imageView);
+        }).addOnFailureListener(e -> {
+            Log.e("ProfileImageController", "Error loading image: " + e.getMessage());
+            dbUtils.fetchUser(userID, user -> {
+                if (user!=null){
+                    String userName = user.getName();
+            Bitmap genProfilePicture = ProfilePictureGenerator.generateProfilePicture( userName, 500);
+            this.loadImageUsingBitmap(genProfilePicture, imageView);}});
+        });
 
-        Glide.with(context)
-                .load(imageUrl)
-                .placeholder(R.drawable.placeholder_profile_picture) // Optional placeholder
-                .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching
-                .skipMemoryCache(true) // Skip memory cache
-                .into(imageView);
+
     }
 
+    public void removeImage(String userID, ImageView imageView) {
+        if (userID == null || imageView == null) {
+            Log.d("HUHUUUUU", "Invalid imageUrl or imageView");
+            return;
+        }
+        String filePath = "user_" + userID + ".jpg";
+        StorageReference fileRef = storageRef.child(filePath);
+        fileRef.delete().addOnSuccessListener(aVoid -> {
+            Log.d("ProfileImageController", "Image deleted successfully");
+            dbUtils.fetchUser(userID, user -> {
+                if (user!=null){
+                    String userName = user.getName();
+                    Bitmap genProfilePicture = ProfilePictureGenerator.generateProfilePicture( userName, 500);
+                    this.loadImageUsingBitmap(genProfilePicture, imageView);}});
+        }).addOnFailureListener(e -> {
+            Log.e("ProfileImageController", "Error deleting image: " + e.getMessage());
+        });
 
-    // Method to save an image URI locally (e.g., SharedPreferences)
-    public void saveImageUriLocally(String imageUri) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("profile_image", imageUri);
-        editor.apply();
+
     }
 
-    // Method to retrieve an image URI from local storage
-    public String getImageUriLocally() {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("AppPreferences", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("profile_image", null);
-    }
 
     // Interface for callbacks
     public interface ImageUploadCallback {
@@ -103,6 +127,8 @@ public class ProfileImageController {
         Glide.with(context)
                 .load(bitmap)
                 .placeholder(R.drawable.placeholder_profile_picture) // Optional placeholder
+                .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable disk caching
+                .skipMemoryCache(true) // Disable memory caching
                 .into(imageView);
     }
 

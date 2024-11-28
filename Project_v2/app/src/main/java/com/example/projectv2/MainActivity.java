@@ -63,6 +63,8 @@ import androidx.work.WorkManager;
 
 import java.util.concurrent.TimeUnit;
 
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -345,37 +347,16 @@ public class MainActivity extends AppCompatActivity {
                 View headerView = navigationView.getHeaderView(0);
                 TextView userNameTextView = headerView.findViewById(R.id.textView19);
                 userNameTextView.setText(userName);
-
-                // Set user's profile image
-                String userImageUri = user.getProfileImage();
-                String savedImageUri = profileImageController.getImageUriLocally();
-
-                if (savedImageUri != null) {
-                    //generate Image deterministically
-
-                    int imageSize = 200; // Image size in pixels (e.g., 200x200)
-
-// Generate profile picture
-                    Bitmap profilePicture = ProfilePictureGenerator.generateProfilePicture(this, userName, imageSize);
-
-// Set the generated image in an ImageView
-
-//                    profilePic.setImageBitmap(profilePicture);
-
-
-                    profileImageController.loadImageUsingBitmap(profilePicture, profilePic);
-//
-//                    profileImageController.loadImage(savedImageUri, profilePicture);
-                } else if (userImageUri != null) {
-                    profileImageController.loadImage(userImageUri, profilePic);
-
-                    profileImageController.loadImage(userImageUri, profilePicture);
-                    // Optionally save the fetched image URI locally for future use
-                    profileImageController.saveImageUriLocally(userImageUri);
-                } else {
-                    profilePicture.setImageResource(R.drawable.placeholder_profile_picture);
-                    profilePic.setImageResource(R.drawable.placeholder_profile_picture);
+                if (!Objects.equals(userID, "")) {
+                    Log.d("HUHUUUUU",userID);
+                    profileImageController.loadImage(userID, profilePicture);
+                    Log.d("HUHUUUUU","Tried to call loadimage on profilePicture "+userID);
+                    profileImageController.loadImage(userID, profilePic);}
+                else {
+                    Log.d("HUHUUUUU","userID is null");
                 }
+
+
             } else {
                 Log.d("BLAH", "User not found in Firestore");
             }
@@ -415,6 +396,15 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    // Method to handle refresh logic
+    private void refreshContent(NavigationView navigationView, String userId) {
+        // Reload your data or update UI
+        // For example, fetch data for the ViewPager2
+        EventsPagerAdapter adapter = new EventsPagerAdapter(this);
+        viewPager.setAdapter(adapter);
+        fetchAndDisplayUserNameAndImage(navigationView, userId);
+    }
+
     /**
      * Interface for a callback to handle the result of checking if a user is an organizer.
      */
@@ -425,14 +415,5 @@ public class MainActivity extends AppCompatActivity {
          * @param isOrganizer true if the user is an organizer, false otherwise
          */
         void onComplete(boolean isOrganizer);
-    }
-
-    // Method to handle refresh logic
-    private void refreshContent(NavigationView navigationView, String userId) {
-        // Reload your data or update UI
-        // For example, fetch data for the ViewPager2
-        EventsPagerAdapter adapter = new EventsPagerAdapter(this);
-        viewPager.setAdapter(adapter);
-        fetchAndDisplayUserNameAndImage(navigationView, userId);
     }
 }

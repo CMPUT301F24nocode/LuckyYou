@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import com.example.projectv2.MainActivity;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.R;
+import com.example.projectv2.Utils.UserUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,6 +34,7 @@ import android.location.Location;
 import android.location.LocationManager;
 
 import java.util.Collections;
+import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -61,9 +64,10 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean success=signUpUser();
-                if (success) {
+                String deviceID=signUpUser();
+                if (!Objects.equals(deviceID, "")) {
                 Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                intent.putExtra("deviceID", deviceID);
                 startActivity(intent);}
             }
         });
@@ -128,7 +132,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private boolean signUpUser() {
+    private String signUpUser() {
         int phoneNumberError = isValidPhoneNumber(phoneNumber.getText().toString());
         if (phoneNumberError != 0) {
             if (phoneNumberError == 1) {
@@ -136,10 +140,10 @@ public class SignUpActivity extends AppCompatActivity {
             } else {
                 phoneNumber.setError("Phone number must contain only digits");
             }
-            return false;
+            return "";
 
         }
-        @SuppressLint("HardwareIds") String deviceID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+        String deviceID= Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         User newUser = new User(email.getText().toString(), firstName.getText().toString(), lastName.getText().toString(),phoneNumber.getText().toString(),deviceID);
         // Set user location
         newUser.setLatitude(latitude);
@@ -176,7 +180,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 Log.w("fcmTokenResult", "Error updating/creating fcmToken field", e);
                             });
                 });
-        return true;
+        return deviceID;
     }
     private int isValidPhoneNumber(String phoneNumber) {
         // Check if the phone number is empty or 10 digits long

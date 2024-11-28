@@ -1,5 +1,4 @@
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/profile_swipe_refresh"
@@ -9,8 +8,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp"
         android:background="@color/lucky_background"
+        android:padding="24dp"
         tools:ignore="ContentDescription, HardCodedText, Autofill, Labelfor">
 
         <include
@@ -22,142 +21,159 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    <!--Hide indicator if not admin using android:visibility="visible"-->
-    <ImageView
-        android:id="@+id/profile_admin_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="144dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_pic_view"
-        app:layout_constraintEnd_toEndOf="@+id/profile_pic_view"
-        app:layout_constraintStart_toStartOf="@+id/profile_pic_view"
-        app:srcCompat="@drawable/pic_admin" />
+        <!--Hide indicator if not admin using android:visibility="visible"-->
+        <ImageView
+            android:id="@+id/profile_admin_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="144dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_pic_view"
+            app:layout_constraintEnd_toEndOf="@+id/profile_pic_view"
+            app:layout_constraintStart_toStartOf="@+id/profile_pic_view"
+            app:srcCompat="@drawable/pic_admin" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_pic_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="32dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/placeholder_profile_picture"
-        app:civ_border_color="@color/lucky_uiEmphasis"
-        app:civ_border_width="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notification_top_bar" />
 
-    <ImageButton
-        android:id="@+id/profile_pic_edit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_pic_view"
-        app:layout_constraintEnd_toEndOf="@+id/profile_pic_view"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/profile_pic_view"
-        app:layout_constraintTop_toTopOf="@+id/profile_pic_view"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/profilepicedit_icon" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_pic_view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="32dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder_profile_picture"
+            app:civ_border_color="@color/lucky_uiEmphasis"
+            app:civ_border_width="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notification_top_bar" />
 
-    <TextView
-        android:id="@+id/profile_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Name"
-        android:textColor="@color/lucky_white"
-        android:textSize="32sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_pic_view" />
+        <com.airbnb.lottie.LottieAnimationView
+            android:visibility="invisible"
+            android:backgroundTint="@color/lucky_uiEmphasis"
+            android:id="@+id/profile_pic_upload_animation"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notification_top_bar"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/lottie_image_upload"
+            app:lottie_colorFilter="@color/lucky_uiAccent"/>
 
-    <TextView
-        android:id="@+id/profile_email_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Email"
-        android:textColor="@color/lucky_white"
-        android:textSize="32sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_name_box" />
+        <ImageButton
+            android:id="@+id/profile_pic_edit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#00FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_pic_view"
+            app:layout_constraintEnd_toEndOf="@+id/profile_pic_view"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/profile_pic_view"
+            app:layout_constraintTop_toTopOf="@+id/profile_pic_view"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/profilepicedit_icon"
+            />
 
-    <TextView
-        android:id="@+id/profile_phone_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Phone Number"
-        android:textColor="@color/lucky_white"
-        android:textSize="32sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_email_box" />
+        <TextView
+            android:id="@+id/profile_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/airbnbcereal_w_bd"
+            android:text="Name"
+            android:textColor="@color/lucky_white"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_pic_view" />
 
-    <EditText
-        android:id="@+id/profile_phone_box"
-        style="@style/RoundedEditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:inputType="phone"
-        android:text="@string/profile_phone_text"
-        android:textAlignment="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_phone_text" />
+        <TextView
+            android:id="@+id/profile_email_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/airbnbcereal_w_bd"
+            android:text="Email"
+            android:textColor="@color/lucky_white"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_name_box" />
 
-    <EditText
-        android:id="@+id/profile_email_box"
-        style="@style/RoundedEditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:inputType="textEmailAddress"
-        android:text="@string/profile_email_text"
-        android:textAlignment="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_email_text" />
+        <TextView
+            android:id="@+id/profile_phone_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/airbnbcereal_w_bd"
+            android:text="Phone Number"
+            android:textColor="@color/lucky_white"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_email_box" />
 
-    <EditText
-        android:id="@+id/profile_name_box"
-        style="@style/RoundedEditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:inputType="text|textPersonName"
-        android:text="@string/profile_name_text"
-        android:textAlignment="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_name_text" />
+        <EditText
+            android:id="@+id/profile_phone_box"
+            style="@style/RoundedEditTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:fontFamily="@font/airbnbcereal_w_bk"
+            android:inputType="phone"
+            android:text="@string/profile_phone_text"
+            android:textAlignment="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_phone_text" />
 
-    <Button
-        android:id="@+id/profile_edit_button"
-        style="@style/InactiveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit Profile"
-        android:textAllCaps="false"
-        app:cornerRadius="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <EditText
+            android:id="@+id/profile_email_box"
+            style="@style/RoundedEditTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:fontFamily="@font/airbnbcereal_w_bk"
+            android:inputType="textEmailAddress"
+            android:text="@string/profile_email_text"
+            android:textAlignment="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_email_text" />
+
+        <EditText
+            android:id="@+id/profile_name_box"
+            style="@style/RoundedEditTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:fontFamily="@font/airbnbcereal_w_bk"
+            android:inputType="text|textPersonName"
+            android:text="@string/profile_name_text"
+            android:textAlignment="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_name_text" />
+
+        <Button
+            android:id="@+id/profile_edit_button"
+            style="@style/InactiveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Profile"
+            android:textAllCaps="false"
+            app:cornerRadius="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
