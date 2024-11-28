@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.projectv2.Controller.DBUtils;
+import com.example.projectv2.Controller.DeadlineWorker;
 import com.example.projectv2.Controller.EventsPagerAdapter;
 import com.example.projectv2.Controller.ProfileImageController;
 import com.example.projectv2.Model.User;
@@ -55,6 +56,12 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -92,6 +99,22 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("HardwareIds") String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homescreen);
+
+        // Deadline Execution
+        OneTimeWorkRequest immediateWorkRequest = new OneTimeWorkRequest.Builder(
+                DeadlineWorker.class).build();
+        WorkManager.getInstance(this).enqueue(immediateWorkRequest);
+
+        // Periodic work for subsequent executions
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(
+                DeadlineWorker.class,
+                15, TimeUnit.MINUTES
+        ).build();
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "MoveExpiredUsers",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                periodicWorkRequest
+        );
 
         drawerLayout = findViewById(R.id.homescreen_drawer_layout);
         profilePicture = findViewById(R.id.homescreen_profile_pic);

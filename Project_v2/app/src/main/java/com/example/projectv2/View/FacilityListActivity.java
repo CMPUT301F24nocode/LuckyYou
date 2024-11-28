@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.FacilityAdapter;
 import com.example.projectv2.Controller.FacilityController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Facility;

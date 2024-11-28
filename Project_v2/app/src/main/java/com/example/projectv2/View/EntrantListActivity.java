@@ -261,6 +261,7 @@ public class EntrantListActivity extends AppCompatActivity {
                                             Log.d("FetchNames", "All names fetched: " + selectedList);
                                             if (!selectedList.isEmpty()) {
                                                 adapter.updateEntrantList(selectedList, documentIds);
+                                                sendNotificationsToSelectedAndWaitingLists(eventId);
                                             } else {
                                                 Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
                                             }
@@ -278,27 +279,35 @@ public class EntrantListActivity extends AppCompatActivity {
                     Log.e(TAG, "Error loading selected list", e);
                     Toast.makeText(this, "Failed to load selected list", Toast.LENGTH_SHORT).show();
                 });
+    }
 
-//        sendNotifAll.setOnClickListener(view -> {
-//            NotificationService notificationService = new NotificationService();
-//            String eventName = getIntent().getStringExtra("name");
-//
-//            for (String userId : documentIds) {
-//                Notification notification = new Notification(userId, "Congratulations! You have been chosen to attend " + eventName, true, false);
-//                notificationService.sendNotification(this, notification, eventId);
-//            }
-//
-//            // Notify remaining users in the waiting list
-//            if (waitingList != null) {
-//                List<String> remainingWaitingList = new ArrayList<>(waitingList);
-//                remainingWaitingList.removeAll(documentIds);
-//
-//                for (String userId : remainingWaitingList) {
-//                    Notification notification = new Notification(userId, "You were unfortunately not selected for " + eventName + ", Don't worry. You may get another chance. Keep alert!", true, false);
-//                    notificationService.sendNotification(this, notification, eventId);
-//                }
-//            }
-//        });
+    private void sendNotificationsToSelectedAndWaitingLists(String eventId) {
+        if (documentIds == null || documentIds.isEmpty()) {
+            Log.d(TAG, "No users in the selected list to notify.");
+            return;
+        }
+
+        NotificationService notificationService = new NotificationService();
+        String eventName = getIntent().getStringExtra("name");
+
+        // Notify users in the selected list
+        for (String userId : documentIds) {
+            Notification notification = new Notification(userId, "Congratulations! You have been chosen to attend " + eventName, true, false);
+            notificationService.sendNotification(this, notification, eventId);
+        }
+
+        // Notify remaining users in the waiting list
+        if (waitingList != null) {
+            List<String> remainingWaitingList = new ArrayList<>(waitingList);
+            remainingWaitingList.removeAll(documentIds);
+
+            for (String userId : remainingWaitingList) {
+                Notification notification = new Notification(userId, "You were not selected for " + eventName + ". Don't worry, you may get another chance. Stay tuned!", true, false);
+                notificationService.sendNotification(this, notification, eventId);
+            }
+        }
+
+        Log.d(TAG, "Notifications sent to selected and remaining waiting list users.");
     }
 
     /**
