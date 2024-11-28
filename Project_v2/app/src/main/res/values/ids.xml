@@ -6,4 +6,5 @@
     <item name="available_event_price_text" type="id" />
     <item name="recyclerViewBrowseImages" type="id" />
     <item name="progressBarBrowseImages" type="id" />
+    <item name="backButton" type="id" />
 </resources>
