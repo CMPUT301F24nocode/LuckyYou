@@ -18,6 +18,9 @@ import com.google.firebase.storage.StorageReference;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.example.projectv2.R;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileImageController {
     private final Context context;
     private final FirebaseStorage storage;
@@ -82,6 +85,27 @@ public class ProfileImageController {
                     String userName = user.getName();
             Bitmap genProfilePicture = ProfilePictureGenerator.generateProfilePicture( userName, 500);
             this.loadImageUsingBitmap(genProfilePicture, imageView);}});
+        });
+
+
+    }
+
+    public void removeImage(String userID, ImageView imageView) {
+        if (userID == null || imageView == null) {
+            Log.d("HUHUUUUU", "Invalid imageUrl or imageView");
+            return;
+        }
+        String filePath = "user_" + userID + ".jpg";
+        StorageReference fileRef = storageRef.child(filePath);
+        fileRef.delete().addOnSuccessListener(aVoid -> {
+            Log.d("ProfileImageController", "Image deleted successfully");
+            dbUtils.fetchUser(userID, user -> {
+                if (user!=null){
+                    String userName = user.getName();
+                    Bitmap genProfilePicture = ProfilePictureGenerator.generateProfilePicture( userName, 500);
+                    this.loadImageUsingBitmap(genProfilePicture, imageView);}});
+        }).addOnFailureListener(e -> {
+            Log.e("ProfileImageController", "Error deleting image: " + e.getMessage());
         });
 
 

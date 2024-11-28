@@ -73,7 +73,8 @@
             app:layout_constraintStart_toStartOf="@+id/profile_pic_view"
             app:layout_constraintTop_toTopOf="@+id/profile_pic_view"
             app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@drawable/profilepicedit_icon" />
+            app:srcCompat="@drawable/profilepicedit_icon"
+            />
 
         <TextView
             android:id="@+id/profile_name_text"

@@ -171,6 +171,7 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
         CheckBox needAdminNotifs = dialog.findViewById(R.id.profile_notification_admin_checkbox_view);
         CheckBox adminMode = dialog.findViewById(R.id.profile_admin_mode_checkbox_view);
         Button savePreferencesButton = dialog.findViewById(R.id.save_preferences);
+        Button removeProfilePicButton = dialog.findViewById(R.id.remove_profile_pic);
 
         AtomicReference<SharedPreferences> preferences = new AtomicReference<>(getSharedPreferences("AppPreferences", MODE_PRIVATE));
         boolean isAdminMode = preferences.get().getBoolean("AdminMode", false); // Default to false if not set
@@ -237,6 +238,10 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
                                 Snackbar.LENGTH_SHORT).show();
                         Log.e("ProfileActivity", "Error updating notification preferences: " + e.getMessage());
                     });
+        });
+        removeProfilePicButton.setOnClickListener(v -> {
+            imageController.removeImage(userID, profilePic);
+            dialog.dismiss();
         });
 
         dialog.show();
