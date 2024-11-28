@@ -111,13 +111,16 @@ public class EventEditOverlay extends DialogFragment {
                             notificationService.sendNotification(parentActivity, notification, eventID);
                         }
 
+                        for (String id: waitingList) {
+                            if (!selectedAttendees.contains(id)) {
+                                Notification notification = new Notification(id, "You were unfortunately not selected for " + eventName + ", Don't worry. You may get another chance. Keep alert!", true, false);
+                                notificationService.sendNotification(parentActivity, notification, eventID);
+                            }
+                        }
+
                         eventRef.update("entrantList.Selected", FieldValue.arrayUnion(selectedAttendees.toArray()))
                                 .addOnSuccessListener(aVoid -> {
                                     for (String attendee : selectedAttendees) {
-
-                                        Notification notification = new Notification(attendee, "You were unfortunately not selected for " + eventName + ", Don't worry. You may get another chance. Keep alert!", true, false);
-                                        notificationService.sendNotification(parentActivity, notification, eventID);
-
                                         eventRef.update("entrantList.Waiting", FieldValue.arrayRemove(attendee))
                                                 .addOnSuccessListener(innerVoid -> Log.d("EventEditDialogFragment", "Attendee moved successfully: " + attendee))
                                                 .addOnFailureListener(e -> Log.e("EventEditDialogFragment", "Error removing attendee: ", e));
