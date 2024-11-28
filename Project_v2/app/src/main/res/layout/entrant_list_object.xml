@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/rounded_overlay"
     android:backgroundTint="@color/lucky_uiEmphasis"
-    android:layout_margin="8dp">
+    android:layout_marginVertical="8dp">
 
 
     <TextView
@@ -33,11 +33,10 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
         android:padding="8dp"
-        android:text="Send Notificaton"
-        android:textAlignment="textStart"
+        android:text="Notify"
         android:textAllCaps="false"
         android:textSize="16sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,11 +51,10 @@
         android:backgroundTint="@color/lucky_red_alert"
         android:fontFamily="@font/airbnbcereal_w_bd"
         android:padding="8dp"
-        android:text="Cancel Entrant"
-        android:textAlignment="textStart"
+        android:text="Cancel"
         android:textAllCaps="false"
         android:textSize="16sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

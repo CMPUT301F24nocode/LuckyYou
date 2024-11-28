@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.EntrantListAdapter;
 import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Controller.topBarUtils;
@@ -43,7 +44,7 @@ public class EntrantListActivity extends AppCompatActivity {
     private EntrantListAdapter adapter;
     private FirebaseFirestore db;
     private Spinner filterSpinner;
-    private Button sendNotifAllView;
+    private Button sendNotifAllView, removeAllEntrants;
     private List<String> documentIds = new ArrayList<>();
     private List<String> waitingList = new ArrayList<>();
     private List<String> selectedList = new ArrayList<>();
@@ -70,12 +71,24 @@ public class EntrantListActivity extends AppCompatActivity {
 
         // Initialize Firestore database instance and the adapter with an empty list
         db = FirebaseFirestore.getInstance();
-        adapter = new EntrantListAdapter(this, new ArrayList<>());
+        adapter = new EntrantListAdapter(this, new ArrayList<>(), new ArrayList<>());
         entrantRecyclerView.setAdapter(adapter);
 
         filterSpinner = findViewById(R.id.entrant_list_dropdown);
-        sendNotifAllView = findViewById(R.id.send_notification_toAll_button);
         setupFilterSpinner();
+
+        sendNotifAllView = findViewById(R.id.send_notification_toAll_button);
+        sendNotifAllView.setOnClickListener(v -> showPopup(documentIds));
+
+        removeAllEntrants = findViewById(R.id.cancel_all_entrants_button);
+        String eventId = getIntent().getStringExtra("eventId");
+        removeAllEntrants.setOnClickListener(v -> DBUtils.removeUsers(documentIds, eventId));
+    }
+
+    private void showPopup(List<String> documentIds) {
+        String eventId = getIntent().getStringExtra("eventId");
+        SendNotificationOverlay overlay = SendNotificationOverlay.newInstance(this, new ArrayList<>(documentIds), eventId);
+        overlay.show(getSupportFragmentManager(), "SendNotificationOverlay");
     }
 
     /**
@@ -162,26 +175,21 @@ public class EntrantListActivity extends AppCompatActivity {
                                         if (completedTasks[0] == documentIds.size()) {
                                             Log.d("FetchNames", "All names fetched: " + waitingList);
                                             if (!waitingList.isEmpty()) {
-                                                adapter.updateEntrantList(waitingList);
+                                                adapter.updateEntrantList(waitingList, documentIds);
                                             } else {
                                                 Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
                         }
+                        if (waitingList != null) {
+                            adapter.updateEntrantList(waitingList, documentIds);
+                        } else {
+                            Toast.makeText(this, "No attendees found.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error loading Waiting List", e));
-
-        sendNotifAll.setOnClickListener(view -> {
-            NotificationService notificationService = new NotificationService();
-            String eventName = getIntent().getStringExtra("name");
-
-            for (String userId : documentIds) {
-                Notification notification = new Notification(userId, "You're in the waiting list for " + eventName, true, false);
-                notificationService.sendNotification(this, notification, eventId);
-            }
-        });
     }
 
     /**
@@ -230,12 +238,17 @@ public class EntrantListActivity extends AppCompatActivity {
                                         if (completedTasks[0] == documentIds.size()) {
                                             Log.d("FetchNames", "All names fetched: " + selectedList);
                                             if (!selectedList.isEmpty()) {
-                                                adapter.updateEntrantList(selectedList);
+                                                adapter.updateEntrantList(selectedList, documentIds);
                                             } else {
                                                 Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
+                        }
+                        if (selectedList != null) {
+                            adapter.updateEntrantList(selectedList, documentIds);
+                        } else {
+                            Toast.makeText(this, "No attendees found.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -244,26 +257,26 @@ public class EntrantListActivity extends AppCompatActivity {
                     Toast.makeText(this, "Failed to load selected list", Toast.LENGTH_SHORT).show();
                 });
 
-        sendNotifAll.setOnClickListener(view -> {
-            NotificationService notificationService = new NotificationService();
-            String eventName = getIntent().getStringExtra("name");
-
-            for (String userId : documentIds) {
-                Notification notification = new Notification(userId, "Congratulations! You have been chosen to attend " + eventName, true, false);
-                notificationService.sendNotification(this, notification, eventId);
-            }
-
-            // Notify remaining users in the waiting list
-            if (waitingList != null) {
-                List<String> remainingWaitingList = new ArrayList<>(waitingList);
-                remainingWaitingList.removeAll(documentIds);
-
-                for (String userId : remainingWaitingList) {
-                    Notification notification = new Notification(userId, "You were unfortunately not selected for " + eventName + ", Don't worry. You may get another chance. Keep alert!", true, false);
-                    notificationService.sendNotification(this, notification, eventId);
-                }
-            }
-        });
+//        sendNotifAll.setOnClickListener(view -> {
+//            NotificationService notificationService = new NotificationService();
+//            String eventName = getIntent().getStringExtra("name");
+//
+//            for (String userId : documentIds) {
+//                Notification notification = new Notification(userId, "Congratulations! You have been chosen to attend " + eventName, true, false);
+//                notificationService.sendNotification(this, notification, eventId);
+//            }
+//
+//            // Notify remaining users in the waiting list
+//            if (waitingList != null) {
+//                List<String> remainingWaitingList = new ArrayList<>(waitingList);
+//                remainingWaitingList.removeAll(documentIds);
+//
+//                for (String userId : remainingWaitingList) {
+//                    Notification notification = new Notification(userId, "You were unfortunately not selected for " + eventName + ", Don't worry. You may get another chance. Keep alert!", true, false);
+//                    notificationService.sendNotification(this, notification, eventId);
+//                }
+//            }
+//        });
     }
 
     /**
@@ -311,12 +324,18 @@ public class EntrantListActivity extends AppCompatActivity {
                                         if (completedTasks[0] == documentIds.size()) {
                                             Log.d("FetchNames", "All names fetched: " + cancelledList);
                                             if (!cancelledList.isEmpty()) {
-                                                adapter.updateEntrantList(cancelledList);
+                                                adapter.updateEntrantList(cancelledList, documentIds);
                                             } else {
                                                 Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
+                        }
+
+                        if (cancelledList != null) {
+                            adapter.updateEntrantList(cancelledList, documentIds);
+                        } else {
+                            Toast.makeText(this, "No attendees found.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -324,16 +343,6 @@ public class EntrantListActivity extends AppCompatActivity {
                     Log.e(TAG, "Error loading cancelled list", e);
                     Toast.makeText(this, "Failed to load cancelled list", Toast.LENGTH_SHORT).show();
                 });
-
-        sendNotifAll.setOnClickListener(view -> {
-            NotificationService notificationService = new NotificationService();
-            String eventName = getIntent().getStringExtra("name");
-
-            for (String userId : documentIds) {
-                Notification notification = new Notification(userId, "Your cancellation of " + eventName + " is confirmed.", true, false);
-                notificationService.sendNotification(this, notification, eventId);
-            }
-        });
     }
 
     /**
@@ -381,7 +390,7 @@ public class EntrantListActivity extends AppCompatActivity {
                                         if (completedTasks[0] == documentIds.size()) {
                                             Log.d("FetchNames", "All names fetched: " + attendees);
                                             if (!attendees.isEmpty()) {
-                                                adapter.updateEntrantList(attendees);
+                                                adapter.updateEntrantList(attendees, documentIds);
                                             } else {
                                                 Toast.makeText(this, "No entrants in Waiting List.", Toast.LENGTH_SHORT).show();
                                             }
@@ -390,23 +399,12 @@ public class EntrantListActivity extends AppCompatActivity {
                         }
 
                         if (attendees != null) {
-                            adapter.updateEntrantList(attendees);
+                            adapter.updateEntrantList(attendees, documentIds);
                         } else {
                             Toast.makeText(this, "No attendees found.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error loading attendees", e));
-
-        sendNotifAll.setOnClickListener(view -> {
-            NotificationService notificationService = new NotificationService();
-            String eventName = getIntent().getStringExtra("name");
-
-            for (String userId : documentIds) {
-                Notification notification = new Notification(userId, "Welcome to " + eventName, true, false);
-                notificationService.sendNotification(this,notification, eventId);
-            }
-        });
     }
 }
-

@@ -41,18 +41,17 @@
     <Button
         android:id="@+id/send_notification_toAll_button"
         style="@style/ActiveButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
         android:padding="8dp"
-        android:text="Send Notification to All"
+        android:text="Notify All"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/cancel_all_entrants_button"
-        app:layout_constraintEnd_toStartOf="@+id/cancel_all_entrants_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cancel_all_entrants_button" />
@@ -66,11 +65,13 @@
         android:backgroundTint="@color/lucky_red_alert"
         android:fontFamily="@font/airbnbcereal_w_bd"
         android:padding="8dp"
-        android:text="Cancel Entrants"
+        android:text="Cancel All"
         android:textAllCaps="false"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:cornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
     <androidx.recyclerview.widget.RecyclerView
