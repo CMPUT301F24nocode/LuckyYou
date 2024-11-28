@@ -105,34 +105,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         @SuppressLint("HardwareIds")
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-//        // Check if the device is selected
-//        isSelected(deviceID, isSelected -> {
-//            if (isSelected) {
-//                Log.d("Result", "Device is selected");
-//                joinEventButton.setVisibility(View.GONE);
-//                leaveEventButton.setVisibility(View.GONE);
-//                accept_button.setVisibility(View.VISIBLE);
-//                decline_button.setVisibility(View.VISIBLE);
-//
-//                accept_button.setOnClickListener(v -> addAttendee(eventID, deviceID));
-//                decline_button.setOnClickListener(v -> addCancelled(eventID, deviceID));
-//            } else{
-//                // Check if the device is an entrant
-//                isEntrant(deviceID, isEntrant -> {
-//                    if (isEntrant) {
-//                        Log.d("Result", "Device is an entrant");
-//                        joinEventButton.setVisibility(View.GONE);
-//                        leaveEventButton.setVisibility(View.VISIBLE);
-//
-//                        leaveEventButton.setOnLongClickListener(view -> {
-//                            promptLeaveEvent(view, eventID, userID);
-//                            return true;
-//                        });
-//                    }
-//                });
-//            }
-//        });
-
         isWaiting(deviceID, isWaiting -> {
             if (isWaiting) {
                 Log.d("Result", "Device is waiting");
@@ -160,10 +132,12 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         });
 
         isAttendee(deviceID, isAttendee -> {
-            if (isAttendee) {
-                Log.d("Result", "Device is attendee");
-                joinEventButton.setVisibility(View.GONE);
-            }
+            isCancelled(deviceID, isCancelled -> {
+                if (isAttendee || isCancelled) {
+                    Log.d("Result", "Device is attendee");
+                    joinEventButton.setVisibility(View.GONE);
+                }
+            });
         });
 
         // Configure the join event button
@@ -184,6 +158,10 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
     public interface AttendeeCallback {
         void onAttendeeResult(boolean isWaiting);
+    }
+
+    public interface CancelledCallback {
+        void onCancelledResult(boolean isWaiting);
     }
 
     private void isSelected(String deviceID, SelectedCallback callback) {
@@ -240,6 +218,25 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.d("Attendee", "Error fetching document", e);
                     callback.onAttendeeResult(false);
+                });
+    }
+
+    private void isCancelled(String deviceID, CancelledCallback callback) {
+        db.collection("events").document(eventID).get()
+                .addOnSuccessListener(document -> {
+                    List<String> cancelledList = (List<String>) document.get("entrantList.Cancelled");
+
+                    if (cancelledList != null && cancelledList.contains(deviceID)) {
+                        Log.d("Cancelled", "Value exists in the list");
+                        callback.onCancelledResult(true);
+                    } else {
+                        Log.d("Cancelled", "Value does not exist in the list");
+                        callback.onCancelledResult(false);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("Cancelled", "Error fetching document", e);
+                    callback.onCancelledResult(false);
                 });
     }
 
