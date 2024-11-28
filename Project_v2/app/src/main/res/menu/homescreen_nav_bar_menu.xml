@@ -34,4 +34,9 @@
         android:icon="@drawable/facility_icon"
         android:title="Browse Facilities" />
 
+    <item
+        android:id="@+id/nav_browseEvents"
+        android:icon="@drawable/facility_icon"
+        android:title="Browse Events" />
+
 </menu>
