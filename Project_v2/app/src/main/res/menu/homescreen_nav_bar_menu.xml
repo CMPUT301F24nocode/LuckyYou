@@ -30,8 +30,8 @@
         android:title="Browse Images" />
 
     <item
-        android:id="@+id/nav_browseFacilities"
-        android:icon="@drawable/facility_icon"
-        android:title="Browse Facilities" />
+        android:id="@+id/nav_browseEvents"
+        android:icon="@drawable/eventstatus_icon"
+        android:title="Browse Events" />
 
 </menu>

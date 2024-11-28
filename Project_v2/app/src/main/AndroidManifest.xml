@@ -41,6 +41,8 @@
         <activity android:name=".View.AdminProfileListActivity" />
         <activity android:name=".View.AdminImageListActivity" />
         <activity android:name=".View.AdminFacilityListActivity" />
+        <activity android:name=".View.BrowseImagesActivity" />
+        <activity android:name=".View.BrowseProfilesActivity" />
         <activity android:name=".View.CreateEventOptionsActivity" />
         <activity android:name=".View.CreateEventActivity" />
         <activity android:name=".View.EventLandingPageUserActivity" />
