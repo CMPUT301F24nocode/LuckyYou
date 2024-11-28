@@ -6,7 +6,6 @@
  */
 package com.example.projectv2.View;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.topBarUtils;
-import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
 /**
@@ -98,7 +96,6 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
             startActivity(locationIntent);
         });
 
-
         // Configure button to navigate to EntrantListActivity with eventID
         Button viewEntrantListButton = findViewById(R.id.view_entrant_list_button);
         viewEntrantListButton.setOnClickListener(v -> {
@@ -144,7 +141,7 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
         // Configure more options button to show a popup
         ImageButton moreButton = findViewById(R.id.more_settings_button);
-        moreButton.setOnClickListener(v -> showPopup(eventID));
+        moreButton.setOnClickListener(v -> showPopup(eventID, eventName));
     }
     /**
      * Load the event poster using the ImageController.
@@ -176,8 +173,8 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
     /**
      * Displays a popup dialog with additional event options.
      */
-    private void showPopup(String eventId) {
-        EventEditOverlay dialogFragment = EventEditOverlay.newInstance(eventId);
+    private void showPopup(String eventId, String eventName) {
+        EventEditOverlay dialogFragment = EventEditOverlay.newInstance(this, eventId, eventName);
         dialogFragment.show(getSupportFragmentManager(), "EventEditDialogFragment");
     }
 }

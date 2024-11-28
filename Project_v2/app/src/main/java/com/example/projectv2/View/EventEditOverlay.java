@@ -1,5 +1,6 @@
 package com.example.projectv2.View;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.projectv2.Controller.NotificationService;
+import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -26,12 +30,15 @@ public class EventEditOverlay extends DialogFragment {
 
     private FirebaseFirestore db;
     private int attendeesLimit;
-    private String eventID;
+    private String eventID, eventName;
+    private Activity parentActivity;
 
-    public static EventEditOverlay newInstance(String eventId) {
+    public static EventEditOverlay newInstance(Activity activity, String eventId, String eventName) {
         EventEditOverlay fragment = new EventEditOverlay();
+        fragment.parentActivity = activity; // Set the parent activity
         Bundle args = new Bundle();
         args.putString("eventId", eventId);
+        args.putString("eventName", eventName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,17 +56,18 @@ public class EventEditOverlay extends DialogFragment {
 
         if (getArguments() != null) {
             eventID = getArguments().getString("eventId");
+            eventName = getArguments().getString("eventName");
         }
 
         Log.d("EventEditDialogFragment", "Dialog created");
 
         Button chooseAttendeesButton = view.findViewById(R.id.choose_attendees_button);
-        chooseAttendeesButton.setOnClickListener(v -> setSelectedList(eventID));
+        chooseAttendeesButton.setOnClickListener(v -> setSelectedList(eventID, eventName));
 
         return view;
     }
 
-    private void setSelectedList(String eventID) {
+    private void setSelectedList(String eventID, String eventName) {
         Log.d("EventEditDialogFragment", "Button clicked");
 
         DocumentReference eventRef = db.collection("events").document(eventID);
@@ -94,6 +102,18 @@ public class EventEditOverlay extends DialogFragment {
                             }
                         } else {
                             selectedAttendees = Collections.emptyList();
+                        }
+
+                        NotificationService notificationService = new NotificationService();
+
+                        for (String id : selectedAttendees) {
+                            Notification notification = new Notification(id, "Congratulations! You have been chosen to attend " + eventName, true, false);
+                            notificationService.sendNotification(parentActivity, notification, eventID);
+                        }
+
+                        for (String id : waitingList) {
+                            Notification notification = new Notification(id, "You were unfortunately not selected for " + eventName + ", Don't worry. You may get another chance. Keep alert!", true, false);
+                            notificationService.sendNotification(parentActivity, notification, eventID);
                         }
 
                         eventRef.update("entrantList.Selected", FieldValue.arrayUnion(selectedAttendees.toArray()))
