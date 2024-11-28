@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 import com.example.projectv2.Model.Event;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -372,57 +373,4 @@ public class EventController {
                     callback.onError(e);
                 });
     }
-
-    public void handleExpiredDeadlines() {
-        db.collection("events")
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                    Date currentDate = new Date();
-
-                    for (var document : querySnapshot.getDocuments()) {
-                        String deadlineString = document.getString("deadline");
-
-                        if (deadlineString != null) {
-                            try {
-                                // Parse the deadline string into a Date object
-                                Date deadlineDate = dateFormat.parse(deadlineString);
-
-                                // Compare the parsed deadline with the current date
-                                if (currentDate.after(deadlineDate)) {
-                                    String eventId = document.getId();
-                                    moveUnresponsiveUsersToCancelled(eventId);
-                                }
-                            } catch (ParseException e) {
-                                Log.e("EventController", "Error parsing deadline: " + deadlineString, e);
-                            }
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("EventController", "Error fetching events for deadline handling", e));
-    }
-
-    private void moveUnresponsiveUsersToCancelled(String eventId) {
-        db.collection("events").document(eventId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        List<String> selectedList = (List<String>) documentSnapshot.get("entrantList.Selected");
-
-                        if (selectedList != null && !selectedList.isEmpty()) {
-                            // Move all users from Selected to Cancelled
-                            db.collection("events").document(eventId)
-                                    .update("entrantList.Cancelled", FieldValue.arrayUnion(selectedList.toArray()))
-                                    .addOnSuccessListener(aVoid -> Log.d("EventController", "Users moved to Cancelled for event: " + eventId))
-                                    .addOnFailureListener(e -> Log.e("EventController", "Error updating Cancelled list", e));
-                            
-                            db.collection("events").document(eventId)
-                                    .update("entrantList.Selected", FieldValue.delete())
-                                    .addOnSuccessListener(aVoid -> Log.d("EventController", "Cleared Selected list for event: " + eventId))
-                                    .addOnFailureListener(e -> Log.e("EventController", "Error clearing Selected list", e));
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("EventController", "Error fetching event data", e));
-    }
-
 }

@@ -4,7 +4,7 @@
  *
  * <p>Outstanding Issues: None currently identified.</p>
  */
-package com.example.projectv2.View;
+package com.example.projectv2.Controller;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.projectv2.Model.Facility;
 import com.example.projectv2.R;
+import com.example.projectv2.View.FacilityLandingPageActivity;
+
 import java.util.List;
 
 /**
