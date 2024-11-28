@@ -9,6 +9,7 @@ package com.example.projectv2.View;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,7 +45,7 @@ public class EntrantListActivity extends AppCompatActivity {
     private EntrantListAdapter adapter;
     private FirebaseFirestore db;
     private Spinner filterSpinner;
-    private Button sendNotifAllView, removeAllEntrants;
+    private Button sendNotifAllView, removeAllEntrants, sendNotifView;
     private List<String> documentIds = new ArrayList<>();
     private List<String> waitingList = new ArrayList<>();
     private List<String> selectedList = new ArrayList<>();
@@ -83,6 +84,27 @@ public class EntrantListActivity extends AppCompatActivity {
         removeAllEntrants = findViewById(R.id.cancel_all_entrants_button);
         String eventId = getIntent().getStringExtra("eventId");
         removeAllEntrants.setOnClickListener(v -> DBUtils.removeUsers(documentIds, eventId));
+
+        // Add a touch listener to the root layout to hide buttons on outside clicks
+        View rootView = findViewById(android.R.id.content); // Get the root view
+        rootView.setOnTouchListener((v, event) -> {
+            // Detect if the touch is outside the RecyclerView
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // Get the coordinates of the touch
+                int[] location = new int[2];
+                entrantRecyclerView.getLocationOnScreen(location);
+                float x = event.getRawX();
+                float y = event.getRawY();
+
+                // Check if the touch is outside RecyclerView bounds
+                if (x < location[0] || x > location[0] + entrantRecyclerView.getWidth()
+                        || y < location[1] || y > location[1] + entrantRecyclerView.getHeight()) {
+                    adapter.clearSelection();
+                    v.performClick(); // Perform a click to satisfy accessibility requirements
+                }
+            }
+            return false; // Allow other touch events to propagate
+        });
     }
 
     private void showPopup(List<String> documentIds) {

@@ -141,6 +141,16 @@ public class EntrantListAdapter extends RecyclerView.Adapter<EntrantListAdapter.
         return entrantList.size();
     }
 
+    public void clearSelection() {
+        int previousPosition = currentlyVisiblePosition;
+        currentlyVisiblePosition = RecyclerView.NO_POSITION;
+
+        // Notify the adapter to update the visibility of buttons
+        if (previousPosition != RecyclerView.NO_POSITION) {
+            notifyItemChanged(previousPosition);
+        }
+    }
+
     /**
      * Updates the list of entrants in the adapter and notifies the RecyclerView to refresh the data.
      *
