@@ -14,12 +14,14 @@
         android:background="@drawable/rounded_corners"
         android:clipToOutline="true"
         app:tint="#404040"
-        app:tintMode="multiply" />
+        app:tintMode="multiply"
+        android:layout_marginHorizontal="5dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:layout_marginHorizontal="5dp">
 
         <TextView
             android:id="@+id/available_event_name_text"

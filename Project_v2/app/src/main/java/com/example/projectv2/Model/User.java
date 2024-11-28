@@ -21,12 +21,14 @@ public class User {
     private String lastName;
     private boolean isOrganizer;
     private boolean organizerNotif;
-    private long phoneNumber;
+    private String phoneNumber;
     private String profileImage;
     private String deviceID;
     private ArrayList<Map<String, Object>> adminNotifList;
     private ArrayList<Map<String, Object>> organizerNotifList;
     private String name;
+    private double latitude;
+    private double longitude;
 
     /**
      * Default constructor for creating a User object with no initial data.
@@ -43,8 +45,8 @@ public class User {
      * @param phoneNumber the user's phone number
      * @param deviceID    the device ID associated with the user
      */
-    public User(String email, String firstName, String lastName, long phoneNumber, String deviceID) {
-        this(false, true, email, firstName, lastName, false, true, phoneNumber, deviceID);
+    public User(String email, String firstName, String lastName, String phoneNumber, String deviceID) {
+        this(false, true, email, firstName, lastName, false, true, String.valueOf(phoneNumber), deviceID);
     }
 
     /**
@@ -60,7 +62,7 @@ public class User {
      * @param phoneNumber    the user's phone number
      * @param deviceID       the device ID associated with the user
      */
-    public User(boolean isAdmin, boolean adminNotif, String email, String firstName, String lastName, boolean isOrganizer, boolean organizerNotif, long phoneNumber, String deviceID) {
+    public User(boolean isAdmin, boolean adminNotif, String email, String firstName, String lastName, boolean isOrganizer, boolean organizerNotif, String phoneNumber, String deviceID) {
         this.isAdmin = isAdmin;
         this.adminNotif = adminNotif;
         this.email = email;
@@ -73,6 +75,8 @@ public class User {
         this.profileImage = "";
         this.adminNotifList = new ArrayList<>();
         this.organizerNotifList = new ArrayList<>();
+        this.latitude = 0.0;
+        this.longitude = 0.0;
     }
 
     // Getters
@@ -136,7 +140,7 @@ public class User {
      *
      * @return the user's phone number
      */
-    public long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -174,6 +178,14 @@ public class User {
      */
     public ArrayList<Map<String, Object>> getOrganizerNotifList() {
         return organizerNotifList;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     // Setters
@@ -237,7 +249,7 @@ public class User {
      *
      * @param phoneNumber the user's phone number
      */
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -275,5 +287,13 @@ public class User {
      */
     public void setOrganizerNotifList(ArrayList<Map<String, Object>> organizerNotifList) {
         this.organizerNotifList = organizerNotifList;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

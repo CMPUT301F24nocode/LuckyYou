@@ -5,7 +5,7 @@
  * <p>Outstanding Issues: None currently identified.</p>
  */
 package com.example.projectv2.View;
-
+import com.bumptech.glide.Glide;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
@@ -18,18 +18,22 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.projectv2.Controller.ImageController;
+import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +49,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private int entrantsNum;
     private int entrantListSize;
+
+    String eventID, name, details, rules, deadline, startDate, price, imageUriString,userID;
+    DBUtils dbUtils = new DBUtils();
+
+
 
     /**
      * Called when the activity is created. Initializes views with event data and configures buttons
@@ -73,15 +82,23 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
         // Retrieve event data from intent
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        String details = intent.getStringExtra("details");
-        String rules = intent.getStringExtra("rules");
-        String deadline = intent.getStringExtra("deadline");
-        String startDate = intent.getStringExtra("startDate");
-        String price = intent.getStringExtra("price");
-        String imageUriString = intent.getStringExtra("imageUri");
-        String userID = intent.getStringExtra("user");
-        String eventID = intent.getStringExtra("eventID");
+        Bundle extras = intent.getExtras();
+//        Log.d("EventLandingPageUser", "Extras: " + extras + String.valueOf(extras.size()));
+
+        if (extras!=null && extras.size()<2){
+            eventID = intent.getStringExtra("eventID");
+            fetchEventDetails(eventID);
+        }else{
+            eventID = intent.getStringExtra("eventID");
+            name = intent.getStringExtra("name");
+            details = intent.getStringExtra("details");
+            rules = intent.getStringExtra("rules");
+            deadline = intent.getStringExtra("deadline");
+            startDate = intent.getStringExtra("startDate");
+            price = intent.getStringExtra("price");
+            imageUriString = intent.getStringExtra("imageUri");
+            userID = intent.getStringExtra("user");}
+
 
         // Configure the join event button
         joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
@@ -100,6 +117,43 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         // Set up the additional settings popup
         ImageButton moreButton = findViewById(R.id.more_settings_button);
         moreButton.setOnClickListener(v -> showPopup());
+    }
+
+    private void fetchEventDetails(String eventid) {
+        dbUtils.fetchEvent(eventid, eventDetails -> {
+            if (eventDetails != null) {
+
+                name = eventDetails.get("name");
+                details = eventDetails.get("details");
+                rules = eventDetails.get("rules");
+                deadline = eventDetails.get("deadline");
+                startDate = eventDetails.get("startDate");
+                price = eventDetails.get("price");
+                imageUriString = eventDetails.get("imageUri");
+                userID = eventDetails.get("user");
+
+                // Update UI with the fetched data
+                runOnUiThread(() -> {
+                    setEventData(name, details, rules, deadline, startDate, price, imageUriString);
+
+                    // Configure the join event button after data is loaded
+                    joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
+                    checkGeolocationEnabled(eventID);
+
+                    // Configure the long-click listener to leave the event
+                    joinEventButton.setOnLongClickListener(view -> {
+                        promptLeaveEvent(view, eventID, userID);
+                        return true;
+                    });
+                });
+            } else {
+                runOnUiThread(() -> {
+                    Toast.makeText(EventLandingPageUserActivity.this,
+                            "Failed to load event details", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+            }
+        });
     }
 
     /**
@@ -146,15 +200,14 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    entrantsNum = Integer.parseInt(Objects.requireNonNull(document.getString("entrants")));
-                    List<String> entrantList = (List<String>) document.get("entrantList.EntrantList");
-                    entrantListSize = (entrantList != null) ? entrantList.size() : 0;
+                    String entrantsString = document.getString("entrants");
+                    entrantsNum = entrantsString != null && !entrantsString.isEmpty()
+                            ? Integer.parseInt(entrantsString)
+                            : Integer.MAX_VALUE; // No restriction if entrants is empty or null
+                    List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
+                    entrantListSize = (waitingList != null) ? waitingList.size() : 0;
 
-                    if (entrantListSize <= entrantsNum) {
-                        eventRef.update("entrantList.EntrantList", FieldValue.arrayUnion(userID))
-                                .addOnSuccessListener(aVoid -> showJoinSuccess(view))
-                                .addOnFailureListener(e -> showJoinFailure(view, e));
-
+                    if (entrantListSize <= (entrantsNum - 1)) {
                         eventRef.update("entrantList.Waiting", FieldValue.arrayUnion(userID))
                                 .addOnSuccessListener(aVoid -> showJoinSuccess(view))
                                 .addOnFailureListener(e -> showJoinFailure(view, e));
@@ -192,10 +245,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     private void leaveEvent(View view, String eventID, String userID) {
         DocumentReference eventRef = db.collection("events").document(eventID);
 
-        eventRef.update("entrantList.EntrantList", FieldValue.arrayRemove(userID))
-                .addOnSuccessListener(aVoid -> showLeaveSuccess(view))
-                .addOnFailureListener(e -> showLeaveFailure(view, e));
-
         eventRef.update("entrantList.Waiting", FieldValue.arrayRemove(userID))
                 .addOnSuccessListener(aVoid -> showLeaveSuccess(view))
                 .addOnFailureListener(e -> showLeaveFailure(view, e));
@@ -231,8 +280,35 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             e.printStackTrace();
             eventImageView.setImageResource(R.drawable.placeholder_event);
         }
+        loadEventImage(name);
     }
+    /**
+     * Loads the event image using the ImageController.
+     *
+     * @param eventName The name of the event.
+     */
+    private void loadEventImage(String eventName) {
+        ImageController imageController = new ImageController();
+        imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
+            @Override
+            public void onRetrieveSuccess(String downloadUrl) {
+                // Use Glide to load the image into the ImageView
+                Glide.with(EventLandingPageUserActivity.this)
+                        .load(downloadUrl)
+                        .placeholder(R.drawable.placeholder_event) // Placeholder while loading
+                        .error(R.drawable.placeholder_event) // Placeholder if loading fails
+                        .centerCrop()
+                        .into(eventImageView);
+            }
 
+            @Override
+            public void onRetrieveFailure(Exception e) {
+                // Log the error and show the placeholder image
+                Log.e("EventLandingPageUser", "Failed to load image for event: " + eventName, e);
+                eventImageView.setImageResource(R.drawable.placeholder_event);
+            }
+        });
+    }
     /**
      * Shows a success message when the user successfully joins the event.
      *
