@@ -81,16 +81,46 @@ public class FacilityController {
     }
 
     /**
-     * Fetches the list of facilities from Firestore and notifies the callback with the
+     * Fetches the list of all the user's facilities from Firestore and notifies the callback with the
      * facility data.
      *
      * @param callback callback to handle the loaded facilities or errors
      */
-    public void fetchFacilities(FacilityCallback callback) {
+    public void fetchUserFacilities(FacilityCallback callback) {
         @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("fetchCreatedEvents", "DeviceID => " + deviceID);
         db.collection("facilities")
                 .whereEqualTo("owner", deviceID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        facilityList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            @SuppressLint("HardwareIds")
+                            String ownerID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+                            String name = document.getString("name");
+                            String description = document.getString("description");
+                            String id = document.getId(); // Get document ID
+
+                            Facility facility = new Facility(ownerID, name, description, id);
+                            facilityList.add(facility);
+                        }
+                        callback.onFacilityListLoaded(facilityList);
+                    } else {
+                        Log.w("FacilityController", "Error getting documents.", task.getException());
+                        callback.onError(task.getException());
+                    }
+                });
+    }
+
+    /**
+     * Fetches the list of all facilities from Firestore and notifies the callback with the
+     * facility data.
+     *
+     * @param callback callback to handle the loaded facilities or errors
+     */
+    public void fetchAllFacilities(FacilityCallback callback) {
+        db.collection("facilities")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
