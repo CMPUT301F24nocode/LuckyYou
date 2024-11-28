@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.projectv2.Controller.ProfileImageController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.User;
@@ -43,6 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageButton editProfilePicButton;
     private CircleImageView profilePic;
     private ProfileImageController imageController;
+    private LottieAnimationView profilePicUploadAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.profile_swipe_refresh);
         editProfilePicButton = findViewById(R.id.profile_pic_edit_button);
         profilePic = findViewById(R.id.profile_pic_view);
+        profilePicUploadAnimation = findViewById(R.id.profile_pic_upload_animation);
 
         db = FirebaseFirestore.getInstance();
         imageController = new ProfileImageController(this);
@@ -66,6 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String userID = intent.getStringExtra("userID");
         if (userID != null) {
+            Log.d("ProfileActivity", "userID: " + userID);
             fetchUserData(userID);
         } else {
             // Handle the case where the userID is not provided
@@ -78,7 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        fetchUserData(userID);
+//        fetchUserData(userID);
 
         // Three dot menu
         ImageButton moreButton = findViewById(R.id.more_settings_button);
@@ -88,15 +92,16 @@ public class ProfileActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (userID != null) {
                 fetchUserData(userID);
+                imageController.loadImage(userID,profilePic);
             }
             // Stop the refreshing animation
             swipeRefreshLayout.setRefreshing(false);
         });
 
         //Handling profile images
-        String savedImageUri= imageController.getImageUriLocally();
-        if (savedImageUri != null) {
-            imageController.loadImage(savedImageUri, profilePic);
+
+        if (userID != null) {
+            imageController.loadImage(userID, profilePic);
         }
         editProfilePicButton.setOnClickListener(v -> {
             imageController.openGallery(this, 1);
@@ -108,17 +113,25 @@ public class ProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
-        profilePic.setImageURI(imageUri);
-        String userID = getIntent().getStringExtra("userID");
+//            profilePicUploadAnimation.setVisibility(View.VISIBLE);
+//            profilePicUploadAnimation.playAnimation();
+            String userID = getIntent().getStringExtra("userID");
+        imageController.loadImage(userID, profilePic);
+
         imageController.uploadImageToFirebase(imageUri, userID, new ProfileImageController.ImageUploadCallback() {
             @Override
             public void onSuccess(Uri uri) {
                 Toast.makeText(ProfileActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                imageController.saveImageUriLocally(uri.toString());
+//                profilePicUploadAnimation.setVisibility(View.GONE);
+//                profilePicUploadAnimation.cancelAnimation();
+//                imageController.saveImageUriInDB(uri.toString(), userID);
+                imageController.loadImage(userID, profilePic);
             }
 
             @Override
             public void onFailure(Exception e) {
+//                profilePicUploadAnimation.setVisibility(View.GONE);
+//                profilePicUploadAnimation.cancelAnimation();
 Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
                 Log.e("ProfileActivity", "Image upload failed", e);
             }
@@ -127,6 +140,7 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
     }
 
     private void fetchUserData(String userID) {
+        Log.d("ProfileActivity", "Fetching user data for userID: " + userID);
         db.collection("Users").document(userID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -233,6 +247,7 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
             DocumentReference userRef = db.collection("Users").document(userID);
             userRef.update("name", name.getText().toString());
             userRef.update("email", email.getText().toString());
+            imageController.loadImage(userID, profilePic);
 
             String phoneNumberInput = phoneNumber.getText().toString();
             if (!phoneNumberInput.isBlank() && phoneNumberInput.length() != 10) {
@@ -242,6 +257,7 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
                 userRef.update("phoneNumber", phoneNumberInput);
                 return true;
             }
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);

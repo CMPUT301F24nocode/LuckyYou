@@ -7,31 +7,30 @@
  */
 package com.example.projectv2;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.Manifest;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.Menu;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
-
-import android.provider.Settings;
-import android.util.Log;
-import android.view.Menu;
-import android.widget.ImageView;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.EventsPagerAdapter;
@@ -54,7 +53,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -64,20 +64,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * floating action button for creating new events.
  */
 public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_CREATE_EVENT = 1;
+    private static final int REQUEST_CODE_QR_SCANNER = 2;
+    private static final int REQUEST_NOTIFICATION_PERMISSION = 1;
     private FirebaseFirestore db;
     private String userName;
     private boolean isOrganizer;
     private DBUtils dbUtils;
     private ProfileImageController profileImageController;
     private CircleImageView profilePic, profilePicture;
-
     private SharedPreferences preferences;
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
-
-    private static final int REQUEST_CODE_CREATE_EVENT = 1;
-    private static final int REQUEST_CODE_QR_SCANNER = 2;
-    private static final int REQUEST_NOTIFICATION_PERMISSION = 1;
-
     private DrawerLayout drawerLayout;
     private ViewPager2 viewPager;
 
@@ -120,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Perform refresh actions, like reloading data
-            refreshContent(navigationView,userId);
+            refreshContent(navigationView, userId);
 
             // Stop the refreshing animation
             swipeRefreshLayout.setRefreshing(false);
@@ -196,15 +193,15 @@ public class MainActivity extends AppCompatActivity {
 
             if (itemId == R.id.nav_profile) {
                 String userID = getIntent().getStringExtra("deviceID");
+                Log.d("MainActivity HUH", "userID: " + userID);
                 intent = new Intent(MainActivity.this, ProfileActivity.class);
                 intent.putExtra("userID", userID);
-            } else if(itemId == R.id.nav_qrScanner){
+            } else if (itemId == R.id.nav_qrScanner) {
                 intent = new Intent(MainActivity.this, QRUserActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_QR_SCANNER);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            }
-            else if (itemId == R.id.nav_facilities) {
+            } else if (itemId == R.id.nav_facilities) {
                 intent = new Intent(MainActivity.this, FacilityListActivity.class);
             } else if (itemId == R.id.nav_browseProfiles) {
                 intent = new Intent(MainActivity.this, AdminProfileListActivity.class);
@@ -283,12 +280,12 @@ public class MainActivity extends AppCompatActivity {
             if (fragment != null) {
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
-        } else if (requestCode==REQUEST_CODE_QR_SCANNER && resultCode==RESULT_OK){
+        } else if (requestCode == REQUEST_CODE_QR_SCANNER && resultCode == RESULT_OK) {
             String qrResult = data.getStringExtra("qrResult");
             Log.d("MainActivity", "QR Result: " + qrResult);
             if (qrResult != null) {
                 navigateToEventLandingPage(qrResult);
-            }else{
+            } else {
                 Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show();
             }
         }
@@ -322,37 +319,16 @@ public class MainActivity extends AppCompatActivity {
                 View headerView = navigationView.getHeaderView(0);
                 TextView userNameTextView = headerView.findViewById(R.id.textView19);
                 userNameTextView.setText(userName);
-
-                // Set user's profile image
-                String userImageUri = user.getProfileImage();
-                String savedImageUri = profileImageController.getImageUriLocally();
-
-                if (savedImageUri != null) {
-                    //generate Image deterministically
-
-                    int imageSize = 200; // Image size in pixels (e.g., 200x200)
-
-// Generate profile picture
-                    Bitmap profilePicture = ProfilePictureGenerator.generateProfilePicture(this, userName, imageSize);
-
-// Set the generated image in an ImageView
-
-//                    profilePic.setImageBitmap(profilePicture);
-
-
-                    profileImageController.loadImageUsingBitmap(profilePicture, profilePic);
-//
-//                    profileImageController.loadImage(savedImageUri, profilePicture);
-                } else if (userImageUri != null) {
-                    profileImageController.loadImage(userImageUri, profilePic);
-
-                    profileImageController.loadImage(userImageUri, profilePicture);
-                    // Optionally save the fetched image URI locally for future use
-                    profileImageController.saveImageUriLocally(userImageUri);
-                } else {
-                    profilePicture.setImageResource(R.drawable.placeholder_profile_picture);
-                    profilePic.setImageResource(R.drawable.placeholder_profile_picture);
+                if (!Objects.equals(userID, "")) {
+                    Log.d("HUHUUUUU",userID);
+                    profileImageController.loadImage(userID, profilePicture);
+                    Log.d("HUHUUUUU","Tried to call loadimage on profilePicture "+userID);
+                    profileImageController.loadImage(userID, profilePic);}
+                else {
+                    Log.d("HUHUUUUU","userID is null");
                 }
+
+
             } else {
                 Log.d("BLAH", "User not found in Firestore");
             }
@@ -392,6 +368,15 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    // Method to handle refresh logic
+    private void refreshContent(NavigationView navigationView, String userId) {
+        // Reload your data or update UI
+        // For example, fetch data for the ViewPager2
+        EventsPagerAdapter adapter = new EventsPagerAdapter(this);
+        viewPager.setAdapter(adapter);
+        fetchAndDisplayUserNameAndImage(navigationView, userId);
+    }
+
     /**
      * Interface for a callback to handle the result of checking if a user is an organizer.
      */
@@ -402,14 +387,5 @@ public class MainActivity extends AppCompatActivity {
          * @param isOrganizer true if the user is an organizer, false otherwise
          */
         void onComplete(boolean isOrganizer);
-    }
-
-    // Method to handle refresh logic
-    private void refreshContent(NavigationView navigationView, String userId) {
-        // Reload your data or update UI
-        // For example, fetch data for the ViewPager2
-        EventsPagerAdapter adapter = new EventsPagerAdapter(this);
-        viewPager.setAdapter(adapter);
-        fetchAndDisplayUserNameAndImage(navigationView, userId);
     }
 }
