@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -35,6 +34,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * EventLandingPageUserActivity displays event details and allows the user to join or leave the event.
@@ -131,14 +131,12 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             }
         });
 
-        isAttendee(deviceID, isAttendee -> {
-            isCancelled(deviceID, isCancelled -> {
-                if (isAttendee || isCancelled) {
-                    Log.d("Result", "Device is attendee");
-                    joinEventButton.setVisibility(View.GONE);
-                }
-            });
-        });
+        isAttendee(deviceID, isAttendee -> isCancelled(deviceID, isCancelled -> isOwner(deviceID, isOwner -> {
+            if (isAttendee || isCancelled || isOwner) {
+                Log.d("Result", "Device is attendee/cancelled/owner");
+                joinEventButton.setVisibility(View.GONE);
+            }
+        })));
 
         // Configure the join event button
         joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
@@ -157,11 +155,15 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     }
 
     public interface AttendeeCallback {
-        void onAttendeeResult(boolean isWaiting);
+        void onAttendeeResult(boolean isAttendee);
     }
 
     public interface CancelledCallback {
-        void onCancelledResult(boolean isWaiting);
+        void onCancelledResult(boolean isCancelled);
+    }
+
+    public interface OwnerCallback {
+        void onOwnerResult(boolean isOwner);
     }
 
     private void isSelected(String deviceID, SelectedCallback callback) {
@@ -237,6 +239,25 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.d("Cancelled", "Error fetching document", e);
                     callback.onCancelledResult(false);
+                });
+    }
+
+    private void isOwner(String deviceID, OwnerCallback callback) {
+        db.collection("events").document(eventID).get()
+                .addOnSuccessListener(document -> {
+                    String owner = (String) document.get("owner");
+
+                    if (Objects.equals(deviceID, owner)) {
+                        Log.d("Owner", "User is an owner");
+                        callback.onOwnerResult(true);
+                    } else {
+                        Log.d("Owner", "User is not an owner");
+                        callback.onOwnerResult(false);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("Owner", "Error fetching document", e);
+                    callback.onOwnerResult(false);
                 });
     }
 
