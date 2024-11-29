@@ -5,6 +5,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,9 @@ public class LocationActivity extends AppCompatActivity {
 
         // Setup the top bar for the activity
         topBarUtils.topBarSetup(this, "Location", View.VISIBLE);
+
+        ImageButton moreButton = findViewById(R.id.more_settings_button);
+        moreButton.setVisibility(View.GONE);
 
         // Initialize MapView and Firestore
         mapView = findViewById(R.id.mapView);

@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * EventLandingPageOrganizerActivity displays event details for organizers and provides
@@ -60,6 +61,9 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         eventCountdownView = findViewById(R.id.event_countdown_view_organiser);
         eventPriceView = findViewById(R.id.event_price_view_organiser);
 
+        Button locationButton = findViewById(R.id.location_button);
+        locationButton.setVisibility(View.GONE);
+
         // Retrieve event data from intent
         Intent intent = getIntent();
         eventName = intent.getStringExtra("name"); // Assign eventName here
@@ -79,6 +83,9 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         }
         loadEventPoster(eventName);
 
+        // Fetch geolocationenabled value and set location button visibility
+        fetchGeolocationEnabled(eventID, locationButton);
+
         // Configure QR Code button to navigate to QrOrganiserActivity
         qrcodeButton.setOnClickListener(v -> {
             Intent qrIntent = new Intent(EventLandingPageOrganizerActivity.this, QrOrganiserActivity.class);
@@ -89,7 +96,6 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         });
 
         // Configure Location button to navigate to LocationActivity
-        Button locationButton = findViewById(R.id.location_button);
         locationButton.setOnClickListener(v -> {
             Intent locationIntent = new Intent(EventLandingPageOrganizerActivity.this, LocationActivity.class);
             locationIntent.putExtra("eventId", eventID);
@@ -177,4 +183,36 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         EventEditOverlay dialogFragment = EventEditOverlay.newInstance(this, eventId, eventName);
         dialogFragment.show(getSupportFragmentManager(), "EventEditDialogFragment");
     }
+
+    /**
+     * Fetches the `geolocationenabled` value from Firestore and sets the visibility of the Location button.
+     *
+     * @param eventID       The event ID to fetch data for.
+     * @param locationButton The Location button to show/hide.
+     */
+    private void fetchGeolocationEnabled(String eventID, Button locationButton) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        firestore.collection("events").document(eventID).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Boolean geolocationEnabled = documentSnapshot.getBoolean("geolocationEnabled");
+                        if (geolocationEnabled != null && geolocationEnabled) {
+                            locationButton.setVisibility(View.VISIBLE); // Show the button
+                            Log.d(TAG, "Geolocation enabled: Showing location button.");
+                        } else {
+                            locationButton.setVisibility(View.GONE); // Hide the button
+                            Log.d(TAG, "Geolocation disabled: Hiding location button.");
+                        }
+                    } else {
+                        Log.w(TAG, "Event document not found.");
+                        locationButton.setVisibility(View.GONE); // Hide the button as a fallback
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching geolocationenabled value", e);
+                    locationButton.setVisibility(View.GONE); // Hide the button as a fallback
+                });
+    }
 }
+
