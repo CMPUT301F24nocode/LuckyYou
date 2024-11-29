@@ -2,6 +2,7 @@ package com.example.projectv2.View;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Controller.BrowseImagesAdapter;
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
@@ -31,6 +33,7 @@ public class BrowseImagesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_images);
+
 
         // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerViewImages);

@@ -40,7 +40,7 @@
         <activity android:name=".View.FacilityListActivity" />
         <activity android:name=".View.AdminProfileListActivity" />
         <activity android:name=".View.AdminImageListActivity" />
-        <activity android:name=".View.AdminFacilityListActivity" />
+        <activity android:name=".View.BrowseEventsActivity" />
         <activity android:name=".View.BrowseImagesActivity" />
         <activity android:name=".View.BrowseProfilesActivity" />
         <activity android:name=".View.CreateEventOptionsActivity" />
