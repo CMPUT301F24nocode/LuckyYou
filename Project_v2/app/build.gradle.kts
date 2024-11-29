@@ -42,6 +42,7 @@ dependencies {
     implementation (libs.cardview)
     implementation("com.google.firebase:firebase-storage:20.2.1")
     implementation(libs.glide)
+    implementation(libs.activity)
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.gms:play-services-maps:18.0.2")

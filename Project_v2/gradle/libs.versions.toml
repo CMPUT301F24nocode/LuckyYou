@@ -16,6 +16,7 @@ googleGmsGoogleServices = "4.4.2"
 firebaseFirestore = "25.1.1"
 swiperefreshlayout = "1.1.0"
 zxingAndroidEmbedded = "4.1.0"
+activity = "1.8.0"
 
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
@@ -36,6 +37,7 @@ circleimageview = { group = "de.hdodenhof", name = "circleimageview", version = 
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -47,6 +47,7 @@ import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
 import com.example.projectv2.View.QRUserActivity;
+import com.example.projectv2.View.SplashScreenActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -194,8 +195,12 @@ public class MainActivity extends AppCompatActivity {
             if (itemId == R.id.nav_profile) {
                 String userID = getIntent().getStringExtra("deviceID");
                 Log.d("MainActivity HUH", "userID: " + userID);
-                intent = new Intent(MainActivity.this, ProfileActivity.class);
-                intent.putExtra("userID", userID);
+                intent = new Intent(MainActivity.this, SplashScreenActivity.class);
+                intent.putExtra("message", "Curating Profiles!");
+                intent.putExtra("TARGET_ACTIVITY", ProfileActivity.class.getName());
+                Bundle extras = new Bundle();
+                extras.putString("userID", userID);
+                intent.putExtra("EXTRA_DATA", extras);
             } else if (itemId == R.id.nav_qrScanner) {
                 intent = new Intent(MainActivity.this, QRUserActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_QR_SCANNER);
