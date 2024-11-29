@@ -1,6 +1,7 @@
 package com.example.projectv2.View;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.projectv2.Controller.EventImageAdapter;
 import com.example.projectv2.Controller.ImageController;
+import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
 
 import java.util.ArrayList;
@@ -18,10 +20,8 @@ import java.util.List;
 
 public class AdminImageListActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     private EventImageAdapter adapter;
     private List<String> imageFilenames;
-    private ImageButton backButton;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -29,8 +29,10 @@ public class AdminImageListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_image_list);
 
+        topBarUtils.topBarSetup(this, "Browse Images", View.INVISIBLE);
+
         // Initialize RecyclerView
-        recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2)); // Grid layout with 2 columns
 
         imageFilenames = new ArrayList<>();
@@ -39,14 +41,8 @@ public class AdminImageListActivity extends AppCompatActivity {
 
         // Initialize SwipeRefreshLayout
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            // Refresh images when user performs pull-to-refresh gesture
-            fetchImages();
-        });
-
-        // Initialize Back Button
-        backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> finish());
+        // Refresh images when user performs pull-to-refresh gesture
+        swipeRefreshLayout.setOnRefreshListener(this::fetchImages);
 
         // Load images initially
         fetchImages();

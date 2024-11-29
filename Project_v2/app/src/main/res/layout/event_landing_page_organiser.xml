@@ -45,9 +45,9 @@
         android:textColor="@color/lucky_white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_entrant_list_button" />
+        app:layout_constraintTop_toBottomOf="@+id/event_price_view_organiser" />
 
     <TextView
         android:id="@+id/event_name_view_organiser"
@@ -74,6 +74,7 @@
         android:textColor="@color/lucky_white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_details_view_organiser" />
 
@@ -88,6 +89,7 @@
         android:textColor="@color/lucky_white"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_rules_view_organiser" />
 
@@ -97,11 +99,10 @@
         android:layout_height="28dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
         android:text="@string/event_description_text"
-        android:textAlignment="viewStart"
         android:textColor="@color/lucky_white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -114,7 +115,7 @@
         android:textColor="@color/lucky_white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -127,7 +128,7 @@
         android:textColor="@color/lucky_white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
@@ -139,7 +140,7 @@
         style="@style/ActiveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginBottom="32dp"
         android:drawableLeft="@drawable/qrscanner_icon"
         android:drawablePadding="8dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
@@ -148,33 +149,31 @@
         android:textAllCaps="false"
         android:textSize="20sp"
         app:cornerRadius="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_deadline_view_organiser"
-        app:layout_constraintVertical_bias="0.038" />
+        app:layout_constraintBottom_toTopOf="@+id/location_button"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/view_entrant_list_button"
         style="@style/ActiveButton"
-        android:layout_width="142dp"
-        android:layout_height="62dp"
-        android:layout_marginTop="32dp"
-        android:text="Entrant"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_picture_organiser" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:drawableLeft="@drawable/profile_icon"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Entrants"
+        app:layout_constraintBottom_toTopOf="@+id/location_button"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/location_button"
         style="@style/ActiveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:drawableLeft="@drawable/location_icon"
         android:drawablePadding="8dp"
         android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Location"
+        android:text="Map View"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="20sp"
@@ -182,21 +181,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/qrcode_button"
-        app:layout_constraintVertical_bias="0.038" />
-    <TextView
-        android:id="@+id/geolocation_warning_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:text="@string/geolocation_verification_text"
-        android:textColor="@color/lucky_uiAccent"
-        android:textSize="16sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/location_button" />
+        app:layout_constraintTop_toBottomOf="@+id/event_deadline_view_organiser" />
 
     <TextView
         android:id="@+id/event_countdown_view_organiser"

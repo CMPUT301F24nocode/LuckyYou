@@ -29,5 +29,20 @@
         app:layout_constraintTop_toBottomOf="@+id/notification_top_bar"
         app:srcCompat="@drawable/placeholder_profile_picture" />
 
+    <Button
+        android:id="@+id/saveQrCodeButton"
+        style="@style/ActiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Save to Gallery"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

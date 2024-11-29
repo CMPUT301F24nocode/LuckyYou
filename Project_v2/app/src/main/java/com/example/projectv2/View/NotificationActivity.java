@@ -153,15 +153,20 @@ public class NotificationActivity extends AppCompatActivity {
             long hours = TimeUnit.MILLISECONDS.toHours(timeDiffMillis);
             long days = TimeUnit.MILLISECONDS.toDays(timeDiffMillis);
 
+            String rel_time;
+
             if (seconds < 60) {
-                return seconds + " sec ago";
+                rel_time = seconds + " sec ago";
             } else if (minutes < 60) {
-                return minutes + " min ago";
+                rel_time = (minutes == 1) ? minutes + " min ago" : minutes + " mins ago";
             } else if (hours < 24) {
-                return hours + " hrs ago";
+                rel_time = (hours == 1) ? hours + " hr ago" : hours + " hrs ago";
             } else {
-                return days + " days ago";
+                rel_time = (days == 1) ? days + " day ago" : days + " days ago";
             }
+
+            return rel_time;
+
         } catch (ParseException e) {
             e.printStackTrace();
             return "Unknown time";

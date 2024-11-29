@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -105,16 +106,20 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         @SuppressLint("HardwareIds")
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        isEntrant(deviceID, isEntrant -> {
+            isOwner(deviceID, isOwner -> {
+                if (!(isEntrant || isOwner)) {
+                    Log.d("Result", "Device is not an entrant/owner");
+                    joinEventButton.setVisibility(View.VISIBLE);
+                }
+            });
+        });
+
         isWaiting(deviceID, isWaiting -> {
             if (isWaiting) {
                 Log.d("Result", "Device is waiting");
                 joinEventButton.setVisibility(View.GONE);
                 leaveEventButton.setVisibility(View.VISIBLE);
-
-                leaveEventButton.setOnLongClickListener(view -> {
-                    promptLeaveEvent(view, eventID, userID);
-                    return true;
-                });
             }
         });
 
@@ -125,25 +130,27 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 leaveEventButton.setVisibility(View.GONE);
                 accept_button.setVisibility(View.VISIBLE);
                 decline_button.setVisibility(View.VISIBLE);
-
-                accept_button.setOnClickListener(v -> addAttendee(eventID, deviceID));
-                decline_button.setOnClickListener(v -> addCancelled(eventID, deviceID));
             }
         });
 
-        isAttendee(deviceID, isAttendee -> isCancelled(deviceID, isCancelled -> isOwner(deviceID, isOwner -> {
-            if (isAttendee || isCancelled || isOwner) {
-                Log.d("Result", "Device is attendee/cancelled/owner");
-                joinEventButton.setVisibility(View.GONE);
-            }
-        })));
-
-        // Configure the join event button
         joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
+
+        leaveEventButton.setOnLongClickListener(view -> {
+            promptLeaveEvent(view, eventID, userID);
+            return true;
+        });
+
+        accept_button.setOnClickListener(v -> addAttendee(eventID, deviceID));
+
+        decline_button.setOnClickListener(v -> addCancelled(eventID, deviceID));
 
         // Set data to views with fallback if values are null
         setEventData(name, details, rules, deadline, startDate, price, imageUriString);
 
+    }
+
+    public interface EntrantCallback {
+        void onEntrantResult(boolean isEntrant);
     }
 
     public interface SelectedCallback {
@@ -154,16 +161,39 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         void onWaitingResult(boolean isWaiting);
     }
 
-    public interface AttendeeCallback {
-        void onAttendeeResult(boolean isAttendee);
-    }
-
-    public interface CancelledCallback {
-        void onCancelledResult(boolean isCancelled);
-    }
-
     public interface OwnerCallback {
         void onOwnerResult(boolean isOwner);
+    }
+
+    private void isEntrant(String deviceID, EntrantCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("events").document(eventID).get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        // Check sublists in entrantList
+                        Map<String, Object> entrantList = (Map<String, Object>) document.get("entrantList");
+                        if (entrantList != null) {
+                            for (String key : entrantList.keySet()) {
+                                List<String> sublist = (List<String>) entrantList.get(key);
+                                if (sublist != null && sublist.contains(deviceID)) {
+                                    Log.d("Entrant", "DeviceID found in sublist: " + key);
+                                    callback.onEntrantResult(true);
+                                    return; // Exit after finding the deviceID
+                                }
+                            }
+                        }
+                        Log.d("Entrant", "DeviceID not found in any sublist");
+                        callback.onEntrantResult(false);
+                    } else {
+                        Log.d("Entrant", "Document does not exist");
+                        callback.onEntrantResult(false);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("Entrant", "Error fetching document", e);
+                    callback.onEntrantResult(false);
+                });
     }
 
     private void isSelected(String deviceID, SelectedCallback callback) {
@@ -201,44 +231,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     Log.d("Waiting", "Error fetching document", e);
                     callback.onWaitingResult(false);
-                });
-    }
-
-    private void isAttendee(String deviceID, AttendeeCallback callback) {
-        db.collection("events").document(eventID).get()
-                .addOnSuccessListener(document -> {
-                    List<String> attendeeList = (List<String>) document.get("entrantList.Attendee");
-
-                    if (attendeeList != null && attendeeList.contains(deviceID)) {
-                        Log.d("Attendee", "Value exists in the list");
-                        callback.onAttendeeResult(true);
-                    } else {
-                        Log.d("Attendee", "Value does not exist in the list");
-                        callback.onAttendeeResult(false);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.d("Attendee", "Error fetching document", e);
-                    callback.onAttendeeResult(false);
-                });
-    }
-
-    private void isCancelled(String deviceID, CancelledCallback callback) {
-        db.collection("events").document(eventID).get()
-                .addOnSuccessListener(document -> {
-                    List<String> cancelledList = (List<String>) document.get("entrantList.Cancelled");
-
-                    if (cancelledList != null && cancelledList.contains(deviceID)) {
-                        Log.d("Cancelled", "Value exists in the list");
-                        callback.onCancelledResult(true);
-                    } else {
-                        Log.d("Cancelled", "Value does not exist in the list");
-                        callback.onCancelledResult(false);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.d("Cancelled", "Error fetching document", e);
-                    callback.onCancelledResult(false);
                 });
     }
 
@@ -364,16 +356,18 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                     // Configure the join event button after data is loaded
                     checkGeolocationEnabled(eventID);
 
+                    isEntrant(userID, isEntrant -> {
+                        if (!isEntrant) {
+                            Log.d("Result", "Device is not an entrant");
+                            joinEventButton.setVisibility(View.VISIBLE);
+                        }
+                    });
+
                     isWaiting(userID, isWaiting -> {
                         if (isWaiting) {
                             Log.d("Result", "Device is waiting");
                             joinEventButton.setVisibility(View.GONE);
                             leaveEventButton.setVisibility(View.VISIBLE);
-
-                            leaveEventButton.setOnLongClickListener(view -> {
-                                promptLeaveEvent(view, eventID, userID);
-                                return true;
-                            });
                         }
                     });
 
@@ -384,21 +378,19 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                             leaveEventButton.setVisibility(View.GONE);
                             accept_button.setVisibility(View.VISIBLE);
                             decline_button.setVisibility(View.VISIBLE);
-
-                            accept_button.setOnClickListener(v -> addAttendee(eventID, userID));
-                            decline_button.setOnClickListener(v -> addCancelled(eventID, userID));
                         }
                     });
 
-                    isAttendee(userID, isAttendee -> {
-                        if (isAttendee) {
-                            Log.d("Result", "Device is attendee");
-                            joinEventButton.setVisibility(View.GONE);
-                        }
-                    });
-
-                    // Configure the join event button
                     joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
+
+                    leaveEventButton.setOnLongClickListener(view -> {
+                        promptLeaveEvent(view, eventID, userID);
+                        return true;
+                    });
+
+                    accept_button.setOnClickListener(v -> addAttendee(eventID, userID));
+
+                    decline_button.setOnClickListener(v -> addCancelled(eventID, userID));
                 });
             } else {
                 runOnUiThread(() -> {

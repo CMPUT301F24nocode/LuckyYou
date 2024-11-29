@@ -2,12 +2,19 @@ package com.example.projectv2.View;
 
 import static android.content.Intent.getIntent;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectv2.Controller.qrUtils;
@@ -17,6 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
+
+import java.io.OutputStream;
 
 
 public class QrOrganiserActivity extends AppCompatActivity {
@@ -36,11 +45,17 @@ public class QrOrganiserActivity extends AppCompatActivity {
         // Get event data passed from the previous activity
         Intent intent = getIntent();
         String eventID = intent.getStringExtra("eventID");
-        String eventDescription = intent.getStringExtra("description");
-        String eventPosterUrl = intent.getStringExtra("posterUrl");
+        String name = intent.getStringExtra("name");
 
         // Generate QR code based on event description and poster URL
-        generateQrCode(  eventID );
+        generateQrCode(eventID);
+
+        Button saveQrCodeButton = findViewById(R.id.saveQrCodeButton);
+        saveQrCodeButton.setOnClickListener(view -> {
+            // Get the QR code bitmap from the ImageView
+            Bitmap qrBitmap = ((BitmapDrawable) qrCodeImageView.getDrawable()).getBitmap();
+            saveImageToGallery(qrBitmap, name);
+        });
     }
     private void generateQrCode(String data) {
         try {
@@ -51,9 +66,8 @@ public class QrOrganiserActivity extends AppCompatActivity {
             // Generate the hashed string from the bitmap
             String qrHashData = qrUtils.getBitmapHash(bitmap);
 
-            // Log and save to Firestore
-//            Log.d("QR Hash", qrHashData);
             saveQrHashToFirestore(qrHashData);
+
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -70,6 +84,39 @@ public class QrOrganiserActivity extends AppCompatActivity {
                     .update("qrHashData", qrHashData)  // Add the hashed string under 'qrHashData'
                     .addOnSuccessListener(aVoid -> Log.d("Firestore", "QR hash saved successfully"))
                     .addOnFailureListener(e -> Log.w("Firestore", "Error saving QR hash", e));
+        }
+    }
+
+    public void saveImageToGallery(Bitmap bitmap, String name) {
+        try {
+            OutputStream fos;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                // Use MediaStore for Android 10+
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, "QR_Code_" + name + ".png");
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/LuckyYou");
+
+                fos = getContentResolver().openOutputStream(
+                        getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                );
+            } else {
+                // Save to Pictures directory for older Android versions
+                String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+                String imageName = "QR_Code_" + name + ".png";
+                fos = new java.io.FileOutputStream(imagesDir + "/" + imageName);
+            }
+
+            // Compress and save the bitmap
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            if (fos != null) {
+                fos.flush();
+                fos.close();
+            }
+
+            Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to save image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 }

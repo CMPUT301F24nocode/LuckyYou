@@ -89,9 +89,8 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         // Configure QR Code button to navigate to QrOrganiserActivity
         qrcodeButton.setOnClickListener(v -> {
             Intent qrIntent = new Intent(EventLandingPageOrganizerActivity.this, QrOrganiserActivity.class);
-            qrIntent.putExtra("description", details);
-            qrIntent.putExtra("posterUrl", imageUriString);
             qrIntent.putExtra("eventID", eventID);
+            qrIntent.putExtra("name", name);
             startActivity(qrIntent);
         });
 

@@ -8,52 +8,16 @@
     android:background="@color/lucky_background"
     android:padding="24dp">
 
-    <!-- Top Bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- SwipeRefreshLayout for pull-to-refresh -->
+    <include
         android:id="@+id/top_bar"
+        layout="@layout/top_bar_clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/lucky_background"
-        android:clipToPadding="false"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="-16dp"
-            android:backgroundTint="#00FFFFFF"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/back" />
-
-        <TextView
-            android:id="@+id/top_bar_banner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/airbnbcereal_w_bd"
-            android:text="Browse Event Images"
-            android:textColor="@color/lucky_white"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/back_button"
-            app:layout_constraintStart_toEndOf="@+id/back_button"
-            app:layout_constraintTop_toTopOf="@+id/back_button" />
-
-        <ImageButton
-            android:id="@+id/more_settings_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="-16dp"
-            android:backgroundTint="#00FFFFFF"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/more" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- SwipeRefreshLayout for pull-to-refresh -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="0dp"

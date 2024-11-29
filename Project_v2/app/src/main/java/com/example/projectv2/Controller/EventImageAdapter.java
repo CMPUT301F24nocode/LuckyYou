@@ -93,7 +93,7 @@ public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.Im
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        ImageButton deleteButton;
+        ImageView deleteButton;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
