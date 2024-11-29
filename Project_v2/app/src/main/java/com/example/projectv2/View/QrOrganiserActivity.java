@@ -26,6 +26,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
 import java.io.OutputStream;
+import java.util.Objects;
 
 
 public class QrOrganiserActivity extends AppCompatActivity {
@@ -57,6 +58,7 @@ public class QrOrganiserActivity extends AppCompatActivity {
             saveImageToGallery(qrBitmap, name);
         });
     }
+
     private void generateQrCode(String data) {
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -93,26 +95,24 @@ public class QrOrganiserActivity extends AppCompatActivity {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                 // Use MediaStore for Android 10+
                 ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DISPLAY_NAME, "QR_Code_" + name + ".png");
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".png");
                 values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
                 values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/LuckyYou");
 
                 fos = getContentResolver().openOutputStream(
-                        getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+                        Objects.requireNonNull(getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values))
                 );
             } else {
                 // Save to Pictures directory for older Android versions
                 String imagesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-                String imageName = "QR_Code_" + name + ".png";
+                String imageName = name + ".png";
                 fos = new java.io.FileOutputStream(imagesDir + "/" + imageName);
             }
 
             // Compress and save the bitmap
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            if (fos != null) {
-                fos.flush();
-                fos.close();
-            }
+            fos.flush();
+            fos.close();
 
             Toast.makeText(this, "Image saved to gallery", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
