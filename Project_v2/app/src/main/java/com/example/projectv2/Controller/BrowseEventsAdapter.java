@@ -1,9 +1,7 @@
 package com.example.projectv2.Controller;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
-public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.ViewHolder> {
+public class BrowseEventsAdapter extends RecyclerView.Adapter<BrowseEventsAdapter.ViewHolder> {
 
     private static final String TAG = "AdminEventsAdapter";
     private final List<Event> eventList;
@@ -30,7 +28,7 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
     private final String userRole;
     private final FirebaseFirestore db;
 
-    public AdminEventsAdapter(Context context, List<Event> eventList) {
+    public BrowseEventsAdapter(Context context, List<Event> eventList) {
         this.context = context;
         this.eventList = eventList;
         this.db = FirebaseFirestore.getInstance();

@@ -122,8 +122,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
 
     }
 
-
-
     private void fetchEventDetails(String eventid) {
         dbUtils.fetchEvent(eventid, eventDetails -> {
             if (eventDetails != null) {
@@ -160,18 +158,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Checks if geolocation is enabled for the event and displays a warning if it is required.

@@ -1,6 +1,5 @@
 package com.example.projectv2.View;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.projectv2.Controller.AdminEventsAdapter;
+import com.example.projectv2.Controller.BrowseEventsAdapter;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
@@ -26,7 +25,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
     private static final String TAG = "BrowseEventsActivity";
     private RecyclerView recyclerView;
-    private AdminEventsAdapter adminEventsAdapter;
+    private BrowseEventsAdapter adminEventsAdapter;
     private List<Event> eventList;
     private FirebaseFirestore db;
 
@@ -40,7 +39,7 @@ public class BrowseEventsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         eventList = new ArrayList<>();
-        adminEventsAdapter = new AdminEventsAdapter(this, eventList);
+        adminEventsAdapter = new BrowseEventsAdapter(this, eventList);
         recyclerView.setAdapter(adminEventsAdapter);
 
         db = FirebaseFirestore.getInstance();
