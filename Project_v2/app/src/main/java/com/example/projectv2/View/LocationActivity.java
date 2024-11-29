@@ -18,7 +18,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.IOException;
@@ -39,12 +38,14 @@ public class LocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location);
 
+        // Setup the top bar for the activity
         topBarUtils.topBarSetup(this, "Location", View.VISIBLE);
 
+        // Initialize MapView and Firestore
         mapView = findViewById(R.id.mapView);
         firestore = FirebaseFirestore.getInstance();
 
-        // Retrieve the event ID from the intent
+        // Retrieve event ID from intent
         eventId = getIntent().getStringExtra("eventId");
         if (eventId == null || eventId.isEmpty()) {
             Toast.makeText(this, "Event ID not provided", Toast.LENGTH_SHORT).show();
@@ -52,6 +53,7 @@ public class LocationActivity extends AppCompatActivity {
             return;
         }
 
+        // Initialize the map view
         if (mapView != null) {
             mapView.onCreate(savedInstanceState);
             mapView.onResume(); // For rendering the map immediately
@@ -93,7 +95,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     /**
-     * Fetches the location of a user and maps it to a city on the organizer's map.
+     * Fetches the location and name of a user and maps it to the organizer's map.
      *
      * @param userId The user ID of the participant.
      */
@@ -103,12 +105,13 @@ public class LocationActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         Double latitude = documentSnapshot.getDouble("latitude");
                         Double longitude = documentSnapshot.getDouble("longitude");
+                        String name = documentSnapshot.getString("name");
 
-                        if (latitude != null && longitude != null) {
-                            Log.d(TAG, "Fetched location for user " + userId + ": (" + latitude + ", " + longitude + ")");
-                            mapUserLocation(latitude, longitude);
+                        if (latitude != null && longitude != null && name != null) {
+                            Log.d(TAG, "Fetched location for user " + userId + ": (" + latitude + ", " + longitude + ") Name: " + name);
+                            mapUserLocation(latitude, longitude, name);
                         } else {
-                            Log.w(TAG, "No location data found for user: " + userId);
+                            Log.w(TAG, "Incomplete location or name data for user: " + userId);
                         }
                     } else {
                         Log.w(TAG, "User document not found for userId: " + userId);
@@ -120,12 +123,13 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     /**
-     * Maps the user's location to the city and adds a marker on the organizer's map.
+     * Maps the user's location to the map and adds a marker with the user's name and city.
      *
      * @param latitude  Latitude of the user's location.
      * @param longitude Longitude of the user's location.
+     * @param name      Name of the user.
      */
-    private void mapUserLocation(double latitude, double longitude) {
+    private void mapUserLocation(double latitude, double longitude, String name) {
         if (googleMap == null) {
             Log.e(TAG, "GoogleMap is not initialized!");
             return;
@@ -139,8 +143,12 @@ public class LocationActivity extends AppCompatActivity {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses != null && !addresses.isEmpty()) {
                 String city = addresses.get(0).getLocality();
-                Log.d(TAG, "Mapping user location: " + city + " (" + latitude + ", " + longitude + ")");
-                googleMap.addMarker(new MarkerOptions().position(userLatLng).title(city));
+                String locationInfo = (city != null ? city + ", " : "") + name;
+
+                Log.d(TAG, "Mapping user location: " + locationInfo + " (" + latitude + ", " + longitude + ")");
+                googleMap.addMarker(new MarkerOptions()
+                        .position(userLatLng)
+                        .title(locationInfo)); // Marker title includes user name and city
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 10)); // Focus on the first location
             } else {
                 Log.w(TAG, "No address found for location: (" + latitude + ", " + longitude + ")");

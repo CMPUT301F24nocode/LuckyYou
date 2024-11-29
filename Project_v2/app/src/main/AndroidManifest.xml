@@ -72,7 +72,7 @@
         <activity android:name=".View.LocationActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY_HERE" />
+            android:value="@string/my_map_api_key" />
 
     </application>
 
