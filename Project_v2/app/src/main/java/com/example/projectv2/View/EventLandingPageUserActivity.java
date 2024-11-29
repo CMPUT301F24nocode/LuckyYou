@@ -24,7 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.DBUtils;
 import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,7 +35,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * EventLandingPageUserActivity displays event details and allows the user to join or leave the event.
@@ -115,9 +119,7 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         // Set data to views with fallback if values are null
         setEventData(name, details, rules, deadline, startDate, price, imageUriString);
 
-        // Set up the additional settings popup
-        ImageButton moreButton = findViewById(R.id.more_settings_button);
-        moreButton.setOnClickListener(v -> showPopup());
+
     }
 
 
@@ -159,109 +161,16 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Sets up a popup dialog with additional event options.
-     */
-    private void showPopup() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.event_overlay);
-        dialog.show();
-        // Set the Delete button action in the popup
-        Button deleteButton = dialog.findViewById(R.id.delete_event_button);
-        deleteButton.setOnClickListener(v -> deleteEvent(eventID));
-
-        // Add a Delete Image button
-        Button deleteImageButton = dialog.findViewById(R.id.delete_event_image_button);
-        deleteImageButton.setOnClickListener(v -> new AlertDialog.Builder(this)
-                .setTitle("Delete Image")
-                .setMessage("Are you sure you want to delete the event image?")
-                .setPositiveButton("Yes", (dialogInterface, which) -> deleteImage(eventID))
-                .setNegativeButton("No", (dialogInterface, which) -> dialogInterface.dismiss())
-                .show());
-
-        // Add a Delete QR Code button
-        Button deleteQRCodeButton = dialog.findViewById(R.id.delete_event_qrdata_button);
-        deleteQRCodeButton.setOnClickListener(v -> new AlertDialog.Builder(this)
-                .setTitle("Delete QR Code")
-                .setMessage("Are you sure you want to remove the QR code data for this event?")
-                .setPositiveButton("Yes", (dialogInterface, which) -> deleteQRCode(eventID))
-                .setNegativeButton("No", (dialogInterface, which) -> dialogInterface.dismiss())
-                .show());
-
-        dialog.show();
-    }
-
-    private void deleteEvent(String eventID) {
-        DocumentReference eventRef = db.collection("events").document(eventID);
-
-        // Delete the event from Firebase
-        eventRef.delete()
-                .addOnSuccessListener(aVoid -> {
-                    // Event deleted successfully
-                    Toast.makeText(EventLandingPageUserActivity.this, "Event deleted", Toast.LENGTH_SHORT).show();
-                    finish(); // Close the current activity
-                })
-                .addOnFailureListener(e -> {
-                    // Failure deleting the event
-                    Toast.makeText(EventLandingPageUserActivity.this, "Failed to delete event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    /**
-     * Deletes the hashed QR code data for the given event.
-     *
-     * @param eventID the event ID
-     */
-    private void deleteQRCode(String eventID) {
-        DocumentReference eventRef = db.collection("events").document(eventID);
-        eventRef.update("qrHashData", FieldValue.delete())
-                .addOnSuccessListener(aVoid -> Toast.makeText(this, "QR code data removed successfully.", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to remove QR code data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    private void deleteImage(String eventID) {
-        // Sanitize the event ID
-        eventID = eventID.trim();
-        Log.d("DeleteImageDebug", "Sanitized Event ID: " + eventID);
-
-        // Construct the file path
-        String filePath = "event_posters/event_posters_" + eventID + ".jpg";
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference(filePath);
-
-        // Log the constructed path for debugging
-        Log.d("DeleteImageDebug", "Constructed File Path: " + filePath);
-
-        // Check if the file exists before attempting to delete
-        storageRef.getMetadata()
-                .addOnSuccessListener(storageMetadata -> {
-                    Log.d("DeleteImageDebug", "File found at: " + filePath);
-                    // Proceed to delete
-                    storageRef.delete()
-                            .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(this, "Image deleted successfully.", Toast.LENGTH_SHORT).show();
-                                Log.d("DeleteImageDebug", "File deleted: " + filePath);
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(this, "Failed to delete image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                Log.e("DeleteImageDebug", "Error deleting file: " + filePath, e);
-                            });
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "File does not exist at specified location.", Toast.LENGTH_SHORT).show();
-                    Log.e("DeleteImageDebug", "File not found: " + filePath, e);
-                });
-    }
 
 
 
 
 
 
-    private void handleImageDeleteFailure(Exception e) {
-        // Handle the image deletion failure
-        Toast.makeText(EventLandingPageUserActivity.this, "Failed to delete image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        e.printStackTrace();
-    }
+
+
+
+
 
 
     /**

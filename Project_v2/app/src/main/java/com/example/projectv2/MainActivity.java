@@ -21,10 +21,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.projectv2.Controller.EventsPagerAdapter;
-import com.example.projectv2.R;
-import com.example.projectv2.View.AdminFacilityListActivity;
-import com.example.projectv2.View.AdminProfileListActivity;
 import com.example.projectv2.View.AvailableEventsFragment;
+import com.example.projectv2.View.BrowseEventsActivity;
 import com.example.projectv2.View.BrowseImagesActivity;
 import com.example.projectv2.View.BrowseProfilesActivity;
 import com.example.projectv2.View.CreateEventActivity;
@@ -129,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_browseProfiles) {
             intent = new Intent(this, BrowseProfilesActivity.class);
         } else if (itemId == R.id.nav_browseEvents) {
-            intent = new Intent(this, AdminFacilityListActivity.class);
+            intent = new Intent(this, BrowseEventsActivity.class);
         }
 
         if (intent != null) {
