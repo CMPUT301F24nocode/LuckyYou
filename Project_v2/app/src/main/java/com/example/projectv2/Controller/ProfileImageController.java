@@ -8,9 +8,11 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.projectv2.Utils.ProfilePictureGenerator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -101,11 +103,12 @@ public class ProfileImageController {
             Log.d("ProfileImageController", "Image deleted successfully");
             dbUtils.fetchUser(userID, user -> {
                 if (user!=null){
+                    Toast.makeText(context, "Image Deleted!", Toast.LENGTH_SHORT).show();
                     String userName = user.getName();
                     Bitmap genProfilePicture = ProfilePictureGenerator.generateProfilePicture( userName, 500);
                     this.loadImageUsingBitmap(genProfilePicture, imageView);}});
         }).addOnFailureListener(e -> {
-            Log.e("ProfileImageController", "Error deleting image: " + e.getMessage());
+            Toast.makeText(context, "No Image To Delete!", Toast.LENGTH_SHORT).show();
         });
 
 

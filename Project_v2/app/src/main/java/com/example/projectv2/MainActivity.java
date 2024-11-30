@@ -7,34 +7,32 @@
  */
 package com.example.projectv2;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.Manifest;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.Menu;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.provider.Settings;
-import android.util.Log;
-import android.view.Menu;
-import android.widget.ImageView;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.projectv2.Controller.DBUtils;
-import com.example.projectv2.Controller.DeadlineWorker;
 import com.example.projectv2.Controller.EventsPagerAdapter;
 import com.example.projectv2.Controller.ProfileImageController;
 import com.example.projectv2.Model.User;
@@ -49,6 +47,7 @@ import com.example.projectv2.View.FacilityListActivity;
 import com.example.projectv2.View.NotificationActivity;
 import com.example.projectv2.View.ProfileActivity;
 import com.example.projectv2.View.QRUserActivity;
+import com.example.projectv2.View.SplashScreenActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Perform refresh actions, like reloading data
-            refreshContent(navigationView,userId);
+            refreshContent(navigationView, userId);
 
             // Stop the refreshing animation
             swipeRefreshLayout.setRefreshing(false);
@@ -221,15 +220,18 @@ public class MainActivity extends AppCompatActivity {
 
             if (itemId == R.id.nav_profile) {
                 String userID = getIntent().getStringExtra("deviceID");
-                intent = new Intent(MainActivity.this, ProfileActivity.class);
-                intent.putExtra("userID", userID);
+                intent = new Intent(MainActivity.this, SplashScreenActivity.class);
+                intent.putExtra("message", "Curating Profiles!");
+                intent.putExtra("TARGET_ACTIVITY", ProfileActivity.class.getName());
+                Bundle extras = new Bundle();
+                extras.putString("userID", userID);
+                intent.putExtra("EXTRA_DATA", extras);
             } else if(itemId == R.id.nav_qrScanner){
                 intent = new Intent(MainActivity.this, QRUserActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_QR_SCANNER);
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
-            }
-            else if (itemId == R.id.nav_facilities) {
+            } else if (itemId == R.id.nav_facilities) {
                 intent = new Intent(MainActivity.this, FacilityListActivity.class);
             } else if (itemId == R.id.nav_browseProfiles) {
                 intent = new Intent(MainActivity.this, AdminProfileListActivity.class);
@@ -308,12 +310,12 @@ public class MainActivity extends AppCompatActivity {
             if (fragment != null) {
                 fragment.onActivityResult(requestCode, resultCode, data);
             }
-        } else if (requestCode==REQUEST_CODE_QR_SCANNER && resultCode==RESULT_OK){
+        } else if (requestCode == REQUEST_CODE_QR_SCANNER && resultCode == RESULT_OK) {
             String qrResult = data.getStringExtra("qrResult");
             Log.d("MainActivity", "QR Result: " + qrResult);
             if (qrResult != null) {
                 navigateToEventLandingPage(qrResult);
-            }else{
+            } else {
                 Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_SHORT).show();
             }
         }
