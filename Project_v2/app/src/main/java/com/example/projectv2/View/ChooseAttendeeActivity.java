@@ -26,15 +26,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EventEditOverlay extends DialogFragment {
+public class ChooseAttendeeActivity extends DialogFragment {
 
     private FirebaseFirestore db;
     private int attendeesLimit;
     private String eventID, eventName;
     private Activity parentActivity;
 
-    public static EventEditOverlay newInstance(Activity activity, String eventId, String eventName) {
-        EventEditOverlay fragment = new EventEditOverlay();
+    public static ChooseAttendeeActivity newInstance(Activity activity, String eventId, String eventName) {
+        ChooseAttendeeActivity fragment = new ChooseAttendeeActivity();
         fragment.parentActivity = activity; // Set the parent activity
         Bundle args = new Bundle();
         args.putString("eventId", eventId);

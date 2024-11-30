@@ -8,6 +8,7 @@ package com.example.projectv2.View;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class FacilityLandingPageActivity extends AppCompatActivity {
 
+    private SharedPreferences preferences;
+
     /**
      * Called when the activity is created. Initializes the UI elements, sets the top bar, retrieves
      * facility details from the intent, and configures the edit button and popup dialog.
@@ -41,9 +44,16 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // Initialize SharedPreferences
+        preferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+
+        // Check if the user is in Admin Mode
+        boolean isAdminMode = preferences.getBoolean("AdminMode", false);
+
         // Initialize views
         TextView facilityNameTextView = findViewById(R.id.event_name_view);
         TextView facilityDescriptionTextView = findViewById(R.id.facility_description_view);
+        ImageButton moreButton = findViewById(R.id.more_settings_button);
 
         // Get facility data from the intent
         String facilityName = getIntent().getStringExtra("facility_name");
@@ -62,9 +72,13 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Configure more settings button to display additional options in a popup dialog
-        ImageButton moreButton = findViewById(R.id.more_settings_button);
-        moreButton.setOnClickListener(v -> showPopup());
+        // Hide the "More Settings" button if the user is not an admin
+        if (!isAdminMode) {
+            moreButton.setVisibility(View.GONE);
+        } else {
+            // Configure more settings button to display additional options in a popup dialog
+            moreButton.setOnClickListener(v -> showPopup());
+        }
     }
 
     /**

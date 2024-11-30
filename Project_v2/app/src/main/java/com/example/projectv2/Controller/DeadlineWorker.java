@@ -48,7 +48,9 @@ public class DeadlineWorker extends Worker {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             Date deadlineDate = sdf.parse(deadline);
-            return deadlineDate != null && deadlineDate.before(new Date());
+            Date currentDate = sdf.parse(sdf.format(new Date()));
+
+            return deadlineDate != null && currentDate.after(deadlineDate);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

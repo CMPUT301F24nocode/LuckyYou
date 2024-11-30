@@ -361,15 +361,14 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
      */
     private void checkDeadlinePassed(String deadline) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-
         try {
             Date deadlineDate = dateFormat.parse(deadline);
+            Date currentDate = dateFormat.parse(dateFormat.format(new Date()));
 
-            assert deadlineDate != null;
-            if (deadlineDate.before(new Date())) {
-                isDeadlinePassed = true;
-            } else {
+            if (currentDate.equals(deadlineDate) || currentDate.before(deadlineDate)) {
                 isDeadlinePassed = false;
+            } else {
+                isDeadlinePassed = true;
             }
         } catch (ParseException e) {
             e.printStackTrace();

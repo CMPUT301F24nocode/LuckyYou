@@ -54,10 +54,8 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         // Initialize SwipeRefreshLayout
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            // Refresh data (reload event details or perform desired refresh action)
-            reloadEventData();
 
-            // Stop the refresh animation
+            reloadEventData();
             swipeRefreshLayout.setRefreshing(false);
         });
 
@@ -77,7 +75,7 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
         // Retrieve event data from intent
         Intent intent = getIntent();
-        eventName = intent.getStringExtra("name"); // Assign eventName here
+        eventName = intent.getStringExtra("name");
         String name = intent.getStringExtra("name");
         String details = intent.getStringExtra("details");
         String rules = intent.getStringExtra("rules");
@@ -190,7 +188,7 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
      * Displays a popup dialog with additional event options.
      */
     private void showPopup(String eventId, String eventName) {
-        EventEditOverlay dialogFragment = EventEditOverlay.newInstance(this, eventId, eventName);
+        ChooseAttendeeActivity dialogFragment = ChooseAttendeeActivity.newInstance(this, eventId, eventName);
         dialogFragment.show(getSupportFragmentManager(), "EventEditDialogFragment");
     }
 
@@ -227,8 +225,7 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
 
     private void reloadEventData() {
         Log.d("EventLandingPage", "Refreshing event data...");
-        loadEventPoster(eventName); // Reload the event poster
-        // Add any additional logic to refresh event-related data
+        loadEventPoster(eventName);
     }
 }
 
