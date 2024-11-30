@@ -76,7 +76,13 @@ public class ImageController {
             callback.onRetrieveFailure(new IllegalArgumentException("Event name cannot be null or empty."));
             return;
         }
-        String fileName = "event_posters/event_posters_" + eventName.replaceAll("[^a-zA-Z0-9_]", "_") + ".jpg";
+        // Replace special characters and spaces with underscores
+        String sanitizedEventName = eventName.trim()
+                .replaceAll("[/\\-?!@#$%^Z&*()]+", "_") // Replace special characters with underscores
+                .replaceAll("\\s+", "_");
+
+        // Construct the full file path using the sanitized name
+        String fileName = "event_posters/event_posters_" + sanitizedEventName + ".jpg";
         StorageReference imageRef = storageReference.child(fileName);
 
         Log.d(TAG, "Retrieving image from: " + fileName);

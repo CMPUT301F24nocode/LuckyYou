@@ -116,8 +116,15 @@ public class CreateEventActivity extends AppCompatActivity {
     private void uploadImageAndProceed(String eventName, Uri imageUri) {
         ImageController imageController = new ImageController();
 
-        // Construct the full file path here
-        String filePath = "event_posters/event_posters_" + eventName.replaceAll("[^a-zA-Z0-9_]", "_") + ".jpg";
+        // Replace specified special characters and spaces with underscores
+        String sanitizedEventName = eventName.trim()
+                .replaceAll("[/\\-?!@#$%^Z&*()]+", "_") // Replace specified special characters with underscores
+                .replaceAll("\\s+", "_");         // Replace listed characters with underscores
+
+        // Construct the full file path using the sanitized name
+        String filePath = "event_posters/event_posters_" + sanitizedEventName + ".jpg";
+
+
 
         imageController.uploadImage(imageUri, filePath, new ImageController.ImageUploadCallback() {
             @Override
