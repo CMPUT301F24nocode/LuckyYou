@@ -68,7 +68,14 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
                     Log.d("AdminEventOverlay", "Event successfully deleted!");
                     Toast.makeText(this, "Event deleted successfully!", Toast.LENGTH_SHORT).show();
                     if (eventName != null && !eventName.isEmpty()) {
-                        String posterPath = "event_posters/event_posters_" + eventName + ".jpg";
+                        // Replace special characters and spaces with underscores
+                        String sanitizedEventName = eventName.trim()
+                                .replaceAll("[/\\-?!@#$%^Z&*()]+", "_") // Replace special characters with underscores
+                                .replaceAll("\\s+", "_");          ; // Replace listed characters with underscores
+
+                        // Construct the full file path using the sanitized name
+                        String posterPath = "event_posters/event_posters_" + sanitizedEventName + ".jpg";
+
                         deleteEventPoster(posterPath); // Efficiently delete the image
                     } else {
                         Log.d("AdminEventOverlay", "No event name provided, skipping poster deletion.");

@@ -158,14 +158,10 @@ public class EventEditActivity extends AppCompatActivity {
         progressDialog.setMessage("Updating event poster...");
         progressDialog.show();
 
-        // Construct file path: event_posters_<eventName>.jpg
-        String sanitizedEventName;
-        try {
-            sanitizedEventName = URLEncoder.encode(eventName, StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            sanitizedEventName = eventName.replaceAll("[^a-zA-Z0-9_]", "_");
-            Log.e(TAG, "Error encoding event name: " + eventName, e);
-        }
+        // Replace special characters and spaces with underscores
+        String sanitizedEventName = eventName.trim()
+                .replaceAll("[/\\-?!@#$%^Z&*()]+", "_") // Replace special characters with underscores
+                .replaceAll("\\s+", "_");
 
         String filePath = "event_posters/event_posters_" + sanitizedEventName + ".jpg";
 
