@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/lucky_background"
     android:padding="24dp"
-    tools:ignore="Autofill, HardCodedText" >
+    tools:ignore="Autofill, HardCodedText"
+    android:id="@+id/create_event_options_root">
 
     <EditText
         android:id="@+id/create_event_entrants_num_view"

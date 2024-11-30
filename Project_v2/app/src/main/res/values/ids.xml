@@ -4,4 +4,5 @@
     <item name="available_event_description_text" type="id" />
     <item name="available_event_date_text" type="id" />
     <item name="available_event_price_text" type="id" />
+    <item name="create_event_options_root" type="id" />
 </resources>

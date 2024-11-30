@@ -147,7 +147,6 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
             @Override
             public void onDeleteFailure(Exception e) {
                 Log.e("AdminEventOverlay", "Error deleting event poster", e);
-                Toast.makeText(AdminEventOverlayActivity.this, "Failed to delete event poster: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 finish(); // Close the activity even if poster deletion fails
             }
         });
