@@ -1,3 +1,4 @@
+
 package com.example.projectv2.Controller;
 
 import android.content.Context;
@@ -21,10 +22,12 @@ public class BrowseProfilesAdapter extends RecyclerView.Adapter<BrowseProfilesAd
 
     private Context context;
     private List<Profile> profiles;
+    private static OnItemClickListener onItemClickListener;
 
-    public BrowseProfilesAdapter(Context context, List<Profile> profiles) {
+    public BrowseProfilesAdapter(Context context, List<Profile> profiles, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.profiles = profiles;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -62,6 +65,11 @@ public class BrowseProfilesAdapter extends RecyclerView.Adapter<BrowseProfilesAd
             super(itemView);
             imageView = itemView.findViewById(R.id.profile_image_view);
             nameTextView = itemView.findViewById(R.id.profile_name_text_view);
+            itemView.setOnClickListener(v -> onItemClickListener.onItemClick(getAdapterPosition()));
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 }
