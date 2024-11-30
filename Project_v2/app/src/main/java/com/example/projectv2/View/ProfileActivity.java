@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Button editProfileButton;
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageButton editProfilePicButton;
+    private ImageView adminStar;
     private CircleImageView profilePic;
     private ProfileImageController imageController;
     private LottieAnimationView profilePicUploadAnimation;
@@ -56,6 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
         name = findViewById(R.id.profile_name_box);
         email = findViewById(R.id.profile_email_box);
         phoneNumber = findViewById(R.id.profile_phone_box);
+        adminStar = findViewById(R.id.profile_admin_indicator);
         editProfileButton = findViewById(R.id.profile_edit_button);
         swipeRefreshLayout = findViewById(R.id.profile_swipe_refresh);
         editProfilePicButton = findViewById(R.id.profile_pic_edit_button);
@@ -68,6 +71,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Get the intent that was used to start this activity
         Intent intent = getIntent();
         String userID = intent.getStringExtra("userID");
+        boolean adminView = intent.getBooleanExtra("adminView", false);
+
         if (userID != null) {
             Log.d("ProfileActivity", "userID: " + userID);
             fetchUserData(userID);
@@ -76,17 +81,32 @@ public class ProfileActivity extends AppCompatActivity {
             Log.e("ProfileActivity", "userID is null");
         }
 
+        // Use the adminView boolean as needed
+        if (adminView) {
+            editProfilePicButton.setVisibility(View.GONE);
+            editProfileButton.setVisibility(View.GONE);
+        }
+
+        ImageButton moreButton = findViewById(R.id.more_settings_button);
+        moreButton.setOnClickListener(v -> {
+            if (adminView) {
+                isAdmin(userID, isAdmin -> showAdminProfile(userID, isAdmin));
+            } else {
+                showPopup(userID);
+            }
+        });
+
+        isAdmin(userID, isAdmin -> {
+            if (isAdmin) {
+                adminStar.setVisibility(View.VISIBLE);
+            }
+        });
+
         editProfileButton.setOnClickListener(view -> {
             if (editProfile(userID)) {
                 Snackbar.make(view, "Profile Updated Successfully!", Snackbar.LENGTH_LONG).show();
             }
         });
-
-//        fetchUserData(userID);
-
-        // Three dot menu
-        ImageButton moreButton = findViewById(R.id.more_settings_button);
-        moreButton.setOnClickListener(v -> showPopup(userID));
 
         // Set up swipe refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -113,8 +133,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
-//            profilePicUploadAnimation.setVisibility(View.VISIBLE);
-//            profilePicUploadAnimation.playAnimation();
             String userID = getIntent().getStringExtra("userID");
         imageController.loadImage(userID, profilePic);
 
@@ -122,17 +140,12 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Uri uri) {
                 Toast.makeText(ProfileActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-//                profilePicUploadAnimation.setVisibility(View.GONE);
-//                profilePicUploadAnimation.cancelAnimation();
-//                imageController.saveImageUriInDB(uri.toString(), userID);
                 imageController.loadImage(userID, profilePic);
             }
 
             @Override
             public void onFailure(Exception e) {
-//                profilePicUploadAnimation.setVisibility(View.GONE);
-//                profilePicUploadAnimation.cancelAnimation();
-Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
                 Log.e("ProfileActivity", "Image upload failed", e);
             }
         });
@@ -244,6 +257,11 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
         });
 
         dialog.show();
+    }
+
+    private void showAdminProfile(String userID, boolean isAdmin) {
+        AdminProfileOverlayDialog dialog = AdminProfileOverlayDialog.newInstance(userID, isAdmin);
+        dialog.show(getSupportFragmentManager(), "AdminProfileOverlayDialog");
     }
 
     public void isAdmin(String userID, AdminCallback callback) {

@@ -6,6 +6,7 @@
  */
 package com.example.projectv2.View;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -49,7 +50,7 @@ public class AdminProfileListActivity extends AppCompatActivity {
         adminProfileListRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         userList = new ArrayList<>();
-        adapter = new AdminProfileAdapter(userList, this::showProfileDialog);
+        adapter = new AdminProfileAdapter(userList, (userID) -> showProfile(userID));
         adminProfileListRecycler.setAdapter(adapter);
 
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
@@ -80,11 +81,15 @@ public class AdminProfileListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to load users", Toast.LENGTH_SHORT).show());
     }
 
-    private void showProfileDialog(String userID, boolean isAdmin) {
+    private void showProfile(String userID) {
         String deviceID= Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         if (!Objects.equals(deviceID, userID)) {
-            AdminProfileOverlayDialog dialog = AdminProfileOverlayDialog.newInstance(userID, isAdmin);
-            dialog.show(getSupportFragmentManager(), "AdminProfileOverlayDialog");
+            Intent intent = new Intent(AdminProfileListActivity.this, ProfileActivity.class);
+
+            intent.putExtra("userID", userID);
+            intent.putExtra("adminView", true);
+
+            startActivity(intent);
         } else {
             Toast.makeText(this, "This is your account", Toast.LENGTH_SHORT).show();
         }
