@@ -33,6 +33,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -101,6 +104,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             imageUriString = intent.getStringExtra("imageUri");
             userID = intent.getStringExtra("user");}
 
+        // Check if the deadline has passed and update the UI
+        if (deadline != null) {
+            checkDeadlinePassed(deadline);
+        }
+
         checkGeolocationEnabled(eventID);
 
         @SuppressLint("HardwareIds")
@@ -133,7 +141,16 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
             }
         });
 
-        joinEventButton.setOnClickListener(view -> joinEvent(view, eventID, userID));
+        joinEventButton.setOnClickListener(view -> {
+            if (isDeadlinePassed) {
+                // Show the toast message again if the deadline has passed
+                Toast.makeText(this, "The deadline for this event has passed. You cannot join.", Toast.LENGTH_LONG).show();
+                Log.d("JoinEvent", "Join attempt blocked due to deadline.");
+            } else {
+                // Proceed with the join event logic
+                joinEvent(view, eventID, userID);
+            }
+        });
 
         leaveEventButton.setOnLongClickListener(view -> {
             promptLeaveEvent(view, eventID, userID);
@@ -335,6 +352,34 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         decline_button.setVisibility(View.INVISIBLE);
     }
 
+    private boolean isDeadlinePassed = false;
+
+    /**
+     * Checks if the event deadline has passed and displays a toast message if it has.
+     *
+     * @param deadline the deadline of the event in "dd-MM-yyyy" format
+     */
+    private void checkDeadlinePassed(String deadline) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+        try {
+            Date deadlineDate = dateFormat.parse(deadline);
+
+            assert deadlineDate != null;
+            if (deadlineDate.before(new Date())) {
+                isDeadlinePassed = true;
+            } else {
+                isDeadlinePassed = false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e("DeadlineCheck", "Error parsing deadline date: " + e.getMessage());
+        }
+    }
+
+
+
+
 
     private void fetchEventDetails(String eventid) {
         dbUtils.fetchEvent(eventid, eventDetails -> {
@@ -352,6 +397,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 // Update UI with the fetched data
                 runOnUiThread(() -> {
                     setEventData(name, details, rules, deadline, startDate, price, imageUriString);
+
+                    // Check if the deadline has passed and update the UI
+                    if (deadline != null) {
+                        checkDeadlinePassed(deadline);
+                    }
 
                     // Configure the join event button after data is loaded
                     checkGeolocationEnabled(eventID);
