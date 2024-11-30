@@ -89,10 +89,16 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "Document data: " + document.getData());
 
                             // Navigate to MainActivity
-                            Intent intent = new Intent(this, MainActivity.class);
-                            intent.putExtra("deviceID", deviceID);
+                            Intent intent;
+                            intent = new Intent(LoginActivity.this, SplashScreenActivity.class);
+                            intent.putExtra("message", "Finding Best Events for You!");
+                            intent.putExtra("delay",2500);
+                            intent.putExtra("TARGET_ACTIVITY", MainActivity.class.getName());
+                            Bundle extras = new Bundle();
+                            extras.putString("userID", deviceID);
+                            intent.putExtra("EXTRA_DATA", extras);
                             startActivity(intent);
-                            finish();
+
                         } else {
                             // Document doesn't exist - try query as fallback
                             Log.d(TAG, "Document doesn't exist, trying query fallback");

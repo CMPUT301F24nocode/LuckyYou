@@ -6,6 +6,7 @@
  */
 package com.example.projectv2.Controller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
@@ -70,7 +71,7 @@ public class EntrantListAdapter extends RecyclerView.Adapter<EntrantListAdapter.
      * @param position the position of the item within the adapter's data set
      */
     @Override
-    public void onBindViewHolder(@NonNull EntrantViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull EntrantViewHolder holder, @SuppressLint("RecyclerView") int position) {
         String entrant = entrantList.get(position);
         String documentId = documentIds.get(position); // Get the document ID for this entrant
         holder.entrantNameTextView.setText(entrant);
