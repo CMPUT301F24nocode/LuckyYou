@@ -7,6 +7,7 @@
 package com.example.projectv2.View;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * AdminProfileListActivity displays the list of user profiles available for admin users to browse.
@@ -79,14 +81,12 @@ public class AdminProfileListActivity extends AppCompatActivity {
     }
 
     private void showProfileDialog(String userID, boolean isAdmin) {
-//        String deviceID= Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-//        if (!Objects.equals(deviceID, userID)) {
-//            AdminProfileOverlayDialog dialog = AdminProfileOverlayDialog.newInstance(userID, isAdmin);
-//            dialog.show(getSupportFragmentManager(), "AdminProfileOverlayDialog");
-//        } else {
-//            Toast.makeText(this, "This is your account", Toast.LENGTH_SHORT).show();
-//        }
-        AdminProfileOverlayDialog dialog = AdminProfileOverlayDialog.newInstance(userID, isAdmin);
-        dialog.show(getSupportFragmentManager(), "AdminProfileOverlayDialog");
+        String deviceID= Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        if (!Objects.equals(deviceID, userID)) {
+            AdminProfileOverlayDialog dialog = AdminProfileOverlayDialog.newInstance(userID, isAdmin);
+            dialog.show(getSupportFragmentManager(), "AdminProfileOverlayDialog");
+        } else {
+            Toast.makeText(this, "This is your account", Toast.LENGTH_SHORT).show();
+        }
     }
 }
