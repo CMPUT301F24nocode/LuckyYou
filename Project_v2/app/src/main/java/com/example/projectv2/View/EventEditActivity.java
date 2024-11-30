@@ -103,7 +103,6 @@ public class EventEditActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 // Poster does not exist, allow user to edit and upload a new image
                 Log.e(TAG, "No existing poster found for event: " + eventName, e);
-                Toast.makeText(EventEditActivity.this, "No poster found. You can upload a new one.", Toast.LENGTH_SHORT).show();
                 // Set the placeholder image or keep the ImageView empty
                 eventPosterImageView.setImageResource(R.drawable.placeholder_event);
             }
