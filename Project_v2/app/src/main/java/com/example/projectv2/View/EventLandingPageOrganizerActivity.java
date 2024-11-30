@@ -24,6 +24,7 @@ import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * EventLandingPageOrganizerActivity displays event details for organizers and provides
@@ -46,9 +47,19 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_landing_page_organiser);
+        setContentView(R.layout.event_landing_page_organizer);
 
         topBarUtils.topBarSetup(this, "Event", View.VISIBLE);
+
+        // Initialize SwipeRefreshLayout
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Refresh data (reload event details or perform desired refresh action)
+            reloadEventData();
+
+            // Stop the refresh animation
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
         // Initialize views
         eventEditPoster=findViewById(R.id.event_edit_button);
@@ -212,6 +223,12 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
                     Log.e(TAG, "Error fetching geolocationenabled value", e);
                     locationButton.setVisibility(View.GONE); // Hide the button as a fallback
                 });
+    }
+
+    private void reloadEventData() {
+        Log.d("EventLandingPage", "Refreshing event data...");
+        loadEventPoster(eventName); // Reload the event poster
+        // Add any additional logic to refresh event-related data
     }
 }
 

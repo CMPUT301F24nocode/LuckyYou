@@ -1,7 +1,5 @@
 package com.example.projectv2.View;
 
-import static androidx.fragment.app.FragmentManager.TAG;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,12 +10,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectv2.Controller.ImageController;
+import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 public class AdminEventOverlayActivity extends AppCompatActivity {
 
@@ -26,6 +25,7 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
     private String eventName;
     private FirebaseStorage storage;
     private ImageController imageController;
+    private NotificationService notificationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +38,11 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
         imageController = new ImageController();
+        notificationService = new NotificationService();
 
-
-        // Retrieve the eventID from the intent
+        // Retrieve the eventID and eventName from the intent
         eventID = getIntent().getStringExtra("eventID");
-        eventName=getIntent().getStringExtra("name");
+        eventName = getIntent().getStringExtra("name");
 
         // Set up delete button listener
         Button deleteEventButton = findViewById(R.id.delete_event_button);
@@ -53,9 +53,6 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
         deleteQrDataButton.setOnClickListener(v -> deleteQrHashData());
     }
 
-    /**
-     * Deletes the event from Firestore using the eventID.
-     */
     private void deleteEvent() {
         if (eventID == null || eventID.isEmpty()) {
             Toast.makeText(this, "Event ID not found!", Toast.LENGTH_SHORT).show();
@@ -63,34 +60,38 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
         }
 
         db.collection("events").document(eventID)
-                .delete()
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("AdminEventOverlay", "Event successfully deleted!");
-                    Toast.makeText(this, "Event deleted successfully!", Toast.LENGTH_SHORT).show();
-                    if (eventName != null && !eventName.isEmpty()) {
-                        // Replace special characters and spaces with underscores
-                        String sanitizedEventName = eventName.trim()
-                                .replaceAll("[/\\-?!@#$%^Z&*()]+", "_") // Replace special characters with underscores
-                                .replaceAll("\\s+", "_");          ; // Replace listed characters with underscores
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String owner = documentSnapshot.getString("owner");
+                        db.collection("events").document(eventID)
+                                .delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("AdminEventOverlay", "Event successfully deleted!");
+                                    sendOwnerNotification(owner, "Your event, " + eventName + ", has been deleted by an admin.");
+                                    Toast.makeText(this, "Event deleted successfully!", Toast.LENGTH_SHORT).show();
 
-                        // Construct the full file path using the sanitized name
-                        String posterPath = "event_posters/event_posters_" + sanitizedEventName + ".jpg";
-
-                        deleteEventPoster(posterPath); // Efficiently delete the image
+                                    if (eventName != null && !eventName.isEmpty()) {
+                                        String sanitizedEventName = sanitizeEventName(eventName);
+                                        String posterPath = "event_posters/event_posters_" + sanitizedEventName + ".jpg";
+                                        deleteEventPoster(posterPath);
+                                    } else {
+                                        finish(); // Close the activity
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("AdminEventOverlay", "Error deleting event", e);
+                                    Toast.makeText(this, "Failed to delete event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
                     } else {
-                        Log.d("AdminEventOverlay", "No event name provided, skipping poster deletion.");
-                        finish(); // Close the activity
+                        Toast.makeText(this, "Event not found!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("AdminEventOverlay", "Error deleting event", e);
-                    Toast.makeText(this, "Failed to delete event: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("AdminEventOverlay", "Error fetching event data", e);
                 });
     }
 
-    /**
-     * Deletes the qrHashData field of the event from Firestore.
-     */
     private void deleteQrHashData() {
         if (eventID == null || eventID.isEmpty()) {
             Toast.makeText(this, "Event ID not found!", Toast.LENGTH_SHORT).show();
@@ -98,34 +99,63 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
         }
 
         db.collection("events").document(eventID)
-                .update("qrHashData", FieldValue.delete())
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("AdminEventOverlay", "QR Hash Data successfully deleted!");
-                    Toast.makeText(this, "QR Hash Data deleted successfully!", Toast.LENGTH_SHORT).show();
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String owner = documentSnapshot.getString("owner");
+                        db.collection("events").document(eventID)
+                                .update("qrHashData", FieldValue.delete())
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("AdminEventOverlay", "QR Hash Data successfully deleted!");
+                                    sendOwnerNotification(owner, "The QR hash data for your event, " + eventName + ", has been deleted by an admin.");
+                                    Toast.makeText(this, "QR Hash Data deleted successfully!", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("AdminEventOverlay", "Error deleting QR Hash Data", e);
+                                    Toast.makeText(this, "Failed to delete QR Hash Data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                    } else {
+                        Toast.makeText(this, "Event not found!", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("AdminEventOverlay", "Error deleting QR Hash Data", e);
-                    Toast.makeText(this, "Failed to delete QR Hash Data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("AdminEventOverlay", "Error fetching event data", e);
                 });
     }
+
+    private void sendOwnerNotification(String ownerID, String message) {
+        if (ownerID != null && !ownerID.isEmpty()) {
+            Notification notification = new Notification(ownerID, message, false, true);
+            notificationService.sendNotification(this, notification, "-1");
+        } else {
+            Log.w("AdminEventOverlay", "Owner ID is null or empty. Cannot send notification.");
+        }
+    }
+
     @SuppressLint("RestrictedApi")
     private void deleteEventPoster(String filePath) {
-        Log.d(TAG, "Attempting to delete poster at: " + filePath);
+        Log.d("AdminEventOverlay", "Attempting to delete poster at: " + filePath);
 
         imageController.deleteImage(filePath, new ImageController.ImageDeleteCallback() {
             @Override
             public void onDeleteSuccess() {
-                Log.d(TAG, "Event poster successfully deleted!");
+                Log.d("AdminEventOverlay", "Event poster successfully deleted!");
                 Toast.makeText(AdminEventOverlayActivity.this, "Event poster deleted successfully!", Toast.LENGTH_SHORT).show();
                 finish(); // Close the activity
             }
 
             @Override
             public void onDeleteFailure(Exception e) {
-                Log.e(TAG, "Error deleting event poster", e);
+                Log.e("AdminEventOverlay", "Error deleting event poster", e);
                 Toast.makeText(AdminEventOverlayActivity.this, "Failed to delete event poster: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 finish(); // Close the activity even if poster deletion fails
             }
         });
+    }
+
+    private String sanitizeEventName(String eventName) {
+        return eventName.trim()
+                .replaceAll("[/\\-?!@#$%^&*()]+", "_") // Replace special characters with underscores
+                .replaceAll("\\s+", "_"); // Replace spaces with underscores
     }
 }
