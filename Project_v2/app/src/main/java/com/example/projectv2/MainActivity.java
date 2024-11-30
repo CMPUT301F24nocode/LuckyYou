@@ -163,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
                     if (e != null) {
                         Log.e("FABListener", "Listen failed: ", e);
                         Toast.makeText(MainActivity.this, "Failed to check organizer status in real-time.", Toast.LENGTH_SHORT).show();
-//                        fab.setVisibility(View.INVISIBLE);
                         return;
                     }
 
@@ -176,17 +175,18 @@ public class MainActivity extends AppCompatActivity {
                                 startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
                             });
                         } else {
-//                            fab.setVisibility(View.GONE); // Hide FAB if the user is not an organizer
                             fab.setOnClickListener(view -> Toast.makeText(MainActivity.this, "Please make a facility.", Toast.LENGTH_SHORT).show());
                         }
                     } else {
-//                        fab.setVisibility(View.INVISIBLE); // Hide FAB if document doesn't exist
                         Log.d("FABListener", "Document does not exist.");
                     }
                 });
 
         // Initialize SharedPreferences
         preferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("AdminMode", false);
+        editor.apply();
 
         // Access the navigation menu
         Menu menu = navigationView.getMenu();
