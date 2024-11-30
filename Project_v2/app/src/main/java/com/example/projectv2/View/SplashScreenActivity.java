@@ -37,6 +37,8 @@ private TextView splashScreenText;
 
         Intent intent=getIntent();
         Bundle extras=intent.getBundleExtra("EXTRA_DATA");
+        assert extras != null;
+        String userID=extras.getString("userID");
         String message=intent.getStringExtra("message");
         Integer delay=intent.getIntExtra("delay",1800);
         if(message!=null){

@@ -97,8 +97,6 @@ public class LoginActivity extends AppCompatActivity {
                             Bundle extras = new Bundle();
                             extras.putString("userID", deviceID);
                             intent.putExtra("EXTRA_DATA", extras);
-                            Intent mainIntent = new Intent(this, MainActivity.class);
-                            mainIntent.putExtra("deviceID", deviceID);
                             startActivity(intent);
 
                         } else {
