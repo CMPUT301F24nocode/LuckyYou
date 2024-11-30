@@ -167,11 +167,20 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
     private void showPopup(String userID) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.profile_overlay);
+
         CheckBox needOrganizerNotifs = dialog.findViewById(R.id.profile_notification_organiser_checkbox_view);
         CheckBox needAdminNotifs = dialog.findViewById(R.id.profile_notification_admin_checkbox_view);
         CheckBox adminMode = dialog.findViewById(R.id.profile_admin_mode_checkbox_view);
         Button savePreferencesButton = dialog.findViewById(R.id.save_preferences);
         Button removeProfilePicButton = dialog.findViewById(R.id.remove_profile_pic);
+        TextView adminModeText = dialog.findViewById(R.id.adminModeText);
+
+        isAdmin(userID, isAdmin -> {
+            if (!isAdmin) {
+                adminModeText.setVisibility(View.GONE);
+                adminMode.setVisibility(View.GONE);
+            }
+        });
 
         AtomicReference<SharedPreferences> preferences = new AtomicReference<>(getSharedPreferences("AppPreferences", MODE_PRIVATE));
         boolean isAdminMode = preferences.get().getBoolean("AdminMode", false); // Default to false if not set
@@ -199,16 +208,6 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
                         }
                     });
         }
-
-//        // Set a listener for checkbox state changes
-//        adminMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            Log.d("AdminCheckbox", "isChecked: " + isChecked);
-//            // Save the checkbox state to SharedPreferences
-//            preferences.set(getSharedPreferences("AppPreferences", MODE_PRIVATE));
-//            SharedPreferences.Editor editor = preferences.get().edit();
-//            editor.putBoolean("AdminMode", isChecked);
-//            editor.apply();
-//        });
 
         savePreferencesButton.setOnClickListener(v -> {
             boolean newOrganizerNotif = needOrganizerNotifs.isChecked();
@@ -245,6 +244,30 @@ Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).
         });
 
         dialog.show();
+    }
+
+    public void isAdmin(String userID, AdminCallback callback) {
+        db.collection("Users").document(userID).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Boolean isAdmin = documentSnapshot.getBoolean("admin");
+                        if (isAdmin != null) {
+                            callback.onCallback(isAdmin);
+                        } else {
+                            callback.onCallback(false); // Default to false if admin field is null
+                        }
+                    } else {
+                        callback.onCallback(false); // Document does not exist
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    e.printStackTrace();
+                    callback.onCallback(false); // Return false in case of an error
+                });
+    }
+
+    public interface AdminCallback {
+        void onCallback(boolean isAdmin);
     }
 
     private boolean editProfile(String userID) {
