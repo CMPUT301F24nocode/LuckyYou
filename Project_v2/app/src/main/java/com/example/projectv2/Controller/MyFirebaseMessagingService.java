@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.example.projectv2.MainActivity;
@@ -31,9 +32,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String messageBody, String eventID) {
-        Intent intent = new Intent(this, EventLandingPageUserActivity.class);
-        intent.putExtra("eventID", eventID);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent = getIntent(eventID);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
@@ -58,5 +57,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         notificationManager.notify(0, notificationBuilder.build());
+    }
+
+    @NonNull
+    private Intent getIntent(String eventID) {
+        Intent intent;
+
+        // Handle specific eventID cases
+        if ("-1".equals(eventID)) {
+            // Redirect the user to MainActivity
+            intent = new Intent(this, MainActivity.class);
+        } else if ("-2".equals(eventID)) {
+            // Do not redirect the user to SignUpActivity
+            intent = new Intent(this, EventLandingPageUserActivity.class);
+        } else {
+            // Default behavior for other event IDs
+            intent = new Intent(this, EventLandingPageUserActivity.class);
+            intent.putExtra("eventID", eventID);
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
     }
 }
