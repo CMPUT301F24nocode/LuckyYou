@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             if (itemId == R.id.nav_profile) {
                 String userID = getIntent().getStringExtra("deviceID");
                 intent = new Intent(MainActivity.this, SplashScreenActivity.class);
-                intent.putExtra("message", "Curating Profiles!");
+                intent.putExtra("message", "Curating Your Profile!");
                 intent.putExtra("TARGET_ACTIVITY", ProfileActivity.class.getName());
                 Bundle extras = new Bundle();
                 extras.putString("userID", userID);
