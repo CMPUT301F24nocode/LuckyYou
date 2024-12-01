@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -17,6 +18,8 @@ import com.bumptech.glide.Glide;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -91,14 +94,49 @@ public class BrowseEventsAdapter extends RecyclerView.Adapter<BrowseEventsAdapte
     }
 
     private void deleteEvent(Event event) {
+        // First, delete the event from Firestore
         db.collection("events").document(event.getEventID())
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     eventList.remove(event);
                     notifyDataSetChanged();
                     Log.d(TAG, "Event deleted: " + event.getEventID());
+
+                    // After deleting the event, delete the associated image from Firebase Storage
+                    deleteEventImageFromStorage(event);
                 })
                 .addOnFailureListener(e -> Log.w(TAG, "Error deleting event", e));
+    }
+
+    private void deleteEventImageFromStorage(Event event) {
+        if (event.getImageUrl() != null && !event.getImageUrl().isEmpty()) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference().child("event_posters");
+
+            storageRef.listAll().addOnSuccessListener(listResult -> {
+                List<StorageReference> items = listResult.getItems();
+                if (items.isEmpty()) {
+                    Toast.makeText(context, "No images found.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                for (StorageReference item : items) {
+                    item.getDownloadUrl().addOnSuccessListener(uri -> {
+                        if (uri.toString().equals(event.getImageUrl())) {
+                            item.delete().addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "Image deleted: " + event.getImageUrl());
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(context, "Failed to delete image", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "Error deleting image", e);
+                            });
+                        }
+                    }).addOnFailureListener(e -> Log.e(TAG, "Error fetching image URL: " + e.getMessage()));
+                }
+            }).addOnFailureListener(e -> {
+                Toast.makeText(context, "Failed to load images.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error listing items: " + e.getMessage());
+            });
+        }
     }
 
     private void deleteQRCode(Event event) {

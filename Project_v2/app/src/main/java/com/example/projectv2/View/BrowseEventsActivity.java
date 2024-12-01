@@ -62,8 +62,6 @@ public class BrowseEventsActivity extends AppCompatActivity {
 
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> onBackPressed());
-
-
     }
 
     public void fetchEventsFromFirestore(EventCallback callback) {
@@ -82,9 +80,10 @@ public class BrowseEventsActivity extends AppCompatActivity {
                             String startDate = document.getString("startDate");
                             String ticketPrice = document.getString("ticketPrice");
                             String eventID = document.getString("eventID");
-                            Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
+                            String imageUrl = document.getString("imageUrl"); // Use imageUrl instead of imageUri
+                            Uri imageUri = imageUrl != null ? Uri.parse(imageUrl) : null;
 
-                            Event event = new Event(eventID, owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
+                            Event event = new Event(eventID, owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, imageUrl, facility);
                             events.add(event);
                         }
                         callback.onEventListLoaded(events);

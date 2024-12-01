@@ -62,6 +62,8 @@ public class BrowseImagesActivity extends AppCompatActivity {
                 return;
             }
 
+            imageRefs.clear();
+            imageUrls.clear();
             imageRefs.addAll(items);
 
             // Retrieve download URLs for each image
@@ -76,4 +78,5 @@ public class BrowseImagesActivity extends AppCompatActivity {
             Log.e(TAG, "Error listing items: " + e.getMessage());
         });
     }
+
 }
