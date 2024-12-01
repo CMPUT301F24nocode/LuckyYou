@@ -1,8 +1,10 @@
-package com.example.projectv2.Model;
+package com.example.projectv2;
 
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+
+import com.example.projectv2.Model.Notification;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -81,13 +81,12 @@ public class EventController {
      * @param startDate            start date of the event
      * @param ticketPrice          ticket price of the event
      * @param geolocationEnabled   if geolocation is enabled for the event
-     * @param notificationsEnabled if notifications are enabled for the event
      * @param selectedImageUri     URI of the selected image for the event (optional)
      * @param facility             facility information for the event
      * @param callback             callback to handle success or error
      */
     public void createEvent(String owner, String name, String detail, String rules, String deadline, String attendees, String entrants,
-                            String startDate, String ticketPrice, boolean geolocationEnabled, boolean notificationsEnabled,
+                            String startDate, String ticketPrice, boolean geolocationEnabled,
                             Uri selectedImageUri, String facility, EventCallback callback) {
 
         // Generate a random event ID
@@ -103,7 +102,7 @@ public class EventController {
                     storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         Log.d("EventController", "Image uploaded successfully: " + uri.toString());
                         saveEventToFirestore(owner, name, detail, rules, deadline, attendees, entrants,
-                                startDate, ticketPrice, geolocationEnabled, notificationsEnabled,
+                                startDate, ticketPrice, geolocationEnabled,
                                 uri.toString(), facility, eventID, callback);
                     }).addOnFailureListener(e -> {
                         Log.e("EventController", "Failed to get image download URL: " + e.getMessage());
@@ -116,7 +115,7 @@ public class EventController {
         } else {
             // No image provided, proceed to save the event to Firestore
             saveEventToFirestore(owner, name, detail, rules, deadline, attendees, entrants,
-                    startDate, ticketPrice, geolocationEnabled, notificationsEnabled,
+                    startDate, ticketPrice, geolocationEnabled,
                     null, facility, eventID, callback);
         }
     }
@@ -134,7 +133,6 @@ public class EventController {
      * @param startDate            start date of the event
      * @param ticketPrice          ticket price of the event
      * @param geolocationEnabled   if geolocation is enabled for the event
-     * @param notificationsEnabled if notifications are enabled for the event
      * @param imageUrl             URL of the event image (if uploaded)
      * @param facility             facility information for the event
      * @param eventID              the unique ID of the event
@@ -142,7 +140,7 @@ public class EventController {
      */
     private void saveEventToFirestore(String owner, String name, String detail, String rules, String deadline,
                                       String attendees, String entrants, String startDate, String ticketPrice,
-                                      boolean geolocationEnabled, boolean notificationsEnabled, String imageUrl,
+                                      boolean geolocationEnabled, String imageUrl,
                                       String facility, String eventID, EventCallback callback) {
 
         Map<String, Object> eventMap = new HashMap<>();
@@ -156,7 +154,6 @@ public class EventController {
         eventMap.put("startDate", startDate);
         eventMap.put("ticketPrice", ticketPrice);
         eventMap.put("geolocationEnabled", geolocationEnabled);
-        eventMap.put("notificationsEnabled", notificationsEnabled);
         eventMap.put("imageUri", imageUrl);
         eventMap.put("facility", facility);
         eventMap.put("eventID", eventID);

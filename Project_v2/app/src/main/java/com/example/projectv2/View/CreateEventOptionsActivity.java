@@ -54,7 +54,6 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
         eventStartDate = findViewById(R.id.create_event_start_date);
         eventTicketPrice = findViewById(R.id.create_event_ticket_price);
         geolocationCheckbox = findViewById(R.id.create_event_geolocation_checkbox_view);
-        notificationsCheckbox = findViewById(R.id.create_event_notification_checkbox_view);
 
         // Retrieve event details from the Intent
         name = getIntent().getStringExtra("name");
@@ -81,7 +80,6 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
         String startDate = eventStartDate.getText().toString();
         String ticketPrice = eventTicketPrice.getText().toString();
         boolean geolocationEnabled = geolocationCheckbox.isChecked();
-        boolean notificationsEnabled = notificationsCheckbox.isChecked();
 
         // Validate date format
         if (!isValidDate(deadline)) {
@@ -114,7 +112,6 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
                 startDate,
                 ticketPrice,
                 geolocationEnabled,
-                notificationsEnabled,
                 imageUri != null ? Uri.parse(imageUri) : null,
                 facility,
                 new EventController.EventCallback() {
