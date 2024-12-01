@@ -128,6 +128,7 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
                         // Navigate back to the home screen
                         Intent intent = new Intent(CreateEventOptionsActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("userID", owner);
                         startActivity(intent);
 
                         // Finish the current activity
