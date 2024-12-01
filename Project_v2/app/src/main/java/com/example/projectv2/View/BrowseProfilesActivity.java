@@ -15,8 +15,8 @@ import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Profile;
 import com.example.projectv2.R;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,6 @@ public class BrowseProfilesActivity extends AppCompatActivity implements BrowseP
     private RecyclerView recyclerView;
     private BrowseProfilesAdapter adapter;
     private List<Profile> profiles;
-    private List<StorageReference> storageReferences; // To keep track of storage references
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +40,11 @@ public class BrowseProfilesActivity extends AppCompatActivity implements BrowseP
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         profiles = new ArrayList<>();
-        storageReferences = new ArrayList<>();
         adapter = new BrowseProfilesAdapter(this, profiles, this);
         recyclerView.setAdapter(adapter);
 
-        // Fetch profile data from Firebase Storage
-        fetchProfilesFromFirebase();
+        // Fetch profile data from Firestore
+        fetchProfilesFromFirestore();
 
         // Set up back button
         ImageButton backButton = findViewById(R.id.back_button);
@@ -54,36 +52,31 @@ public class BrowseProfilesActivity extends AppCompatActivity implements BrowseP
     }
 
     /**
-     * Fetches profile data stored in Firebase Storage and updates the RecyclerView.
+     * Fetches profile data stored in Firestore and updates the RecyclerView.
      */
-    private void fetchProfilesFromFirebase() {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("profile_pictures/");
-
-        storageRef.listAll().addOnSuccessListener(listResult -> {
-            List<StorageReference> items = listResult.getItems();
-            if (items.isEmpty()) {
-                Toast.makeText(BrowseProfilesActivity.this, "No profiles found.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Log.d(TAG, "Number of profiles found: " + items.size());
-
-            // Retrieve download URLs for each profile picture
-            for (StorageReference item : items) {
-                storageReferences.add(item); // Keep track of the storage reference
-                item.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Log.d(TAG, "Profile URL: " + uri.toString());
-                    // Create a Profile object with the image URL and other data
-                    Profile profile = new Profile(uri.toString(), "Name", "Description");
-                    profiles.add(profile); // Add profile to list
-                    adapter.notifyDataSetChanged(); // Notify adapter to update RecyclerView
-                }).addOnFailureListener(e -> Log.e(TAG, "Error fetching profile URL: " + e.getMessage()));
-            }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(BrowseProfilesActivity.this, "Failed to load profiles.", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Error listing items: " + e.getMessage());
-        });
+    private void fetchProfilesFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Users")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Profile> profilesList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String id = document.getId();
+                            String name = document.getString("name");
+                            String imageUrl = document.getString("imageUrl");
+                            String description = document.getString("description");
+                            Profile profile = new Profile(id, imageUrl, name, description);
+                            profilesList.add(profile);
+                        }
+                        profiles.clear();
+                        profiles.addAll(profilesList);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
+                        Toast.makeText(BrowseProfilesActivity.this, "Failed to load profiles.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
@@ -99,50 +92,30 @@ public class BrowseProfilesActivity extends AppCompatActivity implements BrowseP
     }
 
     private void deleteProfile(Profile profile, int position) {
-        // Delete the profile picture from Firebase Storage
-        deleteProfilePictureFromFirebase(profile, position);
+        // Delete the profile from Firestore
+        deleteProfileFromFirestore(profile, position);
     }
 
-    private void deleteProfilePictureFromFirebase(Profile profile, int position) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("profile_pictures/");
-
-        storageRef.listAll().addOnSuccessListener(listResult -> {
-            List<StorageReference> items = listResult.getItems();
-            if (items.isEmpty()) {
-                Toast.makeText(BrowseProfilesActivity.this, "No profiles found.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            for (StorageReference item : items) {
-                item.getDownloadUrl().addOnSuccessListener(uri -> {
-                    if (uri.toString().equals(profile.getImageUrl())) {
-                        item.delete().addOnSuccessListener(aVoid -> {
-                            Log.d(TAG, "File deleted successfully: " + profile.getImageUrl());
-
-                            // Remove the profile from the app
-                            profiles.remove(position);
-                            adapter.notifyItemRemoved(position);
-
-                            // Show a Snackbar for better user feedback
-                            Snackbar.make(findViewById(android.R.id.content), "Profile deleted successfully.", Snackbar.LENGTH_SHORT)
-                                    .setAction("Undo", view -> {
-                                        // Optionally, add functionality to undo the deletion
-                                        profiles.add(position, profile);
-                                        adapter.notifyItemInserted(position);
-                                    })
-                                    .show();
-                        }).addOnFailureListener(e -> {
-                            Toast.makeText(BrowseProfilesActivity.this, "Failed to delete profile picture: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Error deleting file: " + profile.getImageUrl(), e);
-                        });
-                    }
-                }).addOnFailureListener(e -> Log.e(TAG, "Error fetching profile URL: " + e.getMessage()));
-            }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(BrowseProfilesActivity.this, "Failed to load profiles.", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Error listing items: " + e.getMessage());
-        });
+    private void deleteProfileFromFirestore(Profile profile, int position) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Users")
+                .document(profile.getId())
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                    profiles.remove(position);
+                    adapter.notifyItemRemoved(position);
+                    Snackbar.make(findViewById(android.R.id.content), "Profile deleted successfully.", Snackbar.LENGTH_SHORT)
+                            .setAction("Undo", view -> {
+                                profiles.add(position, profile);
+                                adapter.notifyItemInserted(position);
+                            })
+                            .show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(BrowseProfilesActivity.this, "Failed to delete profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.w(TAG, "Error deleting document", e);
+                });
     }
 }
 

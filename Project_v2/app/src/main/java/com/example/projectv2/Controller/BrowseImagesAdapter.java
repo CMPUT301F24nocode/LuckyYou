@@ -4,11 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -51,9 +51,9 @@ public class BrowseImagesAdapter extends RecyclerView.Adapter<BrowseImagesAdapte
                 .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache the image
                 .into(holder.imageView);
 
-        // Set a click listener for the delete button
-        holder.deleteButton.setOnClickListener(v -> {
-            deleteImage(position, imageRef);
+        // Set a click listener for the image
+        holder.imageView.setOnClickListener(v -> {
+            showDeleteConfirmationDialog(position, imageRef);
         });
     }
 
@@ -64,13 +64,20 @@ public class BrowseImagesAdapter extends RecyclerView.Adapter<BrowseImagesAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        ImageButton deleteButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.admin_image_list_object_view); // Reference to the ImageView
-            deleteButton = itemView.findViewById(R.id.delete_image_button); // Reference to the delete button
         }
+    }
+
+    private void showDeleteConfirmationDialog(int position, StorageReference imageRef) {
+        new AlertDialog.Builder(context)
+                .setTitle("Delete Image")
+                .setMessage("Are you sure you want to delete this image?")
+                .setPositiveButton("Delete", (dialog, which) -> deleteImage(position, imageRef))
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void deleteImage(int position, StorageReference imageRef) {
