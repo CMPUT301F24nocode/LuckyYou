@@ -21,10 +21,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.projectv2.Controller.DBUtils;
+import com.example.projectv2.Utils.DBUtils;
 import com.example.projectv2.Controller.EntrantListAdapter;
 import com.example.projectv2.Controller.NotificationService;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.DocumentSnapshot;

@@ -6,8 +6,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
-import com.example.projectv2.Controller.NotificationService;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.Controller.NotificationAdapter;
 import com.example.projectv2.R;

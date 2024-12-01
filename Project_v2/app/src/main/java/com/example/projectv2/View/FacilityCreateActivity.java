@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 

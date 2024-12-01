@@ -4,10 +4,9 @@
  *
  * <p>Outstanding Issues: None currently identified.</p>
  */
-package com.example.projectv2.Controller;
+package com.example.projectv2.Utils;
 
 import android.app.Activity;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 

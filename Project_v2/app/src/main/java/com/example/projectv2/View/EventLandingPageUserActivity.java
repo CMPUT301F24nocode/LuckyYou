@@ -22,9 +22,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectv2.Controller.ImageController;
-import com.example.projectv2.Controller.DBUtils;
+import com.example.projectv2.Utils.DBUtils;
 import com.example.projectv2.Controller.NotificationService;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
 import com.google.android.material.snackbar.Snackbar;

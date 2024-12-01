@@ -4,7 +4,7 @@
  *
  * <p>Outstanding Issues: None currently identified.</p>
  */
-package com.example.projectv2.Controller;
+package com.example.projectv2.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;

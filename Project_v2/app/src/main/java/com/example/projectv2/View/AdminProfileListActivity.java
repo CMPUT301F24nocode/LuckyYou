@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.projectv2.Controller.AdminProfileAdapter;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;

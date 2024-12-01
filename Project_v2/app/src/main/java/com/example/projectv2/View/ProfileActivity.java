@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.projectv2.Controller.ProfileImageController;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.R;
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -1,12 +1,8 @@
-package com.example.projectv2.Controller;
+package com.example.projectv2.Utils;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.example.projectv2.Model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

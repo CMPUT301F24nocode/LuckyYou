@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Controller.AdminEventsAdapter;
 import com.example.projectv2.Controller.EventController;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;

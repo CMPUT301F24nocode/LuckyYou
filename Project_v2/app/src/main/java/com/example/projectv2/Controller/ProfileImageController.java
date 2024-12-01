@@ -12,16 +12,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.example.projectv2.Utils.DBUtils;
 import com.example.projectv2.Utils.ProfilePictureGenerator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import com.example.projectv2.R;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileImageController {
     private final Context context;

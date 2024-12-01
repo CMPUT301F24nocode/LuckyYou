@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Controller.FacilityAdapter;
 import com.example.projectv2.Controller.FacilityController;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.Facility;
 import com.example.projectv2.R;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;

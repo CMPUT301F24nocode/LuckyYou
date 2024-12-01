@@ -2,7 +2,6 @@ package com.example.projectv2.View;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.projectv2.Controller.EventImageAdapter;
 import com.example.projectv2.Controller.ImageController;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.R;
 
 import java.util.ArrayList;

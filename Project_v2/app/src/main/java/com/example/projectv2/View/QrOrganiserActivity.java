@@ -1,7 +1,5 @@
 package com.example.projectv2.View;
 
-import static android.content.Intent.getIntent;
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,8 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.projectv2.Controller.qrUtils;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.qrUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.journeyapps.barcodescanner.BarcodeEncoder;

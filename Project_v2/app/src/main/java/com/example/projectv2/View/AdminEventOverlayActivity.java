@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.NotificationService;
-import com.example.projectv2.Controller.topBarUtils;
+import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.FieldValue;
