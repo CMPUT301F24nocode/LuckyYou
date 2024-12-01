@@ -94,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/airbnbcereal_w_bk"
-        android:text="@string/event_description_text"
+        android:text="@string/event_details_text"
         android:textAlignment="viewStart"
         android:textColor="@color/lucky_white"
         android:textSize="14sp"

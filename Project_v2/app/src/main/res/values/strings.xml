@@ -26,6 +26,7 @@
     <string name="create_event_deadline_text"> </string>
     <string name="create_event_entrants_num_text">OPTIONAL</string>
     <string name="create_event_attendees_num_text">Enter Number of Attendees</string>
+    <string name="facility_details">Enter Details</string>
     <string name="send_notification_text" />
     <string name="organiser_profile_list_object_name">John Doe</string>
     <string name="admin_profile_list_object_name">Admin · John Doe</string>
@@ -33,8 +34,6 @@
     <string name="notification_time_text">20 min ago</string>
     <string name="next">og_next</string>
     <string name="previous">og previous</string>
-    <string name="first_fragment_label">first frag label</string>
-    <string name="second_fragment_label">second frag label</string>
     <string name="create_facility_name_text">Enter Facility Name</string>
     <string name="create_facility_details_text">Enter Facility Details</string>
     <string name="Not_a_user"><u>Not a User? Signup Here</u>.</string>

@@ -58,7 +58,7 @@
             android:layout_marginBottom="8dp"
             android:ellipsize="end"
             android:maxLines="4"
-            android:text="@string/event_description_text"
+            android:text="@string/event_details_text"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/available_event_price_text"
             app:layout_constraintStart_toStartOf="parent"

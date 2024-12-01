@@ -32,6 +32,7 @@
             android:hint="@string/event_name_text"
             android:inputType="text"
             android:textSize="14sp"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,6 +92,7 @@
             android:hint="@string/event_details_text"
             android:inputType="text"
             android:textSize="14sp"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -105,6 +107,7 @@
             android:hint="@string/event_rules_text"
             android:inputType="text"
             android:textSize="14sp"
+            android:textColorHint="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
