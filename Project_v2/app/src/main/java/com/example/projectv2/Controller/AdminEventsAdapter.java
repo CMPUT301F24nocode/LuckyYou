@@ -42,9 +42,8 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
         // Populate the views with event data
         holder.eventName.setText(event.getName());
         holder.eventDate.setText(event.getDeadline());
-        holder.eventPrice.setText(event.getTicketPrice() != null && !event.getTicketPrice().equals("0") ? "$" + event.getTicketPrice() : "Free");
-        holder.eventDescription.setText(event.getDetail()); // Assuming 'detail' represents the description
-        holder.eventOrganizer.setText("Organizer: " + event.getOwner()); // Assuming 'owner' is the organizer name
+        holder.eventDescription.setText(event.getDetail());
+        holder.eventOrganizer.setText("Organizer: " + event.getOwner());
 
         // Set onClickListener for navigating to AdminEventOverlayActivity
         holder.itemView.setOnClickListener(v -> {
@@ -68,7 +67,6 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
             super(view);
             eventName = view.findViewById(R.id.event_name);
             eventDate = view.findViewById(R.id.event_date);
-            eventPrice = view.findViewById(R.id.event_price);
             eventDescription = view.findViewById(R.id.event_description);
             eventOrganizer = view.findViewById(R.id.event_organizer);
         }
