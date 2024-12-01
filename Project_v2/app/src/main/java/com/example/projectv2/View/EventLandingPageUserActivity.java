@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -20,13 +21,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Utils.DBUtils;
 import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -36,9 +42,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import android.Manifest;
+import androidx.core.app.ActivityCompat;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * EventLandingPageUserActivity displays event details and allows the user to join or leave the event.
@@ -52,6 +65,10 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private int entrantsNum;
     private int entrantListSize;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private View currentView;
+    private String currentEventID;
+    private String currentUserID;
 
     String eventID, name, details, rules, deadline, startDate, price, imageUriString,userID;
     DBUtils dbUtils = new DBUtils();
@@ -473,6 +490,13 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         }).addOnFailureListener(e -> Log.e("EventLandingPageUser", "Error checking geolocation: ", e));
     }
 
+    private void prepareJoinEvent(View view, String eventID, String userID) {
+        currentView = view;
+        currentEventID = eventID;
+        currentUserID = userID;
+        joinEvent(view, eventID, userID);
+    }
+
     /**
      * Joins the event by adding the user ID to the entrant and waiting lists in Firestore.
      *
@@ -481,30 +505,92 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
      * @param userID  the user ID
      */
     private void joinEvent(View view, String eventID, String userID) {
-        DocumentReference eventRef = db.collection("events").document(eventID);
-        eventRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    String entrantsString = document.getString("entrants");
-                    entrantsNum = entrantsString != null && !entrantsString.isEmpty()
-                            ? Integer.parseInt(entrantsString)
-                            : Integer.MAX_VALUE; // No restriction if entrants is empty or null
-                    List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
-                    entrantListSize = (waitingList != null) ? waitingList.size() : 0;
+        // Check location permissions first
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
 
-                    if (entrantListSize <= (entrantsNum - 1)) {
-                        eventRef.update("entrantList.Waiting", FieldValue.arrayUnion(userID))
-                                .addOnSuccessListener(aVoid -> showJoinSuccess(view))
-                                .addOnFailureListener(e -> showJoinFailure(view, e));
-                    } else {
-                        Snackbar.make(view, "Waiting list is full. Try again later.", Snackbar.LENGTH_LONG).show();
+            FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+                DocumentReference eventRef = db.collection("events").document(eventID);
+                DocumentReference userRef = db.collection("Users").document(userID);
+
+                eventRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String entrantsString = document.getString("entrants");
+                            entrantsNum = entrantsString != null && !entrantsString.isEmpty()
+                                    ? Integer.parseInt(entrantsString)
+                                    : Integer.MAX_VALUE;
+
+                            List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
+                            entrantListSize = (waitingList != null) ? waitingList.size() : 0;
+
+                            if (entrantListSize <= (entrantsNum - 1)) {
+                                // Update user location if location is available
+                                if (location != null) {
+                                    Map<String, Object> locationUpdate = new HashMap<>();
+                                    locationUpdate.put("latitude", location.getLatitude());
+                                    locationUpdate.put("longitude", location.getLongitude());
+
+                                    userRef.update(locationUpdate)
+                                            .addOnSuccessListener(aVoid -> {
+                                                // After updating location, add user to event waiting list
+                                                eventRef.update("entrantList.Waiting", FieldValue.arrayUnion(userID))
+                                                        .addOnSuccessListener(v -> showJoinSuccess(view))
+                                                        .addOnFailureListener(e -> showJoinFailure(view, e));
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Log.e("Location", "Failed to update user location", e);
+                                                // Still proceed with adding to event if location update fails
+                                                eventRef.update("entrantList.Waiting", FieldValue.arrayUnion(userID))
+                                                        .addOnSuccessListener(v -> showJoinSuccess(view))
+                                                        .addOnFailureListener(failE -> showJoinFailure(view, failE));
+                                            });
+                                } else {
+                                    // No location available, just add to waiting list
+                                    eventRef.update("entrantList.Waiting", FieldValue.arrayUnion(userID))
+                                            .addOnSuccessListener(v -> showJoinSuccess(view))
+                                            .addOnFailureListener(e -> showJoinFailure(view, e));
+                                }
+                            } else {
+                                Snackbar.make(view, "Waiting list is full. Try again later.", Snackbar.LENGTH_LONG).show();
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
+            }).addOnFailureListener(e -> {
+                Log.e("Location", "Error getting location", e);
+                // Fallback to adding to event without location
+                DocumentReference eventRef = db.collection("events").document(eventID);
+                eventRef.update("entrantList.Waiting", FieldValue.arrayUnion(userID))
+                        .addOnSuccessListener(v -> showJoinSuccess(view))
+                        .addOnFailureListener(failE -> showJoinFailure(view, failE));
+            });
+        } else {
+            // Request location permissions if not granted
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
+
         joinEventButton.setVisibility(View.GONE);
         leaveEventButton.setVisibility(View.VISIBLE);
+    }
+
+    // Add this method to handle permission results
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // If permissions were just granted, retry joining the event
+                joinEvent(currentView, currentEventID, currentUserID);
+            } else {
+                Toast.makeText(this, "Location permission is required to join the event", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
