@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/nav_facilities"
-        android:icon="@drawable/facility_icon"
+        android:icon="@drawable/your_facilities"
         android:title="Your Facilities" />
 
     <item
