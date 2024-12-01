@@ -69,7 +69,7 @@
             android:fontFamily="@font/airbnbcereal_w_bd"
             android:paddingHorizontal="24dp"
             android:paddingVertical="8dp"
-            android:text="Confirmed"
+            android:text="Accepted"
             android:textColor="@color/lucky_white"
             android:textSize="16sp"
             android:visibility="invisible"

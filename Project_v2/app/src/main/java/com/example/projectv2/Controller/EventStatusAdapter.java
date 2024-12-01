@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
-import com.example.projectv2.Controller.ImageController;
-import com.example.projectv2.View.EventLandingPageOrganizerActivity;
 import com.example.projectv2.View.EventLandingPageUserActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,7 +32,7 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
     private static final String TAG = "EventStatusAdapter";
     private final List<Event> eventList;
     private final Context context;
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db;
 
     public EventStatusAdapter(Context context, List<Event> eventList) {
         this.context = context;
@@ -55,15 +53,15 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
         Event event = eventList.get(position);
         String eventID = event.getEventID();
 
-        int status = setTextStatus(eventID);
-
-        if (status == 0) {
-            holder.waiting.setVisibility(View.VISIBLE);
-        } else if (status == 1) {
-            holder.accepted.setVisibility(View.VISIBLE);
-        } else if (status == 2) {
-            holder.declined.setVisibility(View.VISIBLE);
-        }
+        setTextStatus(eventID, status -> {
+            if (status == 0) {
+                holder.waiting.setVisibility(View.VISIBLE);
+            } else if (status == 1) {
+                holder.accepted.setVisibility(View.VISIBLE);
+            } else if (status == 2) {
+                holder.declined.setVisibility(View.VISIBLE);
+            }
+        });
 
         // Bind event data to UI elements
         holder.eventName.setText(event.getName());
@@ -93,38 +91,38 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
         notifyDataSetChanged();
     }
 
-    private int setTextStatus(String eventID) {
+    public interface StatusCallback {
+        void onStatusFetched(int status);
+    }
+
+    private void setTextStatus(String eventID, StatusCallback callback) {
         @SuppressLint("HardwareIds")
         String deviceID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        final int[] status = {0}; // Default status
-
         db.collection("events").document(eventID).get()
                 .addOnCompleteListener(task -> {
+                    int status = 0; // Default status
                     if (task.isSuccessful() && task.getResult() != null) {
                         DocumentSnapshot document = task.getResult();
                         Map<String, List<String>> entrantList = (Map<String, List<String>>) document.get("entrantList");
 
                         if (entrantList != null) {
-                            // Check if deviceID is in Waiting
                             if (entrantList.get("Waiting") != null && entrantList.get("Waiting").contains(deviceID)) {
-                                status[0] = 0; // Waiting
-                            }
-                            // Check if deviceID is in Selected or Attendee
-                            else if ((entrantList.get("Selected") != null && entrantList.get("Selected").contains(deviceID)) ||
+                                status = 0; // Waiting
+                            } else if ((entrantList.get("Selected") != null && entrantList.get("Selected").contains(deviceID)) ||
                                     (entrantList.get("Attendee") != null && entrantList.get("Attendee").contains(deviceID))) {
-                                status[0] = 1; // Selected or Attendee
-                            }
-                            // Check if deviceID is in Cancelled
-                            else if (entrantList.get("Cancelled") != null && entrantList.get("Cancelled").contains(deviceID)) {
-                                status[0] = 2; // Cancelled
+                                status = 1; // Selected or Attendee
+                            } else if (entrantList.get("Cancelled") != null && entrantList.get("Cancelled").contains(deviceID)) {
+                                status = 2; // Cancelled
                             }
                         }
                     } else {
                         Log.e("setTextStatus", "Error fetching document or document does not exist", task.getException());
                     }
+
+                    // Pass the status back through the callback
+                    callback.onStatusFetched(status);
                 });
-        return status[0];
     }
 
     private void loadEventImage(Event event, ImageView eventImage) {
