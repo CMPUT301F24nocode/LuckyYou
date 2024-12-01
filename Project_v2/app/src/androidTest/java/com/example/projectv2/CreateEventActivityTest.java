@@ -94,8 +94,6 @@ public class CreateEventActivityTest {
         Espresso.onView(withId(R.id.create_event_geolocation_checkbox_view))
                 .perform(click()); // Enable geolocation
 
-        Espresso.onView(withId(R.id.create_event_notification_checkbox_view))
-                .perform(click()); // Disable notifications
 
         Espresso.onView(withId(R.id.create_event_button))
                 .perform(click());

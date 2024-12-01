@@ -98,7 +98,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
-        android:hint=""
+        android:hint="@string/create_event_price_text"
         android:inputType="number"
         android:padding="8dp"
         android:text="@string/create_event_deadline_text"
@@ -154,27 +154,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView8" />
 
-    <CheckBox
-        android:id="@+id/create_event_notification_checkbox_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        app:layout_constraintBottom_toBottomOf="@+id/textView7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView7" />
-
-    <TextView
-        android:id="@+id/textView7"
-        style="@style/GenericText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:fontFamily="@font/airbnbcereal_w_bk"
-        android:text="Send Notifications"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
     <TextView
         android:id="@+id/textView10"
         style="@style/GenericText"
@@ -194,7 +173,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
-        android:hint=""
+        android:hint="@string/create_event_attendees_num_text"
         android:inputType="number"
         android:padding="8dp"
         android:text="@string/create_event_attendees_num_text"
