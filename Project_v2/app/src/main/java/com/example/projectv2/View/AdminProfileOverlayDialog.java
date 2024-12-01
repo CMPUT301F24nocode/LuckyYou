@@ -18,6 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -84,16 +85,39 @@ public class AdminProfileOverlayDialog extends DialogFragment {
             Notification notification = new Notification(userID, "Your profile has been deleted by an admin. Please make a new profile.", false, true);
             notificationService.sendNotification(requireActivity(), notification, "-2");
 
-            db.collection("Users").document(userID)
-                    .delete()
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(requireContext(), "User has been removed", Toast.LENGTH_SHORT).show();
-                        dismiss();
+            // Step 1: Delete all events with owner = userID
+            db.collection("Events")
+                    .whereEqualTo("owner", userID)
+                    .get()
+                    .addOnSuccessListener(eventSnapshot -> {
+                        for (DocumentSnapshot document : eventSnapshot.getDocuments()) {
+                            db.collection("Events").document(document.getId()).delete();
+                        }
+
+                        // Step 2: Delete all facilities with owner = userID
+                        db.collection("Facilities")
+                                .whereEqualTo("owner", userID)
+                                .get()
+                                .addOnSuccessListener(facilitySnapshot -> {
+                                    for (DocumentSnapshot document : facilitySnapshot.getDocuments()) {
+                                        db.collection("Facilities").document(document.getId()).delete();
+                                    }
+
+                                    // Step 3: Delete the user profile
+                                    db.collection("Users").document(userID)
+                                            .delete()
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(requireContext(), "User, related events, and facilities have been removed", Toast.LENGTH_SHORT).show();
+                                                dismiss();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(requireContext(), "User could not be removed. Please try again", Toast.LENGTH_SHORT).show();
+                                                dismiss();
+                                            });
+                                })
+                                .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to delete facilities. Please try again.", Toast.LENGTH_SHORT).show());
                     })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(requireContext(), "User could not be removed. Please try again", Toast.LENGTH_SHORT).show();
-                        dismiss();
-                    });
+                    .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to delete events. Please try again.", Toast.LENGTH_SHORT).show());
         });
 
         deleteImage.setOnClickListener(v -> {
