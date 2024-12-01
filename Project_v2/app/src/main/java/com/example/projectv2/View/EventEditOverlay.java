@@ -1,88 +1,125 @@
-/**
- * Activity for managing the selection of attendees from a waiting list for an event. 
- * Based on available slots, it moves a random selection of entrants from the waiting list 
- * to the selected list and updates the Firestore database accordingly.
- *
- * <p>Outstanding Issues: None currently identified.</p>
- */
 package com.example.projectv2.View;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
+import com.example.projectv2.Controller.EntrantListController;
 import com.example.projectv2.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EventEditOverlay extends AppCompatActivity {
+public class EventEditOverlay extends DialogFragment {
 
     private FirebaseFirestore db;
-    private int attendeeNum;
-    private int attendeeListSize;
-    private int remainingSlots;
+    private int attendeesLimit;
+    private String eventID;
 
-    /**
-     * Called when the activity is created. Initializes Firebase Firestore, retrieves
-     * event details from Firestore, and sets up a button to choose attendees based on
-     * available slots.
-     *
-     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
-     */
+    public static EventEditOverlay newInstance(String eventId) {
+        EventEditOverlay fragment = new EventEditOverlay();
+        Bundle args = new Bundle();
+        args.putString("eventId", eventId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_edit_overlay);
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        db = FirebaseFirestore.getInstance(); // Initialize Firestore
+    }
 
-        db = FirebaseFirestore.getInstance();
-        Button chooseAttendee = findViewById(R.id.choose_attendees_button);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.event_edit_overlay, container, false);
 
-        Intent intent = getIntent();
-        String eventID = intent.getStringExtra("1104124");  // Sample event ID for testing
+        if (getArguments() != null) {
+            eventID = getArguments().getString("eventId");
+        }
 
-        chooseAttendee.setOnClickListener(view -> {
-            DocumentReference eventRef = db.collection("events").document(eventID);
-            eventRef.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    Log.d("fbkjdcsnv", "Document fetch successful");
+        Log.d("EventEditDialogFragment", "Dialog created");
 
-                    if (document.exists()) {
-                        Log.d("fbkjdcsnv", "Document exists in Firestore");
-                        // Retrieve the 'attendees' field as a target number of attendees
-                        attendeeNum = Integer.parseInt(document.getString("attendees"));
+        Button chooseAttendeesButton = view.findViewById(R.id.choose_attendees_button);
+        chooseAttendeesButton.setOnClickListener(v -> setSelectedList(eventID));
 
-                        List<String> attendeeList = (List<String>) document.get("entrantList.Attendee");
+        return view;
+    }
+
+    private void setSelectedList(String eventID) {
+        Log.d("EventEditDialogFragment", "Button clicked");
+
+        DocumentReference eventRef = db.collection("events").document(eventID);
+        eventRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    attendeesLimit = Integer.parseInt(document.getString("attendees"));
+                    List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
+                    List<String> attendeeList = (List<String>) document.get("entrantList.Attendee");
+                    List<String> selectedAttendees;
+
+                    Log.d("EventEditDialogFragment", "Attendee limit: " + attendeesLimit);
+                    Log.d("EventEditDialogFragment", "Waiting List: " + waitingList);
+
+                    if (waitingList != null && !waitingList.isEmpty()) {
+                        Collections.shuffle(waitingList);
+
+                        Log.d("EventEditDialogFragment", "Waiting list size: " + waitingList.size());
+
                         if (attendeeList != null) {
-                            attendeeListSize = attendeeList.size();
-                            Log.d("fbkjdcsnv", "Current number of attendees: " + attendeeListSize);
+                            Log.d("EventEditDialogFragment", "Attendee list size: " + attendeeList.size());
+                            if (attendeeList.size() < attendeesLimit) {
+                                if (waitingList.size() >= attendeesLimit) {
+                                    selectedAttendees = waitingList.subList(0, attendeesLimit);
+                                } else {
+                                    selectedAttendees = new ArrayList<>(waitingList);
+                                }
+                            } else {
+                                selectedAttendees = Collections.emptyList();
+                                Toast.makeText(requireContext(), "Attendee limit reached!", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            selectedAttendees = Collections.emptyList();
                         }
-                        remainingSlots = attendeeNum - attendeeListSize;
 
-                        List<String> waitingList = (List<String>) document.get("entrantList.Waiting");
-                        if (waitingList != null && !waitingList.isEmpty()) {
-                            Collections.shuffle(waitingList);
-                            List<String> selectedList = waitingList.size() > remainingSlots ? waitingList.subList(0, remainingSlots) : waitingList;
-
-                            // Update the selected list in Firestore
-                            eventRef.update("entrantList.Selected", selectedList)
-                                    .addOnSuccessListener(aVoid -> Log.d("fbkjdcsnv", "Selected list updated successfully in Firestore"))
-                                    .addOnFailureListener(e -> Log.w("fbkjdcsnv", "Error updating selected list in Firestore", e));
-                        }
-
-                        // Additional logic for attendee management, including notifications, can be added here
+                        eventRef.update("entrantList.Selected", FieldValue.arrayUnion(selectedAttendees.toArray()))
+                                .addOnSuccessListener(aVoid -> {
+                                    for (String attendee : selectedAttendees) {
+                                        eventRef.update("entrantList.Waiting", FieldValue.arrayRemove(attendee))
+                                                .addOnSuccessListener(innerVoid -> Log.d("EventEditDialogFragment", "Attendee moved successfully: " + attendee))
+                                                .addOnFailureListener(e -> Log.e("EventEditDialogFragment", "Error removing attendee: ", e));
+                                    }
+                                    Toast.makeText(requireContext(), "Attendees chosen successfully!", Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(requireContext(), "Failed to update selected attendees: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.e("EventEditDialogFragment", "Error updating selected list: ", e);
+                                });
+                    } else {
+                        Toast.makeText(requireContext(), "No users in the waiting list to select.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Log.e("fbkjdcsnv", "Error fetching document", task.getException());
+                    Toast.makeText(requireContext(), "Event not found.", Toast.LENGTH_SHORT).show();
                 }
-            });
+            } else {
+                Toast.makeText(requireContext(), "Failed to fetch event: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }

@@ -18,10 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.EventsPagerAdapter;
 import com.example.projectv2.Controller.FacilityController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Facility;
 import com.example.projectv2.R;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,16 @@ public class FacilityListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.facility_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(facilityAdapter);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+
+        // Set up refresh listener
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Perform refresh actions, like reloading data
+            refreshContent();
+
+            // Stop the refreshing animation
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
         // Initialize the controller
         facilityController = new FacilityController(this);
@@ -120,5 +132,25 @@ public class FacilityListActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    // Method to handle refresh logic
+    private void refreshContent() {
+        // Fetch updated facility data
+        facilityController.fetchFacilities(new FacilityController.FacilityCallback() {
+            @Override
+            public void onFacilityListLoaded(ArrayList<Facility> facilities) {
+                facilityList.clear();
+                facilityList.addAll(facilities);
+                facilityAdapter.notifyDataSetChanged();
+                Log.d("FacilityListActivity", "Facility list refreshed");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("FacilityListActivity", "Error refreshing facilities", e);
+                Toast.makeText(FacilityListActivity.this, "Error refreshing facilities", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background color for the EditText -->
+    <solid android:color="@color/lucky_background" />
+    <!-- Red border to indicate an error -->
+    <stroke android:width="2dp" android:color="#FF0000" />
+    <!-- Rounded corners for a smoother appearance -->
+    <corners android:radius="4dp" />
+</shape>

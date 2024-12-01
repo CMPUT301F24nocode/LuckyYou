@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="available_event_name_text" type="id" />
+    <item name="available_event_description_text" type="id" />
+    <item name="available_event_date_text" type="id" />
+    <item name="available_event_price_text" type="id" />
+    <item name="recyclerViewBrowseImages" type="id" />
+    <item name="progressBarBrowseImages" type="id" />
+</resources>

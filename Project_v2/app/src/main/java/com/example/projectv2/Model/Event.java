@@ -8,6 +8,9 @@
 package com.example.projectv2.Model;
 
 import android.net.Uri;
+
+import com.google.firebase.storage.StorageReference;
+
 import java.io.Serializable;
 
 /**
