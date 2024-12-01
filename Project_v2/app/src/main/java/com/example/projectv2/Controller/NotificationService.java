@@ -51,7 +51,7 @@ public class NotificationService {
             db.collection("Users").document(userId)
                     .update("organizerNotifList", FieldValue.arrayUnion(notificationData))
                     .addOnSuccessListener(aVoid -> {
-                        sendPushNotification(activity, userId, eventID, notification.getContent());
+//                        sendPushNotification(activity, userId, eventID, notification.getContent());
                         Log.d("sendNotificationResult", "Notification sent to FireStore");
                     })
                     .addOnFailureListener(e -> {
@@ -64,13 +64,36 @@ public class NotificationService {
             db.collection("Users").document(userId)
                     .update("adminNotifList", FieldValue.arrayUnion(notificationData))
                     .addOnSuccessListener(aVoid -> {
-                        sendPushNotification(activity, userId, eventID, notification.getContent());
+//                        sendPushNotification(activity, userId, eventID, notification.getContent());
                         Log.d("sendNotificationResult", "Notification sent to FireStore");
                     })
                     .addOnFailureListener(e -> {
                         Log.d("sendNotificationResult", "Notification not sent to FireStore" + e);
                     });
         }
+
+        db.collection("Users").document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Boolean adminNotif = documentSnapshot.getBoolean("adminNotif");
+                        Boolean orgNotif = documentSnapshot.getBoolean("organizerNotif");
+
+                        if (adminNotif && notification.isAdmin()) {
+                            sendPushNotification(activity, userId, eventID, notification.getContent());
+                            Log.d("sendNotificationResult", "Admin notification sent");
+                        } else if (orgNotif && notification.isOrganiser()) {
+                            Log.d("sendNotificationResult", "Organizer notification sent");
+                            sendPushNotification(activity, userId, eventID, notification.getContent());
+                        }
+
+                    } else {
+                        Log.d("sendNotificationResult", "User does not exist");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("sendNotificationResult", "Push notification not sent" + e);
+                });
     }
 
     private void sendPushNotification (Activity activity, String userId, String eventID, String pushNotifContent) {

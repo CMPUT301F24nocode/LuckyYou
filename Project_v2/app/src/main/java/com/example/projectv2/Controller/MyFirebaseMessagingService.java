@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat;
 import com.example.projectv2.MainActivity;
 import com.example.projectv2.R;
 import com.example.projectv2.View.EventLandingPageUserActivity;
+import com.example.projectv2.View.SignUpActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -69,7 +70,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             intent = new Intent(this, MainActivity.class);
         } else if ("-2".equals(eventID)) {
             // Do not redirect the user to SignUpActivity
-            intent = new Intent(this, EventLandingPageUserActivity.class);
+            intent = new Intent(this, SignUpActivity.class);
         } else {
             // Default behavior for other event IDs
             intent = new Intent(this, EventLandingPageUserActivity.class);
