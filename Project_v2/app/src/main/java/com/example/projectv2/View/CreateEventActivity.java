@@ -6,10 +6,12 @@
  */
 package com.example.projectv2.View;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -160,23 +162,33 @@ public class CreateEventActivity extends AppCompatActivity {
      * Adds "Online" as a default facility option.
      */
     private void loadFacilities() {
-        db.collection("facilities").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    String facilityName = document.getString("name");
-                    if (facilityName != null) {
-                        facilityList.add(facilityName);
-                    }
-                }
-                facilityList.add(0, "Online");
+        // Get the device ID of the current user
+        @SuppressLint("HardwareIds") String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, facilityList);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                facilitySpinner.setAdapter(adapter);
-            } else {
-                Toast.makeText(this, "Error loading facilities", Toast.LENGTH_SHORT).show();
-            }
-        });
+        db.collection("facilities")
+                .whereEqualTo("owner", deviceID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        facilityList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String facilityName = document.getString("name");
+                            if (facilityName != null) {
+                                facilityList.add(facilityName);
+                            }
+                        }
+                        // Add "Online" as a default facility option
+                        facilityList.add(0, "Online");
+
+                        // Populate the facility spinner with the filtered facilities
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, facilityList);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        facilitySpinner.setAdapter(adapter);
+                    } else {
+                        // Handle Firestore query failure
+                        Toast.makeText(this, "Error loading facilities", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
