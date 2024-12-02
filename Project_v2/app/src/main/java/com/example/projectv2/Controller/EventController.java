@@ -1,10 +1,3 @@
-/**
- * EventController manages events in the Firebase Firestore database.
- * It supports creating, updating, and fetching events, as well as handling event images
- * and managing the entrant lists for each event.
- *
- * <p>Outstanding Issues: None currently identified.</p>
- */
 package com.example.projectv2.Controller;
 
 import android.annotation.SuppressLint;
@@ -97,7 +90,7 @@ public class EventController {
         if (selectedImageUri != null) {
             // Upload the image to Firebase Storage
             StorageReference storageRef = FirebaseStorage.getInstance()
-                    .getReference("event_images/" + eventID + ".jpg");
+                    .getReference("event_posters/" + eventID + ".jpg");
 
             storageRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot ->
                     storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
@@ -157,7 +150,7 @@ public class EventController {
         eventMap.put("ticketPrice", ticketPrice);
         eventMap.put("geolocationEnabled", geolocationEnabled);
         eventMap.put("notificationsEnabled", notificationsEnabled);
-        eventMap.put("imageUri", imageUrl);
+        eventMap.put("imageUrl", imageUrl); // Use imageUrl instead of imageUri
         eventMap.put("facility", facility);
         eventMap.put("eventID", eventID);
 
@@ -181,7 +174,6 @@ public class EventController {
                 });
     }
 
-
     /**
      * Updates the event image in Firestore.
      *
@@ -190,13 +182,16 @@ public class EventController {
      * @param callback     callback to handle the update result
      */
     public void updateEventImage(String eventId, Uri newImageUri, ImageUpdateCallback callback) {
-        Map<String, Object> updateData = new HashMap<>();
-        updateData.put("imageUri", newImageUri.toString());
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(newImageUri.toString());
+        storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            Map<String, Object> updateData = new HashMap<>();
+            updateData.put("imageUrl", uri.toString()); // Use imageUrl instead of imageUri
 
-        db.collection("events").document(eventId)
-                .set(updateData, SetOptions.merge())
-                .addOnSuccessListener(aVoid -> callback.onComplete(true))
-                .addOnFailureListener(e -> callback.onComplete(false));
+            db.collection("events").document(eventId)
+                    .set(updateData, SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> callback.onComplete(true))
+                    .addOnFailureListener(e -> callback.onComplete(false));
+        }).addOnFailureListener(e -> callback.onComplete(false));
     }
 
     /**
@@ -220,9 +215,10 @@ public class EventController {
                             String startDate = document.getString("startDate");
                             String ticketPrice = document.getString("ticketPrice");
                             String eventID = document.getString("eventID");
-                            Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
+                            String imageUrl = document.getString("imageUrl"); // Use imageUrl instead of imageUri
+                            Uri imageUri = imageUrl != null ? Uri.parse(imageUrl) : null;
 
-                            Event event = new Event(eventID, owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
+                            Event event = new Event(eventID, owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, imageUrl, facility);
                             eventList.add(event);
                         }
                         callback.onEventListLoaded(eventList);
@@ -257,9 +253,10 @@ public class EventController {
                             String startDate = document.getString("startDate");
                             String ticketPrice = document.getString("ticketPrice");
                             String eventID = document.getString("eventID");
-                            Uri imageUri = document.getString("imageUri") != null ? Uri.parse(document.getString("imageUri")) : null;
+                            String imageUrl = document.getString("imageUrl"); // Use imageUrl instead of imageUri
+                            Uri imageUri = imageUrl != null ? Uri.parse(imageUrl) : null;
 
-                            Event event = new Event(eventID, owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
+                            Event event = new Event(eventID, owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, imageUrl, facility);
                             eventList.add(event);
                         }
                         callback.onEventListLoaded(eventList);
