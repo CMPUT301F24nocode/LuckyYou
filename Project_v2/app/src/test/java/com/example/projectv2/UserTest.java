@@ -1,119 +1,107 @@
 package com.example.projectv2;
 
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import com.example.projectv2.Model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Unit test for the User model class.
- */
+import static org.junit.Assert.*;
+
+import com.example.projectv2.Model.User;
+
 public class UserTest {
 
-    private User userWithDefaultConstructor;
-    private User userWithPartialConstructor;
-    private User userWithFullConstructor;
-
-    @Before
-    public void setUp() {
-        // Initialize User with default constructor
-        userWithDefaultConstructor = new User();
-
-        // Initialize User with partial constructor (non-admin by default)
-        userWithPartialConstructor = new User("test@example.com", "John", "Doe", "1234567890L", "deviceID123");
-
-        // Initialize User with full constructor
-        userWithFullConstructor = new User(true, false, "admin@example.com", "Admin", "User", true, true, "9876543210", "deviceID456");
-    }
-
-    /**
-     * Test default constructor.
-     */
     @Test
     public void testDefaultConstructor() {
-        assertFalse(userWithDefaultConstructor.isAdmin());
-        assertNull(userWithDefaultConstructor.getEmail());
-        assertNull(userWithDefaultConstructor.getName());
-        assertEquals("", userWithDefaultConstructor.getProfileImage());
-        assertTrue(userWithDefaultConstructor.getAdminNotifList().isEmpty());
-        assertTrue(userWithDefaultConstructor.getOrganizerNotifList().isEmpty());
+        User user = new User();
+
+        assertFalse(user.isAdmin());
+        assertFalse(user.isOrganizer());
+        assertEquals("", user.getProfileImage());
+        assertEquals(0.0, user.getLatitude(),0.0001);
+        assertEquals(0.0, user.getLongitude(),0.0001);
+        assertNotNull(user.getAdminNotifList());
+        assertNotNull(user.getOrganizerNotifList());
     }
 
-    /**
-     * Test partial constructor.
-     */
     @Test
     public void testPartialConstructor() {
-        assertFalse(userWithPartialConstructor.isAdmin());
-        assertEquals("test@example.com", userWithPartialConstructor.getEmail());
-        assertEquals("deviceID123", userWithPartialConstructor.getDeviceID());
-        assertEquals(1234567890L, userWithPartialConstructor.getPhoneNumber());
+        String email = "test@example.com";
+        String firstName = "John";
+        String lastName = "Doe";
+        String name=firstName+" "+lastName;
+        String phoneNumber = "1234567890";
+        String deviceID = "device123";
+
+        User user = new User(email, firstName, lastName, phoneNumber, deviceID);
+
+        assertFalse(user.isAdmin());
+        assertTrue(user.isOrganizerNotif());
+        assertEquals(email, user.getEmail());
+        assertEquals(name, user.getName());
+        assertEquals(phoneNumber, user.getPhoneNumber());
+        assertEquals(deviceID, user.getDeviceID());
     }
 
-    /**
-     * Test full constructor.
-     */
     @Test
     public void testFullConstructor() {
-        assertTrue(userWithFullConstructor.isAdmin());
-        assertFalse(userWithFullConstructor.isAdminNotif());
-        assertEquals("admin@example.com", userWithFullConstructor.getEmail());
-//        assertEquals("Admin", userWithFullConstructor.getFirstName());
-        assertEquals("deviceID456", userWithFullConstructor.getDeviceID());
-        assertTrue(userWithFullConstructor.isOrganizer());
-        assertEquals(9876543210L, userWithFullConstructor.getPhoneNumber());
+        User user = new User(
+                true, true, "admin@example.com", "Admin", "User",
+                true, true, "9876543210", "device456"
+        );
+
+        assertTrue(user.isAdmin());
+        assertTrue(user.isAdminNotif());
+        assertEquals("admin@example.com", user.getEmail());
+        assertEquals("Admin User", user.getName());
+
+        assertTrue(user.isOrganizer());
+        assertTrue(user.isOrganizerNotif());
+        assertEquals("9876543210", user.getPhoneNumber());
+        assertEquals("device456", user.getDeviceID());
     }
 
-    /**
-     * Test getters for all fields.
-     */
     @Test
-    public void testGetters() {
-        userWithPartialConstructor.setName("John Doe");
-        assertEquals("John Doe", userWithPartialConstructor.getName());
-        assertFalse(userWithPartialConstructor.isAdmin());
-        assertEquals("test@example.com", userWithPartialConstructor.getEmail());
-        assertEquals("deviceID123", userWithPartialConstructor.getDeviceID());
-        assertEquals(1234567890L, userWithPartialConstructor.getPhoneNumber());
-    }
+    public void testSettersAndGetters() {
+        User user = new User();
 
-    /**
-     * Test setters for all fields.
-     */
-    @Test
-    public void testSetters() {
-        userWithDefaultConstructor.setAdmin(true);
-        userWithDefaultConstructor.setEmail("new@example.com");
-        userWithDefaultConstructor.setName("New Name");
-        userWithDefaultConstructor.setPhoneNumber("5555555555");
-        userWithDefaultConstructor.setDeviceID("newDeviceID");
-        userWithDefaultConstructor.setProfileImage("newProfileImage");
+        user.setAdmin(true);
+        user.setAdminNotif(true);
+        user.setEmail("test@example.com");
+        user.setName("Test User");
+        user.setOrganizer(true);
+        user.setOrganizerNotif(true);
+        user.setPhoneNumber("1234567890");
+        user.setProfileImage("http://example.com/profile.jpg");
+        user.setDeviceID("device789");
+        user.setLatitude(51.5074);
+        user.setLongitude(0.1278);
 
-        assertTrue(userWithDefaultConstructor.isAdmin());
-        assertEquals("new@example.com", userWithDefaultConstructor.getEmail());
-        assertEquals("New Name", userWithDefaultConstructor.getName());
-        assertEquals(5555555555L, userWithDefaultConstructor.getPhoneNumber());
-        assertEquals("newDeviceID", userWithDefaultConstructor.getDeviceID());
-        assertEquals("newProfileImage", userWithDefaultConstructor.getProfileImage());
-    }
+        ArrayList<Map<String, Object>> adminNotifList = new ArrayList<>();
+        Map<String, Object> adminNotif = new HashMap<>();
+        adminNotif.put("message", "Test Admin Notification");
+        adminNotifList.add(adminNotif);
+        user.setAdminNotifList(adminNotifList);
 
-    /**
-     * Test setting notification lists.
-     */
-    @Test
-    public void testSetNotificationLists() {
-        ArrayList<Map<String, Object>> adminNotifications = new ArrayList<>();
-        Map<String, Object> notification = new HashMap<>();
-        notification.put("message", "Admin Notification");
-        adminNotifications.add(notification);
+        ArrayList<Map<String, Object>> organizerNotifList = new ArrayList<>();
+        Map<String, Object> organizerNotif = new HashMap<>();
+        organizerNotif.put("message", "Test Organizer Notification");
+        organizerNotifList.add(organizerNotif);
+        user.setOrganizerNotifList(organizerNotifList);
 
-        userWithDefaultConstructor.setAdminNotifList(adminNotifications);
-        assertEquals(1, userWithDefaultConstructor.getAdminNotifList().size());
-        assertEquals("Admin Notification", userWithDefaultConstructor.getAdminNotifList().get(0).get("message"));
+        assertTrue(user.isAdmin());
+        assertTrue(user.isAdminNotif());
+        assertEquals("test@example.com", user.getEmail());
+        assertEquals("Test User", user.getName());
+        assertTrue(user.isOrganizer());
+        assertTrue(user.isOrganizerNotif());
+        assertEquals("1234567890", user.getPhoneNumber());
+        assertEquals("http://example.com/profile.jpg", user.getProfileImage());
+        assertEquals("device789", user.getDeviceID());
+        assertEquals(51.5074, user.getLatitude(),0.0001);
+        assertEquals(0.1278, user.getLongitude(),0.0001);
+        assertEquals(adminNotifList, user.getAdminNotifList());
+        assertEquals(organizerNotifList, user.getOrganizerNotifList());
     }
 }

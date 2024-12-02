@@ -53,7 +53,10 @@ public class Event implements Serializable {
         this.facility = facility;
     }
 
-    public Event(String eventID, String owner, String date, String date1) {
+    public Event(String eventID, String owner, String date, String date1) {this.eventID = eventID;
+        this.owner = owner;
+        this.deadline = date;
+        this.startDate = date1;
     }
 
     /**

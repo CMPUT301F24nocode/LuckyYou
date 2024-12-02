@@ -77,6 +77,7 @@ public class User {
         this.organizerNotifList = new ArrayList<>();
         this.latitude = 0.0;
         this.longitude = 0.0;
+        this.name=firstName+" "+lastName;
     }
 
     // Getters
@@ -150,6 +151,7 @@ public class User {
      * @return the URI of the user's profile image
      */
     public String getProfileImage() {
+        if (profileImage == null) {return "";}
         return profileImage;
     }
 
@@ -168,6 +170,7 @@ public class User {
      * @return the list of admin notifications
      */
     public ArrayList<Map<String, Object>> getAdminNotifList() {
+        if (adminNotifList == null) {return new ArrayList<>();}
         return adminNotifList;
     }
 
@@ -177,6 +180,7 @@ public class User {
      * @return the list of organizer notifications
      */
     public ArrayList<Map<String, Object>> getOrganizerNotifList() {
+        if (organizerNotifList == null) {return new ArrayList<>();}
         return organizerNotifList;
     }
 

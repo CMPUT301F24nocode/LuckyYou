@@ -1,75 +1,133 @@
 package com.example.projectv2;
 
 import android.net.Uri;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.example.projectv2.Model.Event;
 
-/**
- * Unit test for the Event model class.
- */
+import org.mockito.Mockito;
+
 public class EventTest {
 
-    private Event event;
-    private String eventID = "E123";
-    private String owner = "Owner1";
-    private String name = "Music Fest";
-    private String detail = "A large outdoor concert.";
-    private String rules = "No outside food allowed";
-    private String deadline = "2023-12-01";
-    private String startDate = "2023-12-05";
-    private String ticketPrice = "50";
-    private Uri imageUri = Uri.parse("https://example.com/image.jpg");
-    private String facility = "Main Hall";
-
-    @Before
-    public void setUp() {
-        // Initialize the Event object with test data
-        event = new Event(eventID, owner, name, detail, rules, deadline, startDate, ticketPrice, imageUri, facility);
-    }
-
-    /**
-     * Test that the Event constructor correctly initializes all fields.
-     */
     @Test
-    public void testEventConstructor() {
-        assertEquals(eventID, event.getEventID());
-        assertEquals(owner, event.getOwner());
-        assertEquals(name, event.getName());
-        assertEquals(detail, event.getDetail());
-        assertEquals(rules, event.getRules());
-        assertEquals(deadline, event.getDeadline());
-        assertEquals(startDate, event.getStartDate());
-        assertEquals(ticketPrice, event.getTicketPrice());
-        assertEquals(imageUri, event.getImageUri());
-        assertEquals(facility, event.getFacility());
+    public void testFullConstructor() {
+        // Create a mock Uri
+        Uri mockUri = Mockito.mock(Uri.class);
+
+        // Create an Event with all parameters
+        Event event = new Event(
+                "event123",
+                "John Doe",
+                "Summer Festival",
+                "A fun summer event",
+                "No outside food",
+                "2024-07-01",
+                "2024-07-15",
+                "50.00",
+                mockUri,
+                "Community Center"
+        );
+
+        // Verify all properties are set correctly
+        assertEquals("event123", event.getEventID());
+        assertEquals("John Doe", event.getOwner());
+        assertEquals("Summer Festival", event.getName());
+        assertEquals("A fun summer event", event.getDetail());
+        assertEquals("No outside food", event.getRules());
+        assertEquals("2024-07-01", event.getDeadline());
+        assertEquals("2024-07-15", event.getStartDate());
+        assertEquals("50.00", event.getTicketPrice());
+        assertEquals(mockUri, event.getImageUri());
+        assertEquals("Community Center", event.getFacility());
     }
 
-    /**
-     * Test the getter methods to verify that they return the correct values.
-     */
-    @Test
-    public void testGetters() {
-        assertEquals("Owner getter failed", owner, event.getOwner());
-        assertEquals("Name getter failed", name, event.getName());
-        assertEquals("Detail getter failed", detail, event.getDetail());
-        assertEquals("Rules getter failed", rules, event.getRules());
-        assertEquals("Deadline getter failed", deadline, event.getDeadline());
-        assertEquals("Start Date getter failed", startDate, event.getStartDate());
-        assertEquals("Ticket Price getter failed", ticketPrice, event.getTicketPrice());
-        assertEquals("Image URI getter failed", imageUri, event.getImageUri());
-        assertEquals("Facility getter failed", facility, event.getFacility());
-    }
-
-    /**
-     * Test the setEventID method to verify that it correctly updates the eventID.
-     */
     @Test
     public void testSetEventID() {
-        String newEventID = "E456";
-        event.setEventID(newEventID);
-        assertEquals("EventID setter failed", newEventID, event.getEventID());
+        Event event = new Event(
+                "event123",
+                "John Doe",
+                "Summer Festival",
+                "A fun summer event",
+                "No outside food",
+                "2024-07-01",
+                "2024-07-15",
+                "50.00",
+                null,
+                "Community Center"
+        );
+
+        // Change the event ID
+        event.setEventID("newEvent456");
+        assertEquals("newEvent456", event.getEventID());
+    }
+
+    @Test
+    public void testMinimalConstructor() {
+        // Test the constructor with only a few parameters
+        Event event = new Event("event123", "John Doe", "2024-07-15", "2024-07-16");
+
+        // Verify that the event was created
+        assertNotNull(event);
+        assertEquals("event123", event.getEventID());
+    }
+
+    @Test
+    public void testNullValues() {
+        // Create an event with null values
+        Event event = new Event(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        // Verify that null values are handled correctly
+        assertNull(event.getEventID());
+        assertNull(event.getOwner());
+        assertNull(event.getName());
+        assertNull(event.getDetail());
+        assertNull(event.getRules());
+        assertNull(event.getDeadline());
+        assertNull(event.getStartDate());
+        assertNull(event.getTicketPrice());
+        assertNull(event.getImageUri());
+        assertNull(event.getFacility());
+    }
+
+    @Test
+    public void testGetters() {
+        Uri mockUri = Mockito.mock(Uri.class);
+
+        Event event = new Event(
+                "event123",
+                "John Doe",
+                "Summer Festival",
+                "A fun summer event",
+                "No outside food",
+                "2024-07-01",
+                "2024-07-15",
+                "50.00",
+                mockUri,
+                "Community Center"
+        );
+
+        // Systematically test each getter
+        assertEquals("event123", event.getEventID());
+        assertEquals("John Doe", event.getOwner());
+        assertEquals("Summer Festival", event.getName());
+        assertEquals("A fun summer event", event.getDetail());
+        assertEquals("No outside food", event.getRules());
+        assertEquals("2024-07-01", event.getDeadline());
+        assertEquals("2024-07-15", event.getStartDate());
+        assertEquals("50.00", event.getTicketPrice());
+        assertEquals(mockUri, event.getImageUri());
+        assertEquals("Community Center", event.getFacility());
     }
 }
