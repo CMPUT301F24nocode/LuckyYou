@@ -156,17 +156,13 @@ public class MainActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        db.collection("Users").document(userId)
-                .addSnapshotListener((documentSnapshot, e) -> {
-                    if (e != null) {
-                        Log.e("FABListener", "Listen failed: ", e);
-                        Toast.makeText(MainActivity.this, "Failed to check organizer status in real-time.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (documentSnapshot != null && documentSnapshot.exists()) {
-                        Boolean isOrganizer = documentSnapshot.getBoolean("organizer");
-                        if (isOrganizer != null && isOrganizer) {
+        db.collection("facilities")
+                .whereEqualTo("owner", userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        boolean hasFacilities = task.getResult() != null && !task.getResult().isEmpty();
+                        if (hasFacilities) {
                             fab.setVisibility(View.VISIBLE);
                             fab.setOnClickListener(view -> {
                                 Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
@@ -176,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
                             fab.setOnClickListener(view -> Toast.makeText(MainActivity.this, "Please make a facility.", Toast.LENGTH_SHORT).show());
                         }
                     } else {
-                        Log.d("FABListener", "Document does not exist.");
+                        Log.e("FABListener", "Error fetching facilities: ", task.getException());
+                        Toast.makeText(MainActivity.this, "Failed to check facilities.", Toast.LENGTH_SHORT).show();
                     }
                 });
 
