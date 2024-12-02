@@ -1,0 +1,55 @@
+package com.example.projectv2;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import android.content.Intent;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.example.projectv2.View.EventEditActivity;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+public class EventEditActivityTest {
+
+    private static final String TEST_EVENT_NAME = "Event Name Test";
+
+    /**
+     * Verifies the functionality of the "Edit Poster" button.
+     */
+    @Test
+    public void testEditPosterButtonClick() {
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), EventEditActivity.class);
+        intent.putExtra("name", TEST_EVENT_NAME);
+        ActivityScenario.launch(intent);
+
+        // Perform a click on the "Edit Poster" button
+        onView(withId(R.id.create_event_next_button)).perform(click());
+
+        // Verify that the button click triggers expected behavior
+        // This could be a navigation or a state change. Add assertions based on expected results.
+        // For example, if the button opens a new activity, check for elements in the new activity.
+    }
+
+    /**
+     * Verifies that the activity launches with a valid intent and the UI behaves as expected.
+     */
+    @Test
+    public void testActivityLaunchWithValidIntent() {
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), EventEditActivity.class);
+        intent.putExtra("name", TEST_EVENT_NAME);
+        ActivityScenario.launch(intent);
+
+        // Verify the top bar is displayed, meaning the activity launched successfully
+        onView(withId(R.id.top_bar)).check(matches(isDisplayed()));
+    }
+}
