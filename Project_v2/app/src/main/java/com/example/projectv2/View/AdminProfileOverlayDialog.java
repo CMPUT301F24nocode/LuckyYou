@@ -116,17 +116,14 @@ public class AdminProfileOverlayDialog extends DialogFragment {
                                     }
 
                                     // Step 3: Delete the user profile
-//                                    assert userID != null;
                                     db.collection("Users").document(userID)
                                             .delete()
                                             .addOnSuccessListener(aVoid -> {
                                                 deleteImage(userID);
                                                 Toast.makeText(requireContext(), "User, related events, and facilities have been removed", Toast.LENGTH_SHORT).show();
-                                                dismiss();
                                             })
                                             .addOnFailureListener(e -> {
                                                 Toast.makeText(requireContext(), "User could not be removed. Please try again", Toast.LENGTH_SHORT).show();
-                                                dismiss();
                                             });
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to delete facilities. Please try again.", Toast.LENGTH_SHORT).show());
@@ -174,6 +171,7 @@ public class AdminProfileOverlayDialog extends DialogFragment {
                     Toast.makeText(requireContext(), "Failed to remove profile image. Please try again", Toast.LENGTH_SHORT).show();
                 });
     }
+
     /**
      * Sets the dialog window size to wrap content.
      */
