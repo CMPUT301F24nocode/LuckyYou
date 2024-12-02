@@ -158,22 +158,26 @@ public class MainActivity extends AppCompatActivity {
 
         db.collection("facilities")
                 .whereEqualTo("owner", userId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        boolean hasFacilities = task.getResult() != null && !task.getResult().isEmpty();
-                        if (hasFacilities) {
-                            fab.setVisibility(View.VISIBLE);
-                            fab.setOnClickListener(view -> {
-                                Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
-                                startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
-                            });
-                        } else {
-                            fab.setOnClickListener(view -> Toast.makeText(MainActivity.this, "Please make a facility.", Toast.LENGTH_SHORT).show());
-                        }
-                    } else {
-                        Log.e("FABListener", "Error fetching facilities: ", task.getException());
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.e("FABListener", "Error listening to facilities updates: ", e);
                         Toast.makeText(MainActivity.this, "Failed to check facilities.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Check if facilities exist
+                    boolean hasFacilities = queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty();
+
+                    if (hasFacilities) {
+                        fab.setVisibility(View.VISIBLE);
+                        fab.setOnClickListener(view -> {
+                            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+                            startActivityForResult(intent, REQUEST_CODE_CREATE_EVENT);
+                        });
+                    } else {
+                        fab.setOnClickListener(view ->
+                                Toast.makeText(MainActivity.this, "Please make a facility.", Toast.LENGTH_SHORT).show()
+                        );
                     }
                 });
 
