@@ -1,15 +1,11 @@
-/**
- * Fragment that displays a list of event statuses in a RecyclerView.
- * The event status list can be updated as needed.
- *
- * <p>Outstanding Issues: None currently identified.</p>
- */
 package com.example.projectv2.View;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,59 +13,71 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.EventController;
 import com.example.projectv2.Controller.EventStatusAdapter;
+import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
-/**
- * EventStatusFragment manages and displays a list of event statuses in a vertically scrolling list.
- * The fragment utilizes a RecyclerView and an adapter to display the list of events.
- */
 public class EventStatusFragment extends Fragment {
 
-    /**
-     * Default constructor for EventStatusFragment.
-     */
+    private RecyclerView recyclerView;
+    private EventStatusAdapter adapter;
+    private EventController eventController;
+    private ArrayList<Event> eventList;
+
     public EventStatusFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Called to create and return the view hierarchy associated with the fragment.
-     * Sets up the RecyclerView and its adapter for displaying event statuses.
-     *
-     * @param inflater           the LayoutInflater used to inflate any views in the fragment
-     * @param container          the parent view that this fragment's UI should attach to
-     * @param savedInstanceState if non-null, this fragment is being re-constructed from a previous saved state as given here
-     * @return the View for the fragment's UI, or null if it is not associated with a UI
-     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_status, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewEventStatus);
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.recyclerViewEventStatus);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        EventStatusAdapter adapter = new EventStatusAdapter(getEventStatusList());
+
+        // Initialize Event List
+        eventList = new ArrayList<>();
+
+        // Initialize Adapter
+        adapter = new EventStatusAdapter(getContext(), eventList);
         recyclerView.setAdapter(adapter);
+
+        // Initialize EventController
+        eventController = new EventController(getActivity());
+
+        // Fetch Events
+        fetchEvents();
 
         return view;
     }
 
     /**
-     * Returns a list of sample event statuses to display in the RecyclerView.
-     * This can be replaced or modified to fetch actual event statuses from a data source.
-     *
-     * @return a list of sample event status names
+     * Fetches events created by the user from Firebase and updates the adapter.
      */
-    private List<String> getEventStatusList() {
-        List<String> events = new ArrayList<>();
-        events.add("Event 1");
-        events.add("Event 2");
-        events.add("Event 3");
-        return events;
+    private void fetchEvents() {
+        Log.d("EventStatusFragment", "Fetching user's events...");
+        eventController.fetchRelatedEvents(new EventController.EventCallback() {
+            @Override
+            public void onEventListLoaded(ArrayList<Event> events) {
+                Log.d("EventStatusFragment", "Fetched " + events.size() + " events from Firebase.");
+                adapter.updateEventList(events); // Update adapter with fetched events
+            }
+
+            @Override
+            public void onEventCreated(String eventId) {
+                // Not applicable for this fragment
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("EventStatusFragment", "Error fetching user's events", e);
+            }
+        });
     }
 }

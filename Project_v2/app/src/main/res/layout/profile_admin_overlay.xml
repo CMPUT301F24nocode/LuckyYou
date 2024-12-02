@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/lucky_background"
-    android:backgroundTint="@color/lucky_uiEmphasis"
+    android:backgroundTint="@color/lucky_ui"
     android:padding="32dp">
 
 
@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/airbnbcereal_w_bd"
-        android:text="Make Admin"
+        android:text="Admin"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,8 +24,6 @@
         android:id="@+id/profile_admin_mode_checkbox_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/lucky_uiAccent"
-        android:checked="false"
         app:layout_constraintBottom_toBottomOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView2" />

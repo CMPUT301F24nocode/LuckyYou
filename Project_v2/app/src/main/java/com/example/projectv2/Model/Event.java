@@ -1,13 +1,10 @@
-/**
- * Model class representing an event. Each event has details including ID, owner, name,
- * description, rules, dates, ticket price, an optional image, and facility information.
- * Implements Serializable for ease of passing Event objects between activities.
- *
- * <p>Outstanding Issues: None currently identified.</p>
- */
 package com.example.projectv2.Model;
 
 import android.net.Uri;
+
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.Serializable;
 
 /**
@@ -24,6 +21,7 @@ public class Event implements Serializable {
     private String startDate;
     private String ticketPrice;
     private Uri imageUri;
+    private String imageUrl; // Add this field for the image URL
     private String facility;
 
     /**
@@ -38,9 +36,10 @@ public class Event implements Serializable {
      * @param startDate   the start date of the event
      * @param ticketPrice the price of the event's ticket
      * @param imageUri    the URI of the event's image, if any
+     * @param imageUrl    the URL of the event's image in Firebase Storage
      * @param facility    the facility where the event is hosted
      */
-    public Event(String eventID, String owner, String name, String detail, String rules, String deadline, String startDate, String ticketPrice, Uri imageUri, String facility) {
+    public Event(String eventID, String owner, String name, String detail, String rules, String deadline, String startDate, String ticketPrice, Uri imageUri, String imageUrl, String facility) {
         this.eventID = eventID;
         this.owner = owner;
         this.name = name;
@@ -50,6 +49,7 @@ public class Event implements Serializable {
         this.startDate = startDate;
         this.ticketPrice = ticketPrice;
         this.imageUri = imageUri;
+        this.imageUrl = imageUrl; // Initialize the image URL
         this.facility = facility;
     }
 
@@ -126,6 +126,24 @@ public class Event implements Serializable {
     }
 
     /**
+     * Returns the URL of the image associated with the event.
+     *
+     * @return the URL of the image associated with the event
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    /**
+     * Sets the URL of the image associated with the event.
+     *
+     * @param imageUrl the URL of the image associated with the event
+     */
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    /**
      * Returns the facility where the event is hosted.
      *
      * @return the facility where the event is hosted
@@ -150,5 +168,17 @@ public class Event implements Serializable {
      */
     public String getEventID() {
         return eventID;
+    }
+
+    /**
+     * Returns the StorageReference for the image associated with the event.
+     *
+     * @return the StorageReference for the image associated with the event
+     */
+    public StorageReference getImageRef() {
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            return FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
+        }
+        return null;
     }
 }

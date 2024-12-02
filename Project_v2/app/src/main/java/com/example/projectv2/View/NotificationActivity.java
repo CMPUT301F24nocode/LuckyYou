@@ -1,5 +1,6 @@
 package com.example.projectv2.View;
 
+import android.net.ParseException;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -15,9 +16,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
  * Activity for displaying notifications to the user in a RecyclerView.
@@ -29,6 +37,7 @@ public class NotificationActivity extends AppCompatActivity {
     private FirebaseFirestore db; // FireStore instance for database operations
     private List<Notification> notificationList; // List of notifications to display
     private NotificationAdapter adapter; // Adapter for managing notifications in RecyclerView
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     /**
      * Called when the activity is first created.
@@ -42,6 +51,7 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.notification);
 
         topBarUtils.topBarSetup(this, "Notifications", View.INVISIBLE);
+        swipeRefreshLayout = findViewById(R.id.notification_swipe_refresh);
 
         RecyclerView recyclerView = findViewById(R.id.notification_recylcerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -61,6 +71,13 @@ public class NotificationActivity extends AppCompatActivity {
 
         String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         loadNotifications(deviceID); // Figure out who to display notifications for
+
+        // Set up swipe-to-refresh functionality
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            notificationList.clear(); // Clear existing notifications
+            loadNotifications(deviceID); // Reload notifications
+            swipeRefreshLayout.setRefreshing(false); // Stop refreshing animation
+        });
     }
 
     /**
@@ -117,6 +134,44 @@ public class NotificationActivity extends AppCompatActivity {
         String content = (String) notifData.get("content");
         String timeSent = (String) notifData.get("timeSent");
 
-        return new Notification(sendTo, content, timeSent, isOrganiser, isAdmin);
+        // Compute relative time
+        String relativeTime = getRelativeTime(timeSent);
+
+        // Return a notification object with the relative time instead of the raw time
+        return new Notification(sendTo, content, relativeTime, isOrganiser, isAdmin);
+    }
+
+    private String getRelativeTime(String timeSent) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
+        try {
+            Date sentTime = dateFormat.parse(timeSent);
+            if (sentTime == null) return "Unknown time";
+
+            long timeDiffMillis = System.currentTimeMillis() - sentTime.getTime();
+            long seconds = TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(timeDiffMillis);
+            long hours = TimeUnit.MILLISECONDS.toHours(timeDiffMillis);
+            long days = TimeUnit.MILLISECONDS.toDays(timeDiffMillis);
+
+            String rel_time;
+
+            if (seconds < 60) {
+                rel_time = seconds + " sec ago";
+            } else if (minutes < 60) {
+                rel_time = (minutes == 1) ? minutes + " min ago" : minutes + " mins ago";
+            } else if (hours < 24) {
+                rel_time = (hours == 1) ? hours + " hr ago" : hours + " hrs ago";
+            } else {
+                rel_time = (days == 1) ? days + " day ago" : days + " days ago";
+            }
+
+            return rel_time;
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "Unknown time";
+        } catch (java.text.ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

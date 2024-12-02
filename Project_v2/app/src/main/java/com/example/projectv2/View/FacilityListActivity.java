@@ -6,8 +6,11 @@
  */
 package com.example.projectv2.View;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,10 +21,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.projectv2.Controller.FacilityAdapter;
 import com.example.projectv2.Controller.FacilityController;
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.Model.Facility;
 import com.example.projectv2.R;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +41,8 @@ public class FacilityListActivity extends AppCompatActivity {
     private List<Facility> facilityList;
     private FacilityAdapter facilityAdapter;
     private FacilityController facilityController;
+    private SharedPreferences preferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
 
     /**
      * Called when the activity is created. Sets up the RecyclerView for displaying facilities,
@@ -57,25 +64,62 @@ public class FacilityListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.facility_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(facilityAdapter);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+
+        // Set up refresh listener
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Perform refresh actions, like reloading data
+            refreshContent();
+
+            // Stop the refreshing animation
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
         // Initialize the controller
         facilityController = new FacilityController(this);
 
-        // Fetch facilities from Firebase
-        facilityController.fetchFacilities(new FacilityController.FacilityCallback() {
-            @Override
-            public void onFacilityListLoaded(ArrayList<Facility> facilities) {
-                facilityList.clear();
-                facilityList.addAll(facilities);
-                facilityAdapter.notifyDataSetChanged();
-            }
+        // Initialize SharedPreferences
+        preferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
 
-            @Override
-            public void onError(Exception e) {
-                Log.e("FacilityListActivity", "Error fetching facilities", e);
-                Toast.makeText(FacilityListActivity.this, "Error loading facilities", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Register the listener
+        preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+
+        // Set initial visibility based on saved preference
+        boolean isAdminMode = preferences.getBoolean("AdminMode", false);
+
+        if (isAdminMode) {
+            // Fetch all facilities from Firebase
+            facilityController.fetchAllFacilities(new FacilityController.FacilityCallback() {
+                @Override
+                public void onFacilityListLoaded(ArrayList<Facility> facilities) {
+                    facilityList.clear();
+                    facilityList.addAll(facilities);
+                    facilityAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("FacilityListActivity", "Error fetching facilities", e);
+                    Toast.makeText(FacilityListActivity.this, "Error loading facilities", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // Fetch user's facilities from Firebase
+            facilityController.fetchUserFacilities(new FacilityController.FacilityCallback() {
+                @Override
+                public void onFacilityListLoaded(ArrayList<Facility> facilities) {
+                    facilityList.clear();
+                    facilityList.addAll(facilities);
+                    facilityAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("FacilityListActivity", "Error fetching facilities", e);
+                    Toast.makeText(FacilityListActivity.this, "Error loading facilities", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         // Set up button to create a new facility
         Button createFacilityButton = findViewById(R.id.create_facility_button);
@@ -97,6 +141,8 @@ public class FacilityListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CREATE_FACILITY && resultCode == RESULT_OK && data != null) {
+            @SuppressLint("HardwareIds")
+            String ownerID = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
             String name = data.getStringExtra("facility_name");
             String description = data.getStringExtra("facility_description");
             String facilityID = data.getStringExtra("facility_ID");
@@ -104,7 +150,7 @@ public class FacilityListActivity extends AppCompatActivity {
             Log.d("FacilityListActivity", "New Facility: " + name + ", " + description);
 
             // Create and save the new facility in Firebase
-            facilityController.createFacility(name, description, facilityID, new FacilityController.FacilityCallback() {
+            facilityController.createFacility(ownerID, name, description, facilityID, new FacilityController.FacilityCallback() {
                 @Override
                 public void onFacilityListLoaded(ArrayList<Facility> facilities) {
                     facilityList.clear();
@@ -117,6 +163,44 @@ public class FacilityListActivity extends AppCompatActivity {
                 public void onError(Exception e) {
                     Log.e("FacilityListActivity", "Error adding facility", e);
                     Toast.makeText(FacilityListActivity.this, "Error adding facility", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    // Method to handle refresh logic
+    private void refreshContent() {
+        boolean isAdminMode = preferences.getBoolean("AdminMode", false);
+        if (isAdminMode) {
+            // Fetch all facilities from Firebase
+            facilityController.fetchAllFacilities(new FacilityController.FacilityCallback() {
+                @Override
+                public void onFacilityListLoaded(ArrayList<Facility> facilities) {
+                    facilityList.clear();
+                    facilityList.addAll(facilities);
+                    facilityAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("FacilityListActivity", "Error fetching facilities", e);
+                    Toast.makeText(FacilityListActivity.this, "Error loading facilities", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // Fetch user's facilities from Firebase
+            facilityController.fetchUserFacilities(new FacilityController.FacilityCallback() {
+                @Override
+                public void onFacilityListLoaded(ArrayList<Facility> facilities) {
+                    facilityList.clear();
+                    facilityList.addAll(facilities);
+                    facilityAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("FacilityListActivity", "Error fetching facilities", e);
+                    Toast.makeText(FacilityListActivity.this, "Error loading facilities", Toast.LENGTH_SHORT).show();
                 }
             });
         }

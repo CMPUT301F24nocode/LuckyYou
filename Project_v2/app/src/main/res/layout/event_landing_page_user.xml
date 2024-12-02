@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -100,7 +99,7 @@
         android:textColor="@color/lucky_white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -144,8 +143,9 @@
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="20sp"
+        android:visibility="invisible"
         app:cornerRadius="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/geolocation_warning_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_deadline_view" />
@@ -161,63 +161,66 @@
         android:textColor="@color/lucky_uiAccent"
         android:textSize="16sp"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_join_button" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 <!--    Hide button if user cannot leave the event-->
 
-<!--    <Button-->
-<!--        android:id="@+id/event_leave_button"-->
-<!--        style="@style/InactiveButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:drawableLeft="@drawable/joinevent_icon"-->
-<!--        android:drawablePadding="8dp"-->
-<!--        android:fontFamily="@font/airbnbcereal_w_bd"-->
-<!--        android:text="Leave"-->
-<!--        android:textAlignment="center"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textSize="20sp"-->
-<!--        app:cornerRadius="30dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/event_deadline" />-->
+    <Button
+        android:id="@+id/event_leave_button"
+        style="@style/InactiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/leaveevent_icon"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Leave"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/geolocation_warning_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_deadline_view" />
 
 <!--    Hide buttons if user cannot accept or decline event-->
 
-<!--    <Button-->
-<!--        android:id="@+id/event_accept_button"-->
-<!--        style="@style/ActiveButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:backgroundTint="@color/lucky_green_alert"-->
-<!--        android:fontFamily="@font/airbnbcereal_w_bd"-->
-<!--        android:text="Accept"-->
-<!--        android:textAlignment="center"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textSize="20sp"-->
-<!--        app:cornerRadius="30dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/event_deadline" />-->
+    <Button
+        android:id="@+id/event_accept_button"
+        style="@style/ActiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/lucky_green_alert"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Accept"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/geolocation_warning_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_deadline_view" />
 
-<!--    <Button-->
-<!--        android:id="@+id/event_decline_button"-->
-<!--        style="@style/ActiveButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:backgroundTint="@color/lucky_red_alert"-->
-<!--        android:fontFamily="@font/airbnbcereal_w_bd"-->
-<!--        android:text="Decline"-->
-<!--        android:textAlignment="center"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textSize="20sp"-->
-<!--        app:cornerRadius="30dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/event_deadline" />-->
+    <Button
+        android:id="@+id/event_decline_button"
+        style="@style/ActiveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/lucky_red_alert"
+        android:fontFamily="@font/airbnbcereal_w_bd"
+        android:text="Decline"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:cornerRadius="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/geolocation_warning_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_deadline_view" />
 
     <TextView
         android:id="@+id/event_countdown_view"

@@ -27,8 +27,7 @@
         android:checked="true"
         app:layout_constraintBottom_toBottomOf="@+id/textView0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView0"
-        app:layout_constraintVertical_bias="0.38" />
+        app:layout_constraintTop_toTopOf="@+id/textView0" />
 
     <TextView
         android:id="@+id/textView1"
@@ -53,38 +52,46 @@
         app:layout_constraintTop_toTopOf="@+id/textView1" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/adminModeText"
         style="@style/GenericText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Admin Mode"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/profile_admin_mode_checkbox_view"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView1"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/textView1" />
 
     <CheckBox
         android:id="@+id/profile_admin_mode_checkbox_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="false"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintBottom_toBottomOf="@+id/adminModeText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView2" />
+        app:layout_constraintTop_toTopOf="@+id/adminModeText" />
 
     <Button
         android:id="@+id/save_preferences"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
+        android:layout_marginTop="32dp"
         android:text="Save Preferences"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/adminModeText" />
+
+    <Button
+        android:id="@+id/remove_profile_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Remove Profile Image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/save_preferences" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

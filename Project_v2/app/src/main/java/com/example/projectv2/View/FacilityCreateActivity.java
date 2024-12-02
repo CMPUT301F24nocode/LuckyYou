@@ -6,8 +6,11 @@
  */
 package com.example.projectv2.View;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.projectv2.Controller.topBarUtils;
 import com.example.projectv2.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * FacilityCreateActivity allows users to create a new facility by entering its name and description.
@@ -54,6 +58,18 @@ public class FacilityCreateActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            @SuppressLint("HardwareIds") String userId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("Users").document(userId)
+                    .update("organizer", true)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("Firestore", "Organizer status updated to true.");
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore", "Error updating organizer status", e);
+                    });
 
             // Pass the created facility back to FacilityListActivity
             Intent resultIntent = new Intent();

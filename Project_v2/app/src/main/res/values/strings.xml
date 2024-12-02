@@ -16,11 +16,11 @@
     <string name="profile_name_text">John Doe</string>
     <string name="profile_email_text">johndoe@gmail.com</string>
     <string name="profile_phone_text">+1 (123) 456-7890</string>
-    <string name="event_description_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,</string>
-    <string name="event_rules_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,</string>
-    <string name="event_deadline_text">09-18-2024</string>
+    <string name="event_description_text">Enter Event Description</string>
+    <string name="event_rules_text">Enter Event Rules</string>
+    <string name="event_deadline_text">DD-MM-YYYY</string>
     <string name="geolocation_verification_text"><u>Location Verification Required</u></string>
-    <string name="event_name_text">EDM Festival</string>
+    <string name="event_name_text">Enter Event Name</string>
     <string name="event_countdown_text">Starts in: %1$sd: %2$sh: %3$ss</string>
     <string name="event_price_text">Free</string>
     <string name="create_event_name_text">Enter Event Name</string>
@@ -44,6 +44,8 @@
     <string name="create_facility_details_text">Enter Facility Details</string>
     <string name="Not_a_user"><u>Not a User? Signup Here</u>.</string>
     <string name="not_an_organizer">Currently, you are not an organizer. If you want to become an organizer you need to have a facility. Click on "Create" Button to create a facility right now</string>
+    <string name="event_image" />
+    <string name="delete_image" />
 
     <string-array name="dropdown_items">
         <item>Entrants</item>

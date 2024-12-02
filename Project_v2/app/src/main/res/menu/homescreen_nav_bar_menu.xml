@@ -6,7 +6,8 @@
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/profile_icon"
-        android:title="Profile" />
+        android:title="Profile"
+        />
 
     <item
         android:id="@+id/nav_facilities"
@@ -29,8 +30,8 @@
         android:title="Browse Images" />
 
     <item
-        android:id="@+id/nav_browseFacilities"
-        android:icon="@drawable/facility_icon"
-        android:title="Browse Facilities" />
+        android:id="@+id/nav_browseEvents"
+        android:icon="@drawable/browseevent_icon"
+        android:title="Browse Events" />
 
 </menu>

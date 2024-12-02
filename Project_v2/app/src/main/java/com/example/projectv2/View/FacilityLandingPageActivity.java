@@ -8,10 +8,13 @@ package com.example.projectv2.View;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * Users can access editing options and additional settings through a popup.
  */
 public class FacilityLandingPageActivity extends AppCompatActivity {
+
+    private SharedPreferences preferences;
 
     /**
      * Called when the activity is created. Initializes the UI elements, sets the top bar, retrieves
@@ -39,9 +44,16 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        // Initialize SharedPreferences
+        preferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+
+        // Check if the user is in Admin Mode
+        boolean isAdminMode = preferences.getBoolean("AdminMode", false);
+
         // Initialize views
         TextView facilityNameTextView = findViewById(R.id.event_name_view);
         TextView facilityDescriptionTextView = findViewById(R.id.facility_description_view);
+        ImageButton moreButton = findViewById(R.id.more_settings_button);
 
         // Get facility data from the intent
         String facilityName = getIntent().getStringExtra("facility_name");
@@ -60,9 +72,13 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Configure more settings button to display additional options in a popup dialog
-        ImageButton moreButton = findViewById(R.id.more_settings_button);
-        moreButton.setOnClickListener(v -> showPopup());
+        // Hide the "More Settings" button if the user is not an admin
+        if (!isAdminMode) {
+            moreButton.setVisibility(View.GONE);
+        } else {
+            // Configure more settings button to display additional options in a popup dialog
+            moreButton.setOnClickListener(v -> showPopup());
+        }
     }
 
     /**
@@ -71,6 +87,27 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
     private void showPopup() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.facility_admin_overlay);
+
+        // Retrieve the facility ID
+        String facilityID = getIntent().getStringExtra("facility_id");
+
+        Button deleteButton = dialog.findViewById(R.id.delete_facility_button);
+        deleteButton.setOnClickListener(v -> deleteFacility(facilityID, dialog));
+
         dialog.show();
+    }
+
+    private void deleteFacility(String facilityID, Dialog dialog) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("facilities").document(facilityID)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Facility deleted successfully.", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss(); // Close the dialog
+                    finish(); // Close the activity and go back
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error deleting facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

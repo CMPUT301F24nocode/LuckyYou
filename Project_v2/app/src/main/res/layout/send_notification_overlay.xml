@@ -12,48 +12,45 @@
         style="@style/GenericText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="Notification"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/edit_event_entrants_num_view"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edit_event_entrants_num_view"
+        android:id="@+id/send_notification_overlay_content"
         style="@style/RoundedEditTextStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/airbnbcereal_w_bk"
         android:hint="Content"
-        android:inputType="number"
-        android:padding="8dp"
+        android:padding="16dp"
         android:text="@string/send_notification_text"
         android:textAlignment="textStart"
         android:textColor="@color/lucky_white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
     <Button
         android:id="@+id/send_notification_overlay_button"
         style="@style/ActiveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:drawableEnd="@drawable/right_arrow"
         android:text="Send Notification"
         android:textAllCaps="false"
         android:textColor="@color/lucky_white"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_event_entrants_num_view"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintTop_toBottomOf="@+id/send_notification_overlay_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
