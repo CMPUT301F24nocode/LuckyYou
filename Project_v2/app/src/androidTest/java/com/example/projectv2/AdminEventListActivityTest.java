@@ -14,7 +14,13 @@ import com.example.projectv2.View.AdminEventListActivity;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ *
+ * This class contains UI tests for the AdminEventListActivity. It verifies the functionality of
+ * critical components such as the RecyclerView and SwipeRefreshLayout. The tests ensure the activity
+ * correctly displays the event list and supports swipe-to-refresh functionality.
+ *
+ * */
 @RunWith(AndroidJUnit4.class)
 public class AdminEventListActivityTest {
 

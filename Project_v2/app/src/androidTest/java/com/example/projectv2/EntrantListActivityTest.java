@@ -25,7 +25,15 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.Mockito.*;
+/**
+ * <p>
+ * This class contains UI tests for the EntrantListActivity. It verifies the correct display and
+ * functionality of critical UI components such as RecyclerView, Spinner, and Buttons. The tests
+ * also mock Firestore interactions to simulate the behavior of fetching event data, including
+ * entrant lists for different categories (e.g., Waiting, Selected, Cancelled, and Attendee).
+ * </p>
 
+ */
 @RunWith(AndroidJUnit4.class)
 public class EntrantListActivityTest {
 

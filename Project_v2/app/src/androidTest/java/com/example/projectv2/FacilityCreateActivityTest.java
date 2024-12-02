@@ -18,7 +18,11 @@ import com.example.projectv2.View.FacilityCreateActivity;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * This class contains UI tests for the FacilityCreateActivity. The tests verify the presence and functionality
+ * of various UI elements, such as input fields, labels, and buttons, in the facility creation screen.
+ * The test suite ensures the layout and interactive components behave as expected during user interactions.
+ */
 @RunWith(AndroidJUnit4.class)
 public class FacilityCreateActivityTest {
 

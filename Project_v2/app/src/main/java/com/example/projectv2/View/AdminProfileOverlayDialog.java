@@ -65,7 +65,7 @@ public class AdminProfileOverlayDialog extends DialogFragment {
         boolean isAdmin = getArguments() != null && getArguments().getBoolean(ARG_IS_ADMIN);
 
         Button deleteProfile = view.findViewById(R.id.delete_profile_button);
-        Button deleteImage = view.findViewById(R.id.delete_profile_image_button);
+        Button deleteImageButton = view.findViewById(R.id.delete_profile_image_button);
         CheckBox admin = view.findViewById(R.id.profile_admin_mode_checkbox_view);
 
         admin.setChecked(isAdmin);
@@ -158,7 +158,7 @@ public class AdminProfileOverlayDialog extends DialogFragment {
                     .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to delete events. Please try again.", Toast.LENGTH_SHORT).show());
         });
 
-        deleteImage.setOnClickListener(v -> {
+        deleteImageButton.setOnClickListener(v -> {
             String imagePath = "profile_pictures/user_" + userID + ".jpg";
             StorageReference imageRef = storage.getReference().child(imagePath);
 

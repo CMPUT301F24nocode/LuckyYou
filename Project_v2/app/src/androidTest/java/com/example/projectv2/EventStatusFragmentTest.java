@@ -15,7 +15,12 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-
+/**
+ *
+ * This class contains UI tests for the EventStatusFragment. The tests verify the proper creation
+ * and initialization of the fragment and its key components, such as the event controller and event list.
+ * The test suite ensures the fragment's internal state is correctly set up when it is launched.
+ */
 @RunWith(AndroidJUnit4.class)
 public class EventStatusFragmentTest {
 

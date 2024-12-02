@@ -1,8 +1,10 @@
 /**
+ * Model Class for User
+ * <p>
  * Model class representing a user. Each user has attributes such as name, email, role (admin or organizer),
  * notification preferences, phone number, profile image, device ID, and lists for admin and organizer notifications.
+ *</p>
  *
- * <p>Outstanding Issues: None currently identified.</p>
  */
 package com.example.projectv2.Model;
 

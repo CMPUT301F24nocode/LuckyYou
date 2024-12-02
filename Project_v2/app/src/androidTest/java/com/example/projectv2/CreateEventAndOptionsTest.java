@@ -12,7 +12,13 @@ import com.example.projectv2.View.CreateEventOptionsActivity;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ *
+ * This class contains UI tests for the CreateEventOptionsActivity. The tests verify the correct display
+ * and functionality of the user interface elements for creating events. It includes checks for the presence
+ * of UI components, interactions with the geolocation toggle, and a complete flow test for event creation.
+ *
+ */
 @RunWith(AndroidJUnit4.class)
 public class CreateEventAndOptionsTest {
 

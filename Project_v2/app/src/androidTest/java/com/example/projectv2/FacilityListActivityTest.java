@@ -23,7 +23,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+/**
+ * This class contains UI tests for the FacilityListActivity. The tests ensure that the layout elements,
+ * button interactions, and admin mode features function correctly. The test suite covers scenarios such
+ * as activity launch, clicking the create facility button, refreshing the facility list, and verifying
+ * admin mode visibility.
 
+ */
 @RunWith(AndroidJUnit4.class)
 public class FacilityListActivityTest {
 

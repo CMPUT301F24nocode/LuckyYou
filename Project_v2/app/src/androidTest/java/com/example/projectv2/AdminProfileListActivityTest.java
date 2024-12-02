@@ -13,7 +13,14 @@ import com.example.projectv2.View.AdminProfileListActivity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ *
+ * This class contains UI tests for the AdminProfileListActivity. It verifies the correct
+ * implementation of critical UI elements such as the top bar title, RecyclerView visibility,
+ * and the functionality of the SwipeRefreshLayout. The tests ensure that the activity layout
+ * meets the expected requirements for user interaction.
+ *
+ */
 @RunWith(AndroidJUnit4.class)
 public class AdminProfileListActivityTest {
 

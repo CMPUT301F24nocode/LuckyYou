@@ -1,7 +1,9 @@
 package com.example.projectv2.Model;
 
 /**
- * Represents a facility with a name, description, and unique identifier.
+ * Model class for Facilities
+ * <p>
+ * Represents a facility with a name, description, and unique identifier.</p>
  */
 public class Facility {
     private final String owner;

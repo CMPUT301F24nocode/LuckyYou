@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * Model class for Notifications
+ * <p>
  * Represents a notification with recipient, content, time sent,
- * and flags for organiser and admin roles.
+ * and flags for organiser and admin roles.</p>
  */
 public class Notification {
     private String sendTo;       // The recipient of the notification

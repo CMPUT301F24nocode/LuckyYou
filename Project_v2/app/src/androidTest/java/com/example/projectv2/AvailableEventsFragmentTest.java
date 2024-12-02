@@ -12,7 +12,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-
+/**
+ *
+ * This class contains unit tests for the AvailableEventsFragment. It verifies the correct initialization
+ * and functionality of key components within the fragment, including its creation, controllers, and adapters.
+ * The tests use reflection to access and validate private fields to ensure they are properly initialized.
+ *
+ **/
 @RunWith(AndroidJUnit4.class)
 public class AvailableEventsFragmentTest {
 

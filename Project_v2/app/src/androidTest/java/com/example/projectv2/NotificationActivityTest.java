@@ -20,7 +20,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * This class contains UI tests for the NotificationActivity. The tests ensure the correct display and
+ * functionality of key UI elements such as the RecyclerView, SwipeRefreshLayout, and the top bar title.
+ * The test suite also verifies the swipe-to-refresh functionality.
+ */
 @RunWith(AndroidJUnit4.class)
 public class NotificationActivityTest {
 

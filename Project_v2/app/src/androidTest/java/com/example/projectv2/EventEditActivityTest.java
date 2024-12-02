@@ -16,7 +16,13 @@ import com.example.projectv2.View.EventEditActivity;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+/**
 
+ * This class contains UI tests for the EventEditActivity. It ensures that the activity launches
+ * correctly with a valid intent and verifies the functionality of key UI components, such as the
+ * "Edit Poster" button and the top bar. The tests use Espresso for UI interaction and validation.
+
+ */
 @RunWith(AndroidJUnit4.class)
 public class EventEditActivityTest {
 

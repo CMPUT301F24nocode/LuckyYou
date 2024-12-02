@@ -11,8 +11,10 @@ import android.net.Uri;
 import java.io.Serializable;
 
 /**
+ * Model class for Events
+ * <p>
  * Represents an event with details such as name, owner, description, rules, dates, and associated
- * facility. The class is Serializable, allowing instances to be easily passed in intents.
+ * facility. The class is Serializable, allowing instances to be easily passed in intents.</p>
  */
 public class Event implements Serializable {
     private String eventID;

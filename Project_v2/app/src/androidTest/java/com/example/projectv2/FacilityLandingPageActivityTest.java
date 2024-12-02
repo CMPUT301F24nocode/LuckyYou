@@ -26,7 +26,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * This class contains UI tests for the FacilityLandingPageActivity. It ensures that the layout,
+ * functionality of key UI elements, and interaction with shared preferences (e.g., AdminMode) are
+ * working as expected. The test suite includes scenarios for verifying layout elements, button
+ * interactions, and visibility changes based on admin mode settings.
+ */
 @RunWith(AndroidJUnit4.class)
 public class FacilityLandingPageActivityTest {
 

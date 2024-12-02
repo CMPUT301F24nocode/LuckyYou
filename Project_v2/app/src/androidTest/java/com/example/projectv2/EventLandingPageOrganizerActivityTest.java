@@ -26,7 +26,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+/**
 
+ * This class contains UI tests for the EventLandingPageOrganizerActivity. It verifies the presence
+ * and functionality of key UI elements, including buttons for editing events, viewing QR codes, and
+ * accessing the entrant list. It also ensures that intent-based navigation to related activities is
+ * functioning correctly.
+
+ */
 @RunWith(AndroidJUnit4.class)
 public class EventLandingPageOrganizerActivityTest {
 

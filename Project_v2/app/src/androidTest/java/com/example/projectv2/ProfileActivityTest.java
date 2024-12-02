@@ -1,3 +1,12 @@
+/**
+ * UI tests for the ProfileActivity class.
+ * <p>
+ * This class contains UI tests to verify the functionality of various components within ProfileActivity.
+ * The tests include checks for visibility of profile fields, editing profile functionality,
+ * and swipe-to-refresh functionality.
+ *
+ * </p>
+ */
 package com.example.projectv2;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -25,19 +34,34 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Test suite for ProfileActivity.
+ */
 @RunWith(AndroidJUnit4.class)
 public class ProfileActivityTest {
 
+    /**
+     * Initializes the testing environment.
+     * This method is executed before each test to set up Intents for intent verification.
+     */
     @Before
     public void setUp() {
         Intents.init();
     }
 
+    /**
+     * Cleans up the testing environment.
+     * This method is executed after each test to release Intents and ensure proper resource management.
+     */
     @After
     public void tearDown() {
         Intents.release();
     }
 
+    /**
+     * Verifies the visibility of profile fields in ProfileActivity.
+     * Ensures that profile fields such as name, email, phone, edit button, and profile picture are visible.
+     */
     @Test
     public void testProfileFieldsVisibility() {
         Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), ProfileActivity.class);
@@ -54,6 +78,10 @@ public class ProfileActivityTest {
         onView(withId(R.id.profile_pic_view)).check(matches(isDisplayed()));
     }
 
+    /**
+     * Tests the functionality of the edit profile button in ProfileActivity.
+     * Simulates entering new profile details, clicking the edit button, and verifying the success message.
+     */
     @Test
     public void testEditProfileButtonFunctionality() {
         Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), ProfileActivity.class);
@@ -73,7 +101,10 @@ public class ProfileActivityTest {
         onView(withText("Profile Updated Successfully!")).check(matches(isDisplayed()));
     }
 
-
+    /**
+     * Verifies the swipe-to-refresh functionality in ProfileActivity.
+     * Simulates a swipe-down gesture and ensures the profile picture remains visible after the refresh.
+     */
     @Test
     public void testSwipeRefreshFunctionality() {
         Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), ProfileActivity.class);

@@ -26,7 +26,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertEquals;
 
 import android.view.View;
-
+/**
+ *
+ * This class contains UI tests for the AdminImageListActivity. It ensures the layout and functionality
+ * of components such as RecyclerView, SwipeRefreshLayout, and the top bar title are correctly implemented.
+ * The tests also verify the RecyclerView's grid layout configuration and the swipe-to-refresh functionality.
+ *
+ */
 @RunWith(AndroidJUnit4.class)
 public class AdminImageListActivityTest {
 

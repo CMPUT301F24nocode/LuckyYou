@@ -25,7 +25,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * UI Tests for LoginActivity
+
+ * This class contains UI tests for the LoginActivity. It ensures the LoginActivity behaves as expected
+ * in various scenarios, such as when a user already exists, when a new user needs to sign up, and verifying
+ * UI elements' presence. The tests also involve Firebase Firestore operations for checking and modifying user data,
+ * as well as using Espresso for UI interaction and validation.
+
+ *
  */
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {

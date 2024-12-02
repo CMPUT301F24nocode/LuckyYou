@@ -21,7 +21,12 @@ import com.example.projectv2.View.FacilityEditActivity;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ * This class contains UI tests for the FacilityEditActivity. The tests ensure the proper display
+ * and functionality of various UI elements, including input fields, labels, and buttons, for
+ * editing a facility. The test suite verifies layout elements, input properties, button interactions,
+ * and input field hints during the editing process.
+ */
 @RunWith(AndroidJUnit4.class)
 public class FacilityEditActivityTest {
 

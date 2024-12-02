@@ -25,7 +25,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+/**
+ *
+ * This class contains UI tests for the EventLandingPageUserActivity. The tests verify the functionality
+ * of various UI elements, such as the geolocation warning, leave event button, deadline view, price display,
+ * and image loading. These tests ensure that the user interface behaves as expected when interacting with
+ * the EventLandingPageUserActivity.
+ *
+ */
 @RunWith(AndroidJUnit4.class)
 public class EventLandingPageUserActivityTest {
 
