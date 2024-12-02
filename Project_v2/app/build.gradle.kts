@@ -80,4 +80,6 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:4.11.0")
     annotationProcessor(libs.glide.compiler)
     implementation(libs.lottie)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.core)
 }
