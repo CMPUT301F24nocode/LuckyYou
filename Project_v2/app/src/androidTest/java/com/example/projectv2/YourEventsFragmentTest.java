@@ -18,11 +18,21 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 
+/**
+ * Test class for {@link YourEventsFragment}.
+ * This class uses AndroidJUnit4 for testing and verifies the correct behavior
+ * and initialization of the YourEventsFragment, including its layout manager,
+ * event controller, adapter, and event list.
+ */
 @RunWith(AndroidJUnit4.class)
 public class YourEventsFragmentTest {
 
     private FragmentScenario<YourEventsFragment> scenario;
 
+    /**
+     * Sets up the test environment before each test.
+     * Initializes Mockito annotations and launches the {@link YourEventsFragment}.
+     */
     @Before
     public void setup() {
         // Initialize Mockito annotations
@@ -32,6 +42,9 @@ public class YourEventsFragmentTest {
         scenario = FragmentScenario.launchInContainer(YourEventsFragment.class);
     }
 
+    /**
+     * Verifies that the fragment and its view are successfully created.
+     */
     @Test
     public void testFragmentCreation() {
         scenario.onFragment(fragment -> {
@@ -40,6 +53,9 @@ public class YourEventsFragmentTest {
         });
     }
 
+    /**
+     * Verifies that the RecyclerView in the fragment has a LinearLayoutManager.
+     */
     @Test
     public void testRecyclerViewLayoutManager() {
         scenario.onFragment(fragment -> {
@@ -52,6 +68,9 @@ public class YourEventsFragmentTest {
         });
     }
 
+    /**
+     * Verifies that the event controller is properly initialized in the fragment.
+     */
     @Test
     public void testEventControllerInitialization() {
         scenario.onFragment(fragment -> {
@@ -68,6 +87,9 @@ public class YourEventsFragmentTest {
         });
     }
 
+    /**
+     * Verifies that the adapter is properly initialized in the fragment.
+     */
     @Test
     public void testAdapterInitialization() {
         scenario.onFragment(fragment -> {
@@ -84,6 +106,9 @@ public class YourEventsFragmentTest {
         });
     }
 
+    /**
+     * Verifies that the event list is properly initialized in the fragment.
+     */
     @Test
     public void testEventListInitialization() {
         scenario.onFragment(fragment -> {
@@ -101,6 +126,9 @@ public class YourEventsFragmentTest {
         });
     }
 
+    /**
+     * Verifies that the fetchEvents method exists in the fragment.
+     */
     @Test
     public void testFetchEventsMethodCall() {
         scenario.onFragment(fragment -> {

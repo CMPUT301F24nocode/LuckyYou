@@ -16,12 +16,23 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Test class for {@link SignUpActivity}.
+ * This class verifies the functionality of the sign-up form, including input fields
+ * and the behavior of the sign-up button with various inputs.
+ */
 @RunWith(AndroidJUnit4.class)
 public class SignUpActivityTest {
 
+    /**
+     * Rule to launch {@link SignUpActivity} for each test method.
+     */
     @Rule
     public ActivityScenarioRule<SignUpActivity> activityRule = new ActivityScenarioRule<>(SignUpActivity.class);
 
+    /**
+     * Tests the email input field to ensure it accepts and displays text correctly.
+     */
     @Test
     public void testEmailField() {
         onView(withId(R.id.signup_email))
@@ -29,6 +40,9 @@ public class SignUpActivityTest {
                 .check(matches(withText("test@example.com")));
     }
 
+    /**
+     * Tests the first name input field to ensure it accepts and displays text correctly.
+     */
     @Test
     public void testFirstNameField() {
         onView(withId(R.id.signup_firstname))
@@ -36,6 +50,9 @@ public class SignUpActivityTest {
                 .check(matches(withText("John")));
     }
 
+    /**
+     * Tests the last name input field to ensure it accepts and displays text correctly.
+     */
     @Test
     public void testLastNameField() {
         onView(withId(R.id.signup_secondname))
@@ -43,6 +60,9 @@ public class SignUpActivityTest {
                 .check(matches(withText("Doe")));
     }
 
+    /**
+     * Tests the phone number input field to ensure it accepts and displays text correctly.
+     */
     @Test
     public void testPhoneNumberField() {
         onView(withId(R.id.signup_phonenumber))
@@ -50,6 +70,10 @@ public class SignUpActivityTest {
                 .check(matches(withText("1234567890")));
     }
 
+    /**
+     * Tests the behavior of the sign-up button when the phone number is not provided.
+     * Ensures the button can be clicked with other required fields filled.
+     */
     @Test
     public void testSignUpButtonWithoutPhoneNumber() {
         onView(withId(R.id.signup_email)).perform(replaceText("test@example.com"));
@@ -58,6 +82,10 @@ public class SignUpActivityTest {
         onView(withId(R.id.signup_button)).perform(click());
     }
 
+    /**
+     * Tests the behavior of the sign-up button when an invalid phone number is provided.
+     * Ensures the phone number field displays the invalid input.
+     */
     @Test
     public void testSignUpButtonWithInvalidPhoneNumber() {
         onView(withId(R.id.signup_email)).perform(replaceText("test@example.com"));

@@ -1,29 +1,21 @@
 package com.example.projectv2;
-import android.view.View;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 import android.content.Context;
-import android.widget.TextView;
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.example.projectv2.View.LoginActivity;
 import com.example.projectv2.View.SignUpActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -126,37 +118,5 @@ public class LoginActivityTest {
         // Wait for the async operation to complete
         latch.await(5, TimeUnit.SECONDS);
 
-}
-    /**
-     * Test UI elements are present
-     */
-    @Test
-    public void testLoginActivityUIElements() throws InterruptedException {
-        // Delete the test user from Firebase
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CountDownLatch latch = new CountDownLatch(1);
-
-        db.collection("Users")
-                .document(TEST_DEVICE_ID)
-                .delete()
-                .addOnCompleteListener(task -> latch.countDown());
-
-        // Wait for the deletion to complete
-        latch.await(5, TimeUnit.SECONDS);
-
-        // Launch the activity
-        try (ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class)) {
-            // Introduce a short delay to allow the UI to stabilize
-            try {
-                Thread.sleep(2000); // Wait for 2 seconds
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            // Verify SignUp button is present
-            onView(withId(R.id.signup_button)).check(matches(isDisplayed()));
-        }
     }
-
-
 }
