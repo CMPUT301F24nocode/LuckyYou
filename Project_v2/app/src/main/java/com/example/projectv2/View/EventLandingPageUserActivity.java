@@ -588,7 +588,10 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                                             .addOnSuccessListener(v -> showJoinSuccess(view))
                                             .addOnFailureListener(e -> showJoinFailure(view, e));
                                 }
+                                joinEventButton.setVisibility(View.GONE);
+                                leaveEventButton.setVisibility(View.VISIBLE);
                             } else {
+
                                 Snackbar.make(view, "Waiting list is full. Try again later.", Snackbar.LENGTH_LONG).show();
                             }
                         }
@@ -608,9 +611,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
         }
-
-        joinEventButton.setVisibility(View.GONE);
-        leaveEventButton.setVisibility(View.VISIBLE);
     }
 
     // Add this method to handle permission results
