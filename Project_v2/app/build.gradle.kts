@@ -76,7 +76,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation ("org.mockito:mockito-core:4.11.0")
-    androidTestImplementation ("org.mockito:mockito-android:3.12.4")
+    implementation("org.mockito:mockito-android:5.14.2")
     testImplementation("org.mockito:mockito-inline:4.11.0")
     annotationProcessor(libs.glide.compiler)
     implementation(libs.lottie)
