@@ -53,6 +53,9 @@ public class Event implements Serializable {
         this.facility = facility;
     }
 
+    public Event(String eventID, String owner, String date, String date1) {
+    }
+
     /**
      * Returns the owner of the event.
      *

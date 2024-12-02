@@ -12,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
 import com.example.projectv2.View.EventLandingPageUserActivity;
@@ -132,12 +134,19 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
         imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
-                Glide.with(context)
-                        .load(downloadUrl)
-                        .placeholder(R.drawable.placeholder_event) // Placeholder while loading
-                        .error(R.drawable.placeholder_event) // Placeholder on error
-                        .centerCrop()
-                        .into(eventImage);
+                if (context instanceof FragmentActivity) {
+                    FragmentActivity activity = (FragmentActivity) context;
+                    if (!activity.isDestroyed() && !activity.isFinishing()) {
+                        Glide.with(context)
+                                .load(downloadUrl)
+                                .placeholder(R.drawable.placeholder_event) // Placeholder while loading
+                                .error(R.drawable.placeholder_event) // Placeholder on error
+                                .centerCrop()
+                                .into(eventImage);
+                    } else {
+                        Log.w(TAG, "Activity is destroyed or finishing. Skipping image load.");
+                    }
+                }
             }
 
             @Override
@@ -147,6 +156,8 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
             }
         });
     }
+
+
 
     /**
      * Navigates to EventLandingPageUserActivity with the provided event details.

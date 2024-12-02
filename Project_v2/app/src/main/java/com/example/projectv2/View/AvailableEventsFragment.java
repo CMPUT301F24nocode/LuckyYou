@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class AvailableEventsFragment extends Fragment {
 
     private EventController eventController;
-    private AvailableEventsAdapter adapter;
+    public AvailableEventsAdapter adapter;
 
     public AvailableEventsFragment() {
         // Required empty public constructor

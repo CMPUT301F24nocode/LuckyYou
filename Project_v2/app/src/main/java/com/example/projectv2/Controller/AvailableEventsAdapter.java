@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -60,12 +61,19 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
         imageController.retrieveImage(event.getName(), new ImageController.ImageRetrieveCallback() {
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
-                Glide.with(context)
-                        .load(downloadUrl)
-                        .placeholder(R.drawable.placeholder_event) // Placeholder while loading
-                        .error(R.drawable.placeholder_event) // Placeholder if loading fails
-                        .centerCrop()
-                        .into(holder.backgroundImage); // Set the image in the ImageView
+                if (context instanceof FragmentActivity) {
+                    FragmentActivity activity = (FragmentActivity) context;
+                    if (!activity.isDestroyed() && !activity.isFinishing()) {
+                        Glide.with(context)
+                                .load(downloadUrl)
+                                .placeholder(R.drawable.placeholder_event) // Placeholder while loading
+                                .error(R.drawable.placeholder_event) // Placeholder if loading fails
+                                .centerCrop()
+                                .into(holder.backgroundImage); // Set the image in the ImageView
+                    } else {
+                        Log.w(TAG, "Activity is destroyed or finishing. Skipping image load.");
+                    }
+                }
             }
 
             @Override
@@ -94,6 +102,7 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
             context.startActivity(intent);
         });
     }
+
 
     @Override
     public int getItemCount() {
