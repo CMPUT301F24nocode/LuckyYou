@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Controller.NotificationService;
 import com.example.projectv2.Model.Notification;
 import com.example.projectv2.R;
@@ -29,6 +31,7 @@ public class AdminProfileOverlayDialog extends DialogFragment {
 
     private static final String ARG_USER_ID = "user_id";
     private static final String ARG_IS_ADMIN = "is_admin";
+    private ImageController imageController;
 
     /**
      * Creates a new instance of the AdminProfileOverlayDialog.
@@ -44,6 +47,7 @@ public class AdminProfileOverlayDialog extends DialogFragment {
         args.putBoolean(ARG_IS_ADMIN, isAdmin);
         dialog.setArguments(args);
         return dialog;
+
     }
 
     /**
@@ -69,6 +73,9 @@ public class AdminProfileOverlayDialog extends DialogFragment {
         NotificationService notificationService = new NotificationService();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        // Initialize ImageController
+        imageController = new ImageController();
 
         admin.setOnCheckedChangeListener((buttonView, isChecked) -> db.collection("Users").document(userID)
                 .update("admin", isChecked)
@@ -97,13 +104,33 @@ public class AdminProfileOverlayDialog extends DialogFragment {
             Notification notification = new Notification(userID, "Your profile has been deleted by an admin. Please make a new profile.", false, true);
             notificationService.sendNotification(requireActivity(), notification, "-2");
 
-            // Step 1: Delete all events with owner = userID
+            // Step 1: Delete all events with owner = userID and event poster (If any)
             db.collection("events")
                     .whereEqualTo("owner", userID)
                     .get()
                     .addOnSuccessListener(eventSnapshot -> {
                         for (DocumentSnapshot document : eventSnapshot.getDocuments()) {
-                            db.collection("events").document(document.getId()).delete();
+                            String eventID = document.getId();
+                            String eventName = document.getString("name");
+                            db.collection("events").document(eventID).delete();
+
+                            if (eventName != null && !eventName.isEmpty()) {
+                                String sanitizedEventName = sanitizeEventName(eventName);
+                                String posterPath = "event_posters/event_posters_" + sanitizedEventName + ".jpg";
+
+                                // Delete event poster
+                                imageController.deleteImage(posterPath, new ImageController.ImageDeleteCallback() {
+                                    @Override
+                                    public void onDeleteSuccess() {
+                                        Log.d("AdminProfileOverlay", "Event poster deleted successfully: " + posterPath);
+                                    }
+
+                                    @Override
+                                    public void onDeleteFailure(Exception e) {
+                                        Log.e("AdminProfileOverlay", "Deleted" + posterPath, e);
+                                    }
+                                });
+                            }
                         }
 
                         // Step 2: Delete all facilities with owner = userID
@@ -144,7 +171,6 @@ public class AdminProfileOverlayDialog extends DialogFragment {
                         dismiss();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(requireContext(), "Failed to remove profile image. Please try again", Toast.LENGTH_SHORT).show();
                         dismiss();
                     });
         });
@@ -168,8 +194,21 @@ public class AdminProfileOverlayDialog extends DialogFragment {
                     Toast.makeText(requireContext(), "Profile image has been removed", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to remove profile image. Please try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Deleted!", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    /**
+     * Sanitizes the event name by replacing special characters and spaces with underscores.
+     *
+     * @param eventName The event name to sanitize
+     * @return The sanitized event name
+     */
+    private String sanitizeEventName(String eventName) {
+        if (eventName == null) return "";
+        return eventName.trim()
+                .replaceAll("[/\\-?!@#$%^&*()]+", "_") // Replace special characters with underscores
+                .replaceAll("\\s+", "_"); // Replace spaces with underscores
     }
 
     /**
