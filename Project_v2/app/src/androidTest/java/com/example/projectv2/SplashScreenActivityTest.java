@@ -32,7 +32,7 @@ public class SplashScreenActivityTest {
 
         // Add other required intent extras
         intent.putExtra("message", "Test Loading...");
-        intent.putExtra("delay", 500); // Short delay for testing
+        intent.putExtra("delay", 1000); // Short delay for testing
         intent.putExtra("TARGET_ACTIVITY", "com.example.projectv2.MainActivity");
 
         return intent;

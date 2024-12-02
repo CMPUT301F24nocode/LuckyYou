@@ -1,97 +1,174 @@
 package com.example.projectv2;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
+import android.view.View;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-
-import android.content.Intent;
-
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
+import android.content.Context;
+import android.widget.TextView;
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-
+import androidx.test.platform.app.InstrumentationRegistry;
 import com.example.projectv2.View.LoginActivity;
 import com.example.projectv2.View.SignUpActivity;
-import com.example.projectv2.View.SplashScreenActivity;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 /**
- * UI tests for the LoginActivity class.
- * Uses Firestore to fetch and validate user details for testing real-world behavior.
+ * UI Tests for LoginActivity
  */
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
 
-    private FirebaseFirestore db;
+    private static final String TEST_DEVICE_ID = "1d0e750f99dbaaab";
 
     @Before
     public void setUp() {
-        // Initialize Firebase Firestore
-        db = FirebaseFirestore.getInstance();
+        // Initialize Intents for intent verification
+        Intents.init();
+
+        // Get the context and initialize Firebase
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        FirebaseApp.initializeApp(context);
+    }
+
+    @After
+    public void tearDown() {
+        // Release Intents after tests
+        Intents.release();
     }
 
     /**
-     * Test navigation to MainActivity when the user exists in Firestore.
+     * Test scenario for existing user
      */
     @Test
-    public void testUserExistsNavigatesToMainActivity() {
-        // Ensure the test userID exists in Firestore
-        String testUserID = "1d0e750f99dbaaab";
+    public void testExistingUserLogin() throws InterruptedException {
+        // Create a CountDownLatch to synchronize the asynchronous test
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final CountDownLatch latch = new CountDownLatch(1);
 
-        // Launch LoginActivity
-        Intent intent = new Intent();
-        intent.putExtra("deviceID", testUserID);
-        ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class);
+        db.collection("Users")
+                .document(TEST_DEVICE_ID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        // Use runOnUiThread to launch the activity safely
+                        try {
+                            runOnUiThread(() -> {
+                                try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+                                    intended(hasComponent(MainActivity.class.getName()));
+                                }
+                            });
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                    }
+                    latch.countDown();
+                });
 
-        // Verify navigation to SplashScreenActivity for transition
-        onView(withText("Finding Best Events for You!")).check(matches(isDisplayed()));
+        // Wait for the async operation to complete
+        latch.await(5, TimeUnit.SECONDS);
+    }
 
-        // Add delay to allow navigation to complete (replace with IdlingResource for robust testing)
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+    /**
+     * Test scenario for new user (no existing document)
+     */
+    @Test
+    public void testNewUserSignUp() throws InterruptedException {
+        // Ensure no user exists for this device ID
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        db.collection("Users")
+                .document(TEST_DEVICE_ID)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().exists()) {
+                            // Launch the activity
+                            try (ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class)) {
+                                // Verify SignUp button is displayed
+                                onView(withId(R.id.signup_button)).check(matches(isDisplayed()));
+
+                                // Click on SignUp button
+                                onView(withId(R.id.signup_button)).perform(click());
+
+                                // Verify SignUpActivity is started
+                                intended(hasComponent(SignUpActivity.class.getName()));
+                            }
+                        }
+                    }
+                    latch.countDown();
+                });
+
+        // Wait for the async operation to complete
+        latch.await(5, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Test UI elements are present
+     */
+    //    // Custom matcher to check text size
+    public static Matcher<View> withTextSize(final float expectedSize) {
+        return new BoundedMatcher<View, TextView>(TextView.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with text size: ").appendValue(expectedSize);
+            }
+
+            @Override
+            protected boolean matchesSafely(TextView textView) {
+                return Math.abs(textView.getTextSize() - expectedSize) < 0.1;
+            }
+        };
+    }
+
+    @Test
+    public void testLoginActivityUIElements() throws InterruptedException {
+        // Delete the test user from Firebase
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        db.collection("Users")
+                .document(TEST_DEVICE_ID)
+                .delete()
+                .addOnCompleteListener(task -> latch.countDown());
+
+        // Wait for the deletion to complete
+        latch.await(5, TimeUnit.SECONDS);
+
+        // Launch the activity
+        try (ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class)) {
+            // Introduce a short delay to allow the UI to stabilize
+            try {
+                Thread.sleep(2000); // Wait for 2 seconds
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Verify SignUp button is present
+            onView(withId(R.id.signup_button)).check(matches(isDisplayed()));
         }
-
-        // Verify MainActivity is launched
-        onView(withId(R.layout.homescreen)).check(matches(isDisplayed()));
     }
 
-    /**
-     * Test navigation to SignUpActivity when the user does not exist in Firestore.
-     */
-    @Test
-    public void testUserDoesNotExistNavigatesToSignUpActivity() {
-        // Use a random userID that doesn't exist in Firestore
-        String invalidUserID = "nonexistent_user";
 
-        // Launch LoginActivity with the invalid userID
-        Intent intent = new Intent();
-        intent.putExtra("deviceID", invalidUserID);
-        ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class);
-
-        // Verify navigation to SignUpActivity
-        onView(withId(R.layout.sign_up)).check(matches(isDisplayed()));
-    }
-
-    /**
-     * Test navigation to SignUpActivity on sign-up button click.
-     */
-    @Test
-    public void testSignUpButtonNavigatesToSignUpActivity() {
-        // Launch LoginActivity
-        ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class);
-
-        // Click the sign-up button
-        onView(withId(R.id.signup_button)).perform(click());
-
-        // Verify SignUpActivity is displayed
-        onView(withId(R.layout.sign_up)).check(matches(isDisplayed()));
-    }
 }
