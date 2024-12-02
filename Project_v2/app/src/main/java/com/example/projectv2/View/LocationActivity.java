@@ -78,7 +78,7 @@ public class LocationActivity extends AppCompatActivity {
         firestore.collection("events").document(eventId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // Fetch the Waiting list from entrantList
+                        // Safely retrieve the participant list
                         List<String> participantIds = (List<String>) documentSnapshot.get("entrantList.Waiting");
 
                         if (participantIds != null && !participantIds.isEmpty()) {
@@ -86,9 +86,11 @@ public class LocationActivity extends AppCompatActivity {
                                 fetchUserLocation(userId); // Fetch and map each user's location
                             }
                         } else {
+                            Log.w(TAG, "No participants found in 'Waiting' list.");
                             Toast.makeText(this, "No participants found for this event.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
+                        Log.w(TAG, "Event document not found.");
                         Toast.makeText(this, "Event not found.", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -97,6 +99,7 @@ public class LocationActivity extends AppCompatActivity {
                     Toast.makeText(this, "Error fetching participant list.", Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     /**
      * Fetches the location and name of a user and maps it to the organizer's map.
@@ -163,19 +166,19 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         if (mapView != null) mapView.onResume();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         if (mapView != null) mapView.onPause();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         if (mapView != null) mapView.onDestroy();
     }

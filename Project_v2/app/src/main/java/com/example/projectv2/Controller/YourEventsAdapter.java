@@ -128,12 +128,19 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
         imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
-                Glide.with(context)
-                        .load(downloadUrl)
-                        .placeholder(R.drawable.placeholder_event) // Placeholder while loading
-                        .error(R.drawable.placeholder_event) // Placeholder on error
-                        .centerCrop()
-                        .into(eventImage);
+                if (context instanceof androidx.fragment.app.FragmentActivity) {
+                    androidx.fragment.app.FragmentActivity activity = (androidx.fragment.app.FragmentActivity) context;
+                    if (!activity.isDestroyed() && !activity.isFinishing()) {
+                        Glide.with(context)
+                                .load(downloadUrl)
+                                .placeholder(R.drawable.placeholder_event) // Placeholder while loading
+                                .error(R.drawable.placeholder_event) // Placeholder on error
+                                .centerCrop()
+                                .into(eventImage);
+                    } else {
+                        Log.w(TAG, "Activity is destroyed or finishing. Skipping image load.");
+                    }
+                }
             }
 
             @Override
@@ -143,6 +150,7 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
             }
         });
     }
+
 
     /**
      * Navigates to EventLandingPageOrganizerActivity with the provided event details.

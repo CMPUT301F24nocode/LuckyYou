@@ -188,7 +188,7 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
      * Displays a popup dialog with additional event options.
      */
     private void showPopup(String eventId, String eventName) {
-        ChooseAttendeeActivity dialogFragment = ChooseAttendeeActivity.newInstance(this, eventId, eventName);
+        ChooseAttendeeDialog dialogFragment = ChooseAttendeeDialog.newInstance(this, eventId, eventName);
         dialogFragment.show(getSupportFragmentManager(), "EventEditDialogFragment");
     }
 
