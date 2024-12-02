@@ -72,7 +72,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String deviceID = signUpUser();
                 if (!Objects.equals(deviceID, "")) {
                     Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-                    intent.putExtra("deviceID", deviceID);
+                    intent.putExtra("userID", deviceID);
                     startActivity(intent);
                 }
             }
