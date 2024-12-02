@@ -26,6 +26,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Dialog fragment for choosing attendees for an event.
+ *
+ * <p>This dialog allows event organizers to select attendees from a waiting list,
+ * notify them, and update Firestore with the selected and remaining waiting lists.</p>
+ */
 public class ChooseAttendeeDialog extends DialogFragment {
 
     private FirebaseFirestore db;
@@ -33,9 +39,17 @@ public class ChooseAttendeeDialog extends DialogFragment {
     private String eventID, eventName;
     private Activity parentActivity;
 
+    /**
+     * Creates a new instance of ChooseAttendeeDialog.
+     *
+     * @param activity The parent activity from which this dialog is launched.
+     * @param eventId  The ID of the event.
+     * @param eventName The name of the event.
+     * @return A new instance of {@link ChooseAttendeeDialog}.
+     */
     public static ChooseAttendeeDialog newInstance(Activity activity, String eventId, String eventName) {
         ChooseAttendeeDialog fragment = new ChooseAttendeeDialog();
-        fragment.parentActivity = activity; // Set the parent activity
+        fragment.parentActivity = activity;
         Bundle args = new Bundle();
         args.putString("eventId", eventId);
         args.putString("eventName", eventName);
@@ -43,12 +57,26 @@ public class ChooseAttendeeDialog extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * Called when the dialog is attached to the context.
+     * Initializes Firebase Firestore.
+     *
+     * @param context The context to which the dialog is attached.
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        db = FirebaseFirestore.getInstance(); // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * Inflates the layout for the dialog and sets up button click listeners.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate views in the fragment.
+     * @param container The parent view that this fragment's UI should be attached to, if applicable.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The View for the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,6 +95,12 @@ public class ChooseAttendeeDialog extends DialogFragment {
         return view;
     }
 
+    /**
+     * Handles the selection of attendees from the waiting list and updates the Firestore database.
+     *
+     * @param eventID The ID of the event.
+     * @param eventName The name of the event.
+     */
     private void setSelectedList(String eventID, String eventName) {
         Log.d("EventEditDialogFragment", "Button clicked");
 
@@ -106,11 +140,13 @@ public class ChooseAttendeeDialog extends DialogFragment {
 
                         NotificationService notificationService = new NotificationService();
 
+                        // Notify selected attendees
                         for (String id : selectedAttendees) {
                             Notification notification = new Notification(id, "Congratulations! You have been chosen to attend " + eventName, true, false);
                             notificationService.sendNotification(parentActivity, notification, eventID);
                         }
 
+                        // Notify non-selected attendees
                         for (String id: waitingList) {
                             if (!selectedAttendees.contains(id)) {
                                 Notification notification = new Notification(id, "You were unfortunately not selected for " + eventName + ", Don't worry. You may get another chance. Keep alert!", true, false);
@@ -118,6 +154,7 @@ public class ChooseAttendeeDialog extends DialogFragment {
                             }
                         }
 
+                        // Update Firestore with selected attendees
                         eventRef.update("entrantList.Selected", FieldValue.arrayUnion(selectedAttendees.toArray()))
                                 .addOnSuccessListener(aVoid -> {
                                     for (String attendee : selectedAttendees) {

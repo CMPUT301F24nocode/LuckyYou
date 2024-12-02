@@ -23,8 +23,6 @@ import com.example.projectv2.Controller.ProfileImageController;
 import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -37,7 +35,15 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * Activity for managing user profiles.
+ * <p>
+ * This activity allows users to view and edit their profile details,
+ * manage profile images, handle notification preferences, and display admin-specific settings.
+ * </p>
+ */
 public class ProfileActivity extends AppCompatActivity {
+
     private FirebaseFirestore db;
     private TextView name, email, phoneNumber;
     private Button editProfileButton;
@@ -48,13 +54,20 @@ public class ProfileActivity extends AppCompatActivity {
     private ProfileImageController imageController;
     private LottieAnimationView profilePicUploadAnimation;
 
+    /**
+     * Called when the activity is created.
+     * Initializes UI components, retrieves user data, and sets up profile functionalities.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
+
         topBarUtils.topBarSetup(this, "Profile", View.VISIBLE);
 
+        // Initialize UI components
         name = findViewById(R.id.profile_name_box);
         email = findViewById(R.id.profile_email_box);
         phoneNumber = findViewById(R.id.profile_phone_box);
@@ -68,7 +81,6 @@ public class ProfileActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         imageController = new ProfileImageController(this);
 
-        // Get the intent that was used to start this activity
         Intent intent = getIntent();
         String userID = intent.getStringExtra("userID");
         boolean adminView = intent.getBooleanExtra("adminView", false);
@@ -77,16 +89,16 @@ public class ProfileActivity extends AppCompatActivity {
             Log.d("ProfileActivity", "userID: " + userID);
             fetchUserData(userID);
         } else {
-            // Handle the case where the userID is not provided
             Log.e("ProfileActivity", "userID is null");
         }
 
-        // Use the adminView boolean as needed
+        // Manage admin view
         if (adminView) {
             editProfilePicButton.setVisibility(View.GONE);
             editProfileButton.setVisibility(View.GONE);
         }
 
+        // More settings button
         ImageButton moreButton = findViewById(R.id.more_settings_button);
         moreButton.setOnClickListener(v -> {
             if (adminView) {
@@ -96,30 +108,30 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        // Show admin indicator if applicable
         isAdmin(userID, isAdmin -> {
             if (isAdmin) {
                 adminStar.setVisibility(View.VISIBLE);
             }
         });
 
+        // Edit profile button
         editProfileButton.setOnClickListener(view -> {
             if (editProfile(userID)) {
                 Snackbar.make(view, "Profile Updated Successfully!", Snackbar.LENGTH_LONG).show();
             }
         });
 
-        // Set up swipe refresh listener
+        // Swipe to refresh
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (userID != null) {
                 fetchUserData(userID);
-                imageController.loadImage(userID,profilePic);
+                imageController.loadImage(userID, profilePic);
             }
-            // Stop the refreshing animation
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        //Handling profile images
-
+        // Handle profile image editing
         if (userID != null) {
             imageController.loadImage(userID, profilePic);
         }
@@ -128,55 +140,66 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the result from the image picker activity.
+     *
+     * @param requestCode The request code identifying the request.
+     * @param resultCode  The result code indicating success or failure.
+     * @param data        The intent containing the picked image data.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri imageUri = data.getData();
             String userID = getIntent().getStringExtra("userID");
-        imageController.loadImage(userID, profilePic);
+            imageController.uploadImageToFirebase(imageUri, userID, new ProfileImageController.ImageUploadCallback() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Toast.makeText(ProfileActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                    imageController.loadImage(userID, profilePic);
+                }
 
-        imageController.uploadImageToFirebase(imageUri, userID, new ProfileImageController.ImageUploadCallback() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Toast.makeText(ProfileActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                imageController.loadImage(userID, profilePic);
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
-                Log.e("ProfileActivity", "Image upload failed", e);
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(ProfileActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+                    Log.e("ProfileActivity", "Image upload failed", e);
+                }
+            });
         }
     }
 
+    /**
+     * Fetches user data from Firestore and populates the profile fields.
+     *
+     * @param userID The ID of the user to fetch.
+     */
     private void fetchUserData(String userID) {
         Log.d("ProfileActivity", "Fetching user data for userID: " + userID);
         db.collection("Users").document(userID)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                User user = document.toObject(User.class);
-                                if (user != null) {
-                                    name.setText(user.getName());
-                                    email.setText(user.getEmail());
-                                    phoneNumber.setText(user.getPhoneNumber());
-                                }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            User user = document.toObject(User.class);
+                            if (user != null) {
+                                name.setText(user.getName());
+                                email.setText(user.getEmail());
+                                phoneNumber.setText(user.getPhoneNumber());
                             }
-                        } else {
-                            Log.e("ProfileActivity", "Failed to fetch user data: " + task.getException());
                         }
-
+                    } else {
+                        Log.e("ProfileActivity", "Failed to fetch user data: " + task.getException());
                     }
                 });
     }
 
+    /**
+     * Displays a popup for managing notification preferences and profile picture removal.
+     *
+     * @param userID The ID of the user to update.
+     */
     private void showPopup(String userID) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.profile_overlay);
@@ -195,33 +218,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        AtomicReference<SharedPreferences> preferences = new AtomicReference<>(getSharedPreferences("AppPreferences", MODE_PRIVATE));
-        boolean isAdminMode = preferences.get().getBoolean("AdminMode", false); // Default to false if not set
-
-        adminMode.setChecked(isAdminMode);
-
-        if (userID != null) {
-            db.collection("Users").document(userID)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    User user = document.toObject(User.class);
-                                    if (user != null) {
-                                        // Set the checkboxes to current values
-                                        needOrganizerNotifs.setChecked(user.isOrganizerNotif());
-                                        needAdminNotifs.setChecked(user.isAdminNotif());
-                                    }
-                                }
-                            }
-
-                        }
-                    });
-        }
-
         savePreferencesButton.setOnClickListener(v -> {
             boolean newOrganizerNotif = needOrganizerNotifs.isChecked();
             boolean newAdminNotif = needAdminNotifs.isChecked();
@@ -229,13 +225,6 @@ public class ProfileActivity extends AppCompatActivity {
             updates.put("organizerNotif", newOrganizerNotif);
             updates.put("adminNotif", newAdminNotif);
 
-            Log.d("AdminCheckbox", "isChecked: " + adminMode.isChecked());
-            preferences.set(getSharedPreferences("AppPreferences", MODE_PRIVATE));
-            SharedPreferences.Editor editor = preferences.get().edit();
-            editor.putBoolean("AdminMode", adminMode.isChecked());
-            editor.apply();
-
-            assert userID != null;
             db.collection("Users").document(userID)
                     .update(updates)
                     .addOnSuccessListener(aVoid -> {
@@ -248,9 +237,10 @@ public class ProfileActivity extends AppCompatActivity {
                         Snackbar.make(findViewById(android.R.id.content),
                                 "Failed to update preferences",
                                 Snackbar.LENGTH_SHORT).show();
-                        Log.e("ProfileActivity", "Error updating notification preferences: " + e.getMessage());
+                        Log.e("ProfileActivity", "Error updating preferences: " + e.getMessage());
                     });
         });
+
         removeProfilePicButton.setOnClickListener(v -> {
             imageController.removeImage(userID, profilePic);
             dialog.dismiss();
@@ -259,35 +249,52 @@ public class ProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Displays the admin profile overlay dialog.
+     *
+     * @param userID  The ID of the user.
+     * @param isAdmin True if the user is an admin, false otherwise.
+     */
     private void showAdminProfile(String userID, boolean isAdmin) {
         AdminProfileOverlayDialog dialog = AdminProfileOverlayDialog.newInstance(userID, isAdmin);
         dialog.show(getSupportFragmentManager(), "AdminProfileOverlayDialog");
     }
 
+    /**
+     * Determines if the user is an admin and executes the provided callback.
+     *
+     * @param userID   The ID of the user.
+     * @param callback The callback to execute with the admin status.
+     */
     public void isAdmin(String userID, AdminCallback callback) {
         db.collection("Users").document(userID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         Boolean isAdmin = documentSnapshot.getBoolean("admin");
-                        if (isAdmin != null) {
-                            callback.onCallback(isAdmin);
-                        } else {
-                            callback.onCallback(false); // Default to false if admin field is null
-                        }
+                        callback.onCallback(isAdmin != null && isAdmin);
                     } else {
-                        callback.onCallback(false); // Document does not exist
+                        callback.onCallback(false);
                     }
                 })
                 .addOnFailureListener(e -> {
                     e.printStackTrace();
-                    callback.onCallback(false); // Return false in case of an error
+                    callback.onCallback(false);
                 });
     }
 
+    /**
+     * Callback interface for determining admin status.
+     */
     public interface AdminCallback {
         void onCallback(boolean isAdmin);
     }
 
+    /**
+     * Updates the user's profile data in Firestore.
+     *
+     * @param userID The ID of the user to update.
+     * @return True if the profile was updated successfully, false otherwise.
+     */
     private boolean editProfile(String userID) {
         try {
             DocumentReference userRef = db.collection("Users").document(userID);
@@ -303,10 +310,9 @@ public class ProfileActivity extends AppCompatActivity {
                 userRef.update("phoneNumber", phoneNumberInput);
                 return true;
             }
-
-
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Log.e("ProfileActivity", "Error updating profile", e);
+            return false;
         }
     }
 }

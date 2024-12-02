@@ -8,8 +8,18 @@ import com.example.projectv2.Model.Event;
 
 import org.mockito.Mockito;
 
+/**
+ * Unit tests for the {@link Event} class.
+ *
+ * <p>This class tests the behavior and functionality of the Event model class,
+ * ensuring that constructors, getters, and setters function as expected.</p>
+ */
 public class EventTest {
 
+    /**
+     * Tests the full constructor of the {@link Event} class.
+     * Verifies that all attributes are properly initialized when provided.
+     */
     @Test
     public void testFullConstructor() {
         // Create a mock Uri
@@ -42,6 +52,10 @@ public class EventTest {
         assertEquals("Community Center", event.getFacility());
     }
 
+    /**
+     * Tests the setter for the event ID in the {@link Event} class.
+     * Verifies that the event ID can be updated and retrieved correctly.
+     */
     @Test
     public void testSetEventID() {
         Event event = new Event(
@@ -62,6 +76,10 @@ public class EventTest {
         assertEquals("newEvent456", event.getEventID());
     }
 
+    /**
+     * Tests the minimal constructor of the {@link Event} class.
+     * Verifies that an Event object can be created with only essential attributes.
+     */
     @Test
     public void testMinimalConstructor() {
         // Test the constructor with only a few parameters
@@ -72,6 +90,10 @@ public class EventTest {
         assertEquals("event123", event.getEventID());
     }
 
+    /**
+     * Tests how the {@link Event} class handles null values for attributes.
+     * Ensures that attributes can be null without causing errors.
+     */
     @Test
     public void testNullValues() {
         // Create an event with null values
@@ -101,6 +123,10 @@ public class EventTest {
         assertNull(event.getFacility());
     }
 
+    /**
+     * Tests all getter methods of the {@link Event} class.
+     * Verifies that all attributes can be retrieved correctly after initialization.
+     */
     @Test
     public void testGetters() {
         Uri mockUri = Mockito.mock(Uri.class);
