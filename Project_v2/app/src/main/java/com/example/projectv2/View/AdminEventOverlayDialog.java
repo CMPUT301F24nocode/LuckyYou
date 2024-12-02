@@ -18,7 +18,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
-public class AdminEventOverlayActivity extends AppCompatActivity {
+public class AdminEventOverlayDialog extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String eventID;
@@ -140,7 +140,7 @@ public class AdminEventOverlayActivity extends AppCompatActivity {
             @Override
             public void onDeleteSuccess() {
                 Log.d("AdminEventOverlay", "Event poster successfully deleted!");
-                Toast.makeText(AdminEventOverlayActivity.this, "Event poster deleted successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminEventOverlayDialog.this, "Event poster deleted successfully!", Toast.LENGTH_SHORT).show();
                 finish(); // Close the activity
             }
 

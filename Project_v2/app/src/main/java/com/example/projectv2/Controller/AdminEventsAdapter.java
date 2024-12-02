@@ -12,9 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectv2.Model.Event;
 import com.example.projectv2.R;
-import com.example.projectv2.View.AdminEventOverlayActivity;
+import com.example.projectv2.View.AdminEventOverlayDialog;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.ViewHolder> {
@@ -47,7 +46,7 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
 
         // Set onClickListener for navigating to AdminEventOverlayActivity
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, AdminEventOverlayActivity.class);
+            Intent intent = new Intent(context, AdminEventOverlayDialog.class);
             intent.putExtra("name",event.getName());
             intent.putExtra("eventID", event.getEventID());
             context.startActivity(intent);

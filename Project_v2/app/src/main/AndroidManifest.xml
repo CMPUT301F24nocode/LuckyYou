@@ -62,7 +62,7 @@
         <activity android:name=".View.AdminProfileListActivity" />
         <activity android:name=".View.AdminImageListActivity" />
         <activity android:name=".View.AdminEventListActivity" />
-        <activity android:name=".View.AdminEventOverlayActivity" />
+        <activity android:name=".View.AdminEventOverlayDialog" />
         <activity android:name=".View.CreateEventOptionsActivity" />
         <activity android:name=".View.CreateEventActivity" />
         <activity android:name=".View.EventLandingPageUserActivity" />
