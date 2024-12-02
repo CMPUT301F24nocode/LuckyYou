@@ -43,7 +43,7 @@ public class EntrantListActivity extends AppCompatActivity {
 
     private RecyclerView entrantRecyclerView;
     private EntrantListAdapter adapter;
-    private FirebaseFirestore db;
+    public FirebaseFirestore db;
     private Spinner filterSpinner;
     private Button sendNotifAllView, removeAllEntrants, sendNotifView;
     private List<String> documentIds = new ArrayList<>();

@@ -35,7 +35,7 @@ import java.util.Random;
  * event creation, updating, fetching, and entrant list management.
  */
 public class EventController {
-    private final FirebaseFirestore db;
+    public FirebaseFirestore db;
     private final ArrayList<Event> eventList = new ArrayList<>();
     private final Context context;
 

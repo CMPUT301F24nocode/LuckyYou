@@ -38,6 +38,9 @@ public class NotificationActivity extends AppCompatActivity {
     private NotificationAdapter adapter; // Adapter for managing notifications in RecyclerView
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    // New field for test mode
+    private List<Notification> mockNotifications;
+
     /**
      * Called when the activity is first created.
      * Sets up the RecyclerView and loads notifications for the specified user.
@@ -79,6 +82,14 @@ public class NotificationActivity extends AppCompatActivity {
         });
     }
 
+    // New method to inject mock data for testing
+    public void injectMockNotifications(List<Notification> mockNotifs) {
+        this.mockNotifications = mockNotifs;
+        notificationList.clear();
+        notificationList.addAll(mockNotifs);
+        adapter.notifyDataSetChanged();
+    }
+
     /**
      * Loads notifications for a specific user from FireStore and updates the RecyclerView.
      * Retrieves notifications for the user based on their role (admin or organiser).
@@ -86,6 +97,14 @@ public class NotificationActivity extends AppCompatActivity {
      * @param userId The ID of the user whose notifications are to be loaded
      */
     private void loadNotifications(String userId) {
+        // If mock data is available, use it directly
+        if (mockNotifications != null && !mockNotifications.isEmpty()) {
+            notificationList.clear();
+            notificationList.addAll(mockNotifications);
+            adapter.notifyDataSetChanged();
+            return;
+        }
+
         db.collection("Users").document(userId).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
