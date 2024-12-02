@@ -24,12 +24,14 @@ public class FacilityTest {
     }
 
     /**
-     * Test that the Facility constructor correctly initializes all fields.
+     * Test that the Facility constructor initializes all fields.
      */
     @Test
     public void testFacilityConstructor() {
-        assertEquals(name, facility.getName());
-        assertEquals(description, facility.getDescription());
+        assertEquals("Owner initialization failed", owner, facility.getOwner());
+        assertEquals("Name initialization failed", name, facility.getName());
+        assertEquals("Description initialization failed", description, facility.getDescription());
+        assertEquals("ID initialization failed", id, facility.getId());
     }
 
     /**
@@ -46,5 +48,30 @@ public class FacilityTest {
     @Test
     public void testGetDescription() {
         assertEquals("Description getter failed", description, facility.getDescription());
+    }
+
+    /**
+     * Test the getOwner method to verify it returns the correct owner.
+     */
+    @Test
+    public void testGetOwner() {
+        assertEquals("Owner getter failed", owner, facility.getOwner());
+    }
+
+    /**
+     * Test the getId method to verify it returns the correct ID.
+     */
+    @Test
+    public void testGetId() {
+        assertEquals("ID getter failed", id, facility.getId());
+    }
+
+    /**
+     * Test edge cases for constructor.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testFacilityConstructorWithInvalidData() {
+        // Assuming the constructor should throw an exception for invalid data
+        new Facility(null, null, null, null);
     }
 }

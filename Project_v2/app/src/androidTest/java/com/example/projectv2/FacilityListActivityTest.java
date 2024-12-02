@@ -43,13 +43,11 @@ public class FacilityListActivityTest {
 
     @After
     public void tearDown() {
-        // Release Intents
         Intents.release();
     }
 
     @Test
     public void testActivityLaunch() {
-        // Launch the activity
         ActivityScenario<FacilityListActivity> scenario = ActivityScenario.launch(FacilityListActivity.class);
 
         // Verify key UI elements are displayed
@@ -60,10 +58,6 @@ public class FacilityListActivityTest {
 
     @Test
     public void testCreateFacilityButton() {
-        // Set up admin mode to ensure create button is visible
-        sharedPreferences.edit().putBoolean("AdminMode", true).apply();
-
-        // Launch the activity
         ActivityScenario<FacilityListActivity> scenario = ActivityScenario.launch(FacilityListActivity.class);
 
         // Click on create facility button
@@ -75,14 +69,10 @@ public class FacilityListActivityTest {
 
     @Test
     public void testSwipeRefreshLayout() {
-        // Launch the activity
         ActivityScenario<FacilityListActivity> scenario = ActivityScenario.launch(FacilityListActivity.class);
 
         // Perform swipe refresh
         onView(withId(R.id.swipe_refresh_layout)).perform(click());
-
-        // Note: This test verifies the swipe refresh layout is functional
-        // Actual content refresh is typically handled by mock data or instrumentation
     }
 
     @Test
@@ -90,7 +80,6 @@ public class FacilityListActivityTest {
         // Enable admin mode
         sharedPreferences.edit().putBoolean("AdminMode", true).apply();
 
-        // Launch the activity
         ActivityScenario<FacilityListActivity> scenario = ActivityScenario.launch(FacilityListActivity.class);
 
         // Verify create facility button is visible

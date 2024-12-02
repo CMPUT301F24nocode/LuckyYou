@@ -31,13 +31,12 @@ public class FacilityCreateActivityTest {
 
     @Test
     public void testLayoutElements() {
-        // Launch the activity
         ActivityScenario.launch(FacilityCreateActivity.class);
 
         // Verify top bar is present
         onView(withId(R.id.notification_top_bar)).check(matches(isDisplayed()));
 
-        // Check Name section
+        // Verify Name section
         onView(withId(R.id.textView3))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("Name")));
@@ -46,7 +45,7 @@ public class FacilityCreateActivityTest {
                 .check(matches(isDisplayed()))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
-        // Check Description section
+        // Verify Description section
         onView(withId(R.id.textView5))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("Description")));
@@ -63,7 +62,6 @@ public class FacilityCreateActivityTest {
 
     @Test
     public void testInputFieldProperties() {
-        // Launch the activity
         ActivityScenario.launch(FacilityCreateActivity.class);
 
         // Verify Name input field
@@ -79,7 +77,6 @@ public class FacilityCreateActivityTest {
 
     @Test
     public void testSaveButtonInteraction() {
-        // Launch the activity
         ActivityScenario.launch(FacilityCreateActivity.class);
 
         // Enter valid input
@@ -88,16 +85,13 @@ public class FacilityCreateActivityTest {
         onView(withId(R.id.facility_create_description_view))
                 .perform(typeText("Test Facility Description"), closeSoftKeyboard());
 
-        // Click Save button
+        // Verify Save button
         onView(withId(R.id.facility_create_button))
                 .perform(click());
-
-        // Additional verifications can be added based on expected behavior
     }
 
     @Test
     public void testInputFieldHints() {
-        // Launch the activity
         ActivityScenario.launch(FacilityCreateActivity.class);
 
         // Check Name input hint

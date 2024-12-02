@@ -49,7 +49,6 @@ public class FacilityLandingPageActivityTest {
 
     @After
     public void tearDown() {
-        // Release Intents
         Intents.release();
     }
 
@@ -71,14 +70,12 @@ public class FacilityLandingPageActivityTest {
 
     @Test
     public void testEditButtonInteraction() {
-        // Launch the activity with mock intent data
         Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), FacilityLandingPageActivity.class);
         intent.putExtra("facility_name", "Test Facility");
         intent.putExtra("facility_description", "This is a test facility description.");
         intent.putExtra("facility_id", "mockFacilityId");
         ActivityScenario.launch(intent);
 
-        // Click on edit button
         onView(withId(R.id.facility_edit_button)).perform(click());
 
         // Verify intent to FacilityEditActivity
