@@ -145,12 +145,12 @@ public class FacilityListActivity extends AppCompatActivity {
             String ownerID = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
             String name = data.getStringExtra("facility_name");
             String description = data.getStringExtra("facility_description");
-            String facilityID = data.getStringExtra("facility_ID");
+//            String facilityID = data.getStringExtra("facility_ID");
 
             Log.d("FacilityListActivity", "New Facility: " + name + ", " + description);
 
             // Create and save the new facility in Firebase
-            facilityController.createFacility(ownerID, name, description, facilityID, new FacilityController.FacilityCallback() {
+            facilityController.createFacility(ownerID, name, description, "_", new FacilityController.FacilityCallback() {
                 @Override
                 public void onFacilityListLoaded(ArrayList<Facility> facilities) {
                     facilityList.clear();
