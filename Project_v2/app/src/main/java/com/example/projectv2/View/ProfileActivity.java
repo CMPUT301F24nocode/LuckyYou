@@ -23,6 +23,8 @@ import com.example.projectv2.Controller.ProfileImageController;
 import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.Model.User;
 import com.example.projectv2.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -218,12 +220,45 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        AtomicReference<SharedPreferences> preferences = new AtomicReference<>(getSharedPreferences("AppPreferences", MODE_PRIVATE));
+        boolean isAdminMode = preferences.get().getBoolean("AdminMode", false); // Default to false if not set
+
+        adminMode.setChecked(isAdminMode);
+
+        if (userID != null) {
+            db.collection("Users").document(userID)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    User user = document.toObject(User.class);
+                                    if (user != null) {
+                                        // Set the checkboxes to current values
+                                        needOrganizerNotifs.setChecked(user.isOrganizerNotif());
+                                        needAdminNotifs.setChecked(user.isAdminNotif());
+                                    }
+                                }
+                            }
+
+                        }
+                    });
+        }
+
         savePreferencesButton.setOnClickListener(v -> {
             boolean newOrganizerNotif = needOrganizerNotifs.isChecked();
             boolean newAdminNotif = needAdminNotifs.isChecked();
             Map<String, Object> updates = new HashMap<>();
             updates.put("organizerNotif", newOrganizerNotif);
             updates.put("adminNotif", newAdminNotif);
+
+            Log.d("AdminCheckbox", "isChecked: " + adminMode.isChecked());
+            preferences.set(getSharedPreferences("AppPreferences", MODE_PRIVATE));
+            SharedPreferences.Editor editor = preferences.get().edit();
+            editor.putBoolean("AdminMode", adminMode.isChecked());
+            editor.apply();
 
             db.collection("Users").document(userID)
                     .update(updates)
