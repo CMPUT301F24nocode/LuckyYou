@@ -96,6 +96,14 @@ public class NotificationService {
                 });
     }
 
+    /**
+     * Sends a push notification to the user with the specified FCM token.
+     *
+     * @param activity         The activity from which the notification is sent
+     * @param userId           The user ID to send the notification to
+     * @param eventID          The event ID to redirect the user to when the notification is clicked
+     * @param pushNotifContent The content of the push notification
+     */
     private void sendPushNotification (Activity activity, String userId, String eventID, String pushNotifContent) {
         db.collection("Users")
                 .document(userId)
@@ -138,11 +146,17 @@ public class NotificationService {
                 });
     }
 
+    /**
+     * Interface for sending push notifications using Retrofit.
+     */
     interface PushNotificationService {
         @POST("sendNotification")
         Call<Void> sendNotification(@Body NotificationRequest request);
     }
 
+    /**
+     * Data class for sending push notifications.
+     */
     static class NotificationRequest {
         String token;
         String eventID;

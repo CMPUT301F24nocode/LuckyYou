@@ -32,18 +32,38 @@ public class Facility {
         this.id = id;
     }
 
+    /**
+     * Returns the device ID of the owner of the facility.
+     *
+     * @return the device ID of the owner of the facility
+     */
     public String getOwner() {
         return owner;
     }
 
+    /**
+     * Returns the name of the facility.
+     *
+     * @return the name of the facility
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns a brief description of the facility.
+     *
+     * @return a brief description of the facility
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Returns the unique identifier for the facility.
+     *
+     * @return the unique identifier for the facility
+     */
     public String getId() {
         return id;
     }

@@ -16,6 +16,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * FacilityEditActivity allows users to edit the name and description of a facility.
+ * The user can update the facility data and save the changes to Firestore.
+ */
 public class FacilityEditActivity extends AppCompatActivity {
 
     private EditText facilityNameEdit, facilityDescriptionEdit;
@@ -27,11 +31,20 @@ public class FacilityEditActivity extends AppCompatActivity {
         this(FirebaseFirestore.getInstance());
     }
 
-    // Constructor that allows passing a FirebaseFirestore instance
+    /**
+     * Constructor for testing with dependency injection.
+     *
+     * @param firestore the FirebaseFirestore instance to use
+     */
     public FacilityEditActivity(FirebaseFirestore firestore) {
         this.db = firestore;
     }
 
+    /**
+     * Called when the activity is created. Initializes the UI elements and fetches the current facility data from Firestore.
+     *
+     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,10 +105,5 @@ public class FacilityEditActivity extends AppCompatActivity {
                         Toast.makeText(this, "Failed to update facility: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         });
-    }
-
-    // Method for testing to set Firestore instance
-    public void setFirestoreInstance(FirebaseFirestore firestore) {
-        this.db = firestore;
     }
 }

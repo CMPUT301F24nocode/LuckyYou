@@ -43,6 +43,7 @@ public class EntrantListAdapter extends RecyclerView.Adapter<EntrantListAdapter.
      *
      * @param context     the context in which the adapter is operating
      * @param entrantList the list of entrant names or IDs to display
+     * @param documentIds the list of document IDs associated with each entrant
      */
     public EntrantListAdapter(Context context, List<String> entrantList, List<String> documentIds) {
         this.context = context;
@@ -142,6 +143,9 @@ public class EntrantListAdapter extends RecyclerView.Adapter<EntrantListAdapter.
         return entrantList.size();
     }
 
+    /**
+     * Clears the currently selected item and updates the RecyclerView to hide any visible buttons.
+     */
     public void clearSelection() {
         int previousPosition = currentlyVisiblePosition;
         currentlyVisiblePosition = RecyclerView.NO_POSITION;
@@ -155,7 +159,8 @@ public class EntrantListAdapter extends RecyclerView.Adapter<EntrantListAdapter.
     /**
      * Updates the list of entrants in the adapter and notifies the RecyclerView to refresh the data.
      *
-     * @param newEntrants the new list of entrants to display
+     * @param newEntrants    the new list of entrants to display
+     * @param newDocumentIds the new list of document IDs associated with the entrants
      */
     public void updateEntrantList(List<String> newEntrants, List<String> newDocumentIds) {
         entrantList.clear();

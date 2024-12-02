@@ -19,12 +19,20 @@ import com.google.firebase.storage.StorageReference;
 
 import com.example.projectv2.R;
 
+/**
+ * Controller class for handling profile image operations in Firebase Storage.
+ */
 public class ProfileImageController {
     private final Context context;
     private final FirebaseStorage storage;
     private final StorageReference storageRef;
     private final DBUtils dbUtils;
 
+    /**
+     * Constructs a ProfileImageController with the specified context.
+     *
+     * @param context the context in which the controller is operating
+     */
     public ProfileImageController(Context context) {
         this.context = context;
         this.storage = FirebaseStorage.getInstance();
@@ -32,14 +40,25 @@ public class ProfileImageController {
         this.dbUtils = new DBUtils();
     }
 
-    // Method to open the gallery
+    /**
+     * Opens the gallery to select an image.
+     *
+     * @param activity    the activity in which the gallery is opened
+     * @param requestCode the request code for the gallery activity
+     */
     public void openGallery(Activity activity, int requestCode) {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         activity.startActivityForResult(intent, requestCode);
     }
 
-    // Method to upload an image to Firebase Storage
+    /**
+     * Uploads an image to Firebase Storage with a filename based on the user ID.
+     *
+     * @param imageUri the URI of the image to be uploaded
+     * @param userID   the user ID to use in the filename
+     * @param callback callback for success or failure
+     */
     public void uploadImageToFirebase(Uri imageUri, String userID, ImageUploadCallback callback) {
         // Define the file path using userID
         String filePath = "user_" + userID + ".jpg";
@@ -59,8 +78,12 @@ public class ProfileImageController {
 
     }
 
-
-    // Method to load an image into an ImageView using Glide
+    /**
+     * Loads an image from Firebase Storage based on the user ID and sets it in the specified ImageView.
+     *
+     * @param userID    the user ID to use in the filename
+     * @param imageView the ImageView in which to set the image
+     */
     public void loadImage(String userID, ImageView imageView) {
         if (userID == null || imageView == null) {
             Log.d("HUHUUUUU", "Invalid imageUrl or imageView");
@@ -94,6 +117,12 @@ public class ProfileImageController {
 
     }
 
+    /**
+     * Removes an image from Firebase Storage based on the user ID.
+     *
+     * @param userID    the user ID to use in the filename
+     * @param imageView the ImageView in which to set the default image
+     */
     public void removeImage(String userID, ImageView imageView) {
         if (userID == null || imageView == null) {
             Log.d("HUHUUUUU", "Invalid imageUrl or imageView");
@@ -116,13 +145,20 @@ public class ProfileImageController {
 
     }
 
-
-    // Interface for callbacks
+    /**
+     * Callback interface for image upload operations.
+     */
     public interface ImageUploadCallback {
         void onSuccess(Uri uri);
         void onFailure(Exception e);
     }
-    // Method to load a Bitmap into an ImageView using Glide
+
+    /**
+     * Loads an image into an ImageView using a Bitmap.
+     *
+     * @param bitmap    the Bitmap to load
+     * @param imageView the ImageView in which to load the Bitmap
+     */
     public void loadImageUsingBitmap(Bitmap bitmap, ImageView imageView) {
         if (bitmap == null || imageView == null) {
             Log.d("ProfileImageController", "Invalid bitmap or imageView");

@@ -23,6 +23,11 @@ public class AdminImageListActivity extends AppCompatActivity {
     private List<String> imageFilenames;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    /**
+     * Initializes the UI layout and sets up the top bar with the title "Browse Images."
+     * Initializes the RecyclerView and SwipeRefreshLayout.
+     * Fetches and displays the list of images.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,12 +52,16 @@ public class AdminImageListActivity extends AppCompatActivity {
         fetchImages();
     }
 
+    /**
+     * Fetches the list of images from the database and updates the RecyclerView.
+     */
     private void fetchImages() {
         // Show refresh animation while loading
         swipeRefreshLayout.setRefreshing(true);
 
         ImageController imageController = new ImageController();
         imageController.getAllEventPosters(new ImageController.ImageListCallback() {
+            // Update the RecyclerView with the list of image filenames
             @Override
             public void onSuccess(List<String> filenames) {
                 imageFilenames.clear(); // Clear any existing data
@@ -63,6 +72,7 @@ public class AdminImageListActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
             }
 
+            // Show an error message if the image loading fails
             @Override
             public void onFailure(Exception e) {
                 Toast.makeText(AdminImageListActivity.this, "Failed to load images.", Toast.LENGTH_SHORT).show();

@@ -39,6 +39,11 @@ public class AdminProfileListActivity extends AppCompatActivity {
     private List<User> userList;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    /**
+     * Initializes the UI layout and sets up the top bar with the title "Browse Profiles."
+     * Initializes the RecyclerView and SwipeRefreshLayout.
+     * Fetches and displays the list of user profiles.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +67,9 @@ public class AdminProfileListActivity extends AppCompatActivity {
         loadUsersFromFirestore();
     }
 
+    /**
+     * Fetches the list of user profiles from the database and updates the RecyclerView.
+     */
     private void loadUsersFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -81,6 +89,11 @@ public class AdminProfileListActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to load users", Toast.LENGTH_SHORT).show());
     }
 
+    /**
+     * Displays the profile of the selected user.
+     *
+     * @param userID The ID of the user whose profile is to be displayed
+     */
     private void showProfile(String userID) {
         String deviceID= Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         if (!Objects.equals(deviceID, userID)) {

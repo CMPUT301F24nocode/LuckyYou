@@ -107,6 +107,11 @@ public class EntrantListActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Shows a popup dialog to send a notification to all users in the entrant list.
+     *
+     * @param documentIds the list of document IDs to send notifications to
+     */
     private void showPopup(List<String> documentIds) {
         String eventId = getIntent().getStringExtra("eventId");
         SendNotificationOverlay overlay = SendNotificationOverlay.newInstance(this, new ArrayList<>(documentIds), eventId);
@@ -125,6 +130,14 @@ public class EntrantListActivity extends AppCompatActivity {
         filterSpinner.setAdapter(spinnerAdapter);
 
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            /**
+             * Called when an item in the spinner is selected.
+             *
+             * @param parent   the AdapterView where the selection happened
+             * @param view     the view within the AdapterView that was selected
+             * @param position the position of the view in the adapter
+             * @param id       the row id of the item that is selected
+             */
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedOption = (String) parent.getItemAtPosition(position);
@@ -144,6 +157,11 @@ public class EntrantListActivity extends AppCompatActivity {
                 }
             }
 
+            /**
+             * Called when the selection disappears from this view.
+             *
+             * @param parent the AdapterView that now contains no selected item.
+             */
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 loadWaitingList(sendNotifAllView);
@@ -281,6 +299,11 @@ public class EntrantListActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Sends notifications to all users in the selected list and remaining users in the waiting list.
+     *
+     * @param eventId the ID of the event to send notifications for
+     */
     private void sendNotificationsToSelectedAndWaitingLists(String eventId) {
         if (documentIds == null || documentIds.isEmpty()) {
             Log.d(TAG, "No users in the selected list to notify.");

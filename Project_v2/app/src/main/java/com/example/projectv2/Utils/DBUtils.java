@@ -13,13 +13,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Utility class for interacting with the Firebase Firestore database.
+ */
 public class DBUtils {
     static FirebaseFirestore db;
 
+    /**
+     * Constructor for the DBUtils class.
+     */
     public DBUtils() {
         db = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * Add a user to the entrant list of an event.
+     *
+     * @param userID  the ID of the user to add
+     * @param eventID the ID of the event to add the user to
+     */
     public static void removeUser(String userID, String eventID) {
         db.collection("events").document(eventID)
                 .get().
@@ -51,8 +63,13 @@ public class DBUtils {
                 }).addOnFailureListener(e -> Log.e("Firebase", "Error fetching event document", e));
     }
 
+    /**
+     * Add a user to the entrant list of an event.
+     *
+     * @param userID  the ID of the user to add
+     * @param eventID the ID of the event to add the user to
+     */
     public static void removeUsers(List<String> userIDs, String eventID) {
-
         db.collection("events").document(eventID)
                 .get().
                 addOnSuccessListener(documentSnapshot -> {
@@ -88,6 +105,12 @@ public class DBUtils {
         void onCallback(HashMap<String, String> eventDetails);
     }
 
+    /**
+     * Fetch an event from the database.
+     *
+     * @param eventID  the ID of the event to fetch
+     * @param callback the callback to execute with the event details
+     */
     public void fetchEvent(String eventID, EventCallback callback) {
         db.collection("events").document(eventID)
                 .get()
@@ -117,10 +140,17 @@ public class DBUtils {
                     }
                 });
     }
+
     public interface UserCallback {
         void onCallback(User user);
     }
 
+    /**
+     * Fetch a user from the database.
+     *
+     * @param userID   the ID of the user to fetch
+     * @param callback the callback to execute with the user details
+     */
     public void fetchUser(String userID, UserCallback callback) {
         db.collection("Users").document(userID)
                 .get()
@@ -146,6 +176,12 @@ public class DBUtils {
                 });
     }
 
+    /**
+     * Update a user's profile image in the database.
+     *
+     * @param userID the ID of the user to update
+     * @param user   the updated user object
+     */
     public void updateUser(String userID, User user) {
         try{
         DocumentReference userRef = db.collection("Users").document(userID);
@@ -155,7 +191,5 @@ public class DBUtils {
             Log.d("DBUtils", "get failed with ", e);
             throw new RuntimeException(e);
         }
-
-
     }
 }

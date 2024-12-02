@@ -27,6 +27,12 @@ public class AdminEventOverlayDialog extends AppCompatActivity {
     private ImageController imageController;
     private NotificationService notificationService;
 
+    /**
+     * Initializes the UI layout and sets up the top bar with the title "Event."
+     * Retrieves the eventID and eventName from the intent.
+     * Sets up the delete button listener to delete the event.
+     * Sets up the delete QR data button listener to delete the QR hash data for the event.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +59,10 @@ public class AdminEventOverlayDialog extends AppCompatActivity {
         deleteQrDataButton.setOnClickListener(v -> deleteQrHashData());
     }
 
+    /**
+     * Deletes the event from Firestore and sends a notification to the event owner.
+     * If the event has a poster, deletes the poster from Firebase Storage.
+     */
     private void deleteEvent() {
         if (eventID == null || eventID.isEmpty()) {
             Toast.makeText(this, "Event ID not found!", Toast.LENGTH_SHORT).show();
@@ -92,6 +102,9 @@ public class AdminEventOverlayDialog extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Deletes the QR hash data for the event from Firestore.
+     */
     private void deleteQrHashData() {
         if (eventID == null || eventID.isEmpty()) {
             Toast.makeText(this, "Event ID not found!", Toast.LENGTH_SHORT).show();
@@ -123,6 +136,12 @@ public class AdminEventOverlayDialog extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Sends a notification to the event owner with the given message.
+     *
+     * @param ownerID The ID of the event owner
+     * @param message The message to send
+     */
     private void sendOwnerNotification(String ownerID, String message) {
         if (ownerID != null && !ownerID.isEmpty()) {
             Notification notification = new Notification(ownerID, message, false, true);
@@ -132,6 +151,11 @@ public class AdminEventOverlayDialog extends AppCompatActivity {
         }
     }
 
+    /**
+     * Deletes the event poster from Firebase Storage.
+     *
+     * @param filePath The path to the event poster in Firebase Storage
+     */
     @SuppressLint("RestrictedApi")
     private void deleteEventPoster(String filePath) {
         Log.d("AdminEventOverlay", "Attempting to delete poster at: " + filePath);
@@ -152,6 +176,12 @@ public class AdminEventOverlayDialog extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sanitizes the event name by replacing special characters and spaces with underscores.
+     *
+     * @param eventName The event name to sanitize
+     * @return The sanitized event name
+     */
     private String sanitizeEventName(String eventName) {
         return eventName.trim()
                 .replaceAll("[/\\-?!@#$%^&*()]+", "_") // Replace special characters with underscores

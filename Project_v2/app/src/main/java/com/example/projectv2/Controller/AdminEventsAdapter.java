@@ -16,16 +16,33 @@ import com.example.projectv2.View.AdminEventOverlayDialog;
 
 import java.util.List;
 
+/**
+ * Adapter class for displaying a list of events in a RecyclerView for administrative purposes.
+ * Each event is represented as an item in the RecyclerView.
+ */
 public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.ViewHolder> {
 
     private final Context context;
     private final List<Event> eventList;
 
+    /**
+     * Constructor for initializing the AdminEventsAdapter with the context and event list.
+     *
+     * @param context   the context in which the RecyclerView is being used
+     * @param eventList the list of events to display
+     */
     public AdminEventsAdapter(Context context, List<Event> eventList) {
         this.context = context;
         this.eventList = eventList;
     }
 
+    /**
+     * Inflates the layout for each RecyclerView item and creates a ViewHolder.
+     *
+     * @param parent   the parent ViewGroup
+     * @param viewType the view type of the new View
+     * @return a new ViewHolder instance for the inflated item layout
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,6 +51,12 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
         return new ViewHolder(view);
     }
 
+    /**
+     * Binds the data of an event to the corresponding views in the ViewHolder.
+     *
+     * @param holder   the ViewHolder for the current item
+     * @param position the position of the item in the data list
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Event event = eventList.get(position);
@@ -47,21 +70,33 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
         // Set onClickListener for navigating to AdminEventOverlayActivity
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, AdminEventOverlayDialog.class);
-            intent.putExtra("name",event.getName());
+            intent.putExtra("name", event.getName());
             intent.putExtra("eventID", event.getEventID());
             context.startActivity(intent);
         });
     }
 
-
+    /**
+     * Returns the total number of events in the data list.
+     *
+     * @return the size of the event list
+     */
     @Override
     public int getItemCount() {
         return eventList.size();
     }
 
+    /**
+     * ViewHolder class that holds the views for displaying an event's details in the RecyclerView.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView eventName, eventDate, eventPrice, eventDescription, eventOrganizer;
 
+        /**
+         * Constructor for initializing the ViewHolder with the corresponding views.
+         *
+         * @param view the item view for the ViewHolder
+         */
         public ViewHolder(View view) {
             super(view);
             eventName = view.findViewById(R.id.event_name);

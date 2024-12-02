@@ -184,10 +184,20 @@ public class User {
         return organizerNotifList;
     }
 
+    /**
+     * Returns the user's first name.
+     *
+     * @return the user's first name
+     */
     public double getLatitude() {
         return latitude;
     }
 
+    /**
+     * Returns the user's last name.
+     *
+     * @return the user's last name
+     */
     public double getLongitude() {
         return longitude;
     }
@@ -293,10 +303,20 @@ public class User {
         this.organizerNotifList = organizerNotifList;
     }
 
+    /**
+     * Sets the user's latitude.
+     *
+     * @param latitude the user's latitude
+     */
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     * Sets the user's longitude.
+     *
+     * @param longitude the user's longitude
+     */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }

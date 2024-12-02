@@ -47,6 +47,9 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
         db = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * ViewHolder for holding and recycling event item views.
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,6 +58,12 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
         return new ViewHolder(view);
     }
 
+    /**
+     * Binds data to the views in the ViewHolder based on the event's position in the list.
+     *
+     * @param holder   the ViewHolder that should be updated to represent the contents of the item
+     * @param position the position of the item within the list
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Event event = eventList.get(position);
@@ -76,6 +85,11 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
         holder.itemView.setOnClickListener(v -> navigateToEventDetails(event));
     }
 
+    /**
+     * Returns the total number of events in the list.
+     *
+     * @return the total count of events
+     */
     @Override
     public int getItemCount() {
         return eventList.size();
@@ -92,6 +106,12 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
         notifyDataSetChanged();
     }
 
+    /**
+     * Retrieves the number of users on the waiting list for the specified event.
+     *
+     * @param eventID  the ID of the event to retrieve the waiting list for
+     * @param callback the callback to return the waiting list size
+     */
     private void waitingNum(String eventID, WaitingListCallback callback) {
         db.collection("events").document(eventID).get()
                 .addOnCompleteListener(task -> {
@@ -111,6 +131,9 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
                 });
     }
 
+    /**
+     * Callback interface for returning the size of the waiting list.
+     */
     public interface WaitingListCallback {
         void onWaitingListSizeReceived(int size);
     }
@@ -126,6 +149,11 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
         String eventName = event.getName();
 
         imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
+            /**
+             * Loads the event image into the ImageView on successful retrieval.
+             *
+             * @param downloadUrl the download URL of the image
+             */
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
                 if (context instanceof androidx.fragment.app.FragmentActivity) {
@@ -143,6 +171,11 @@ public class YourEventsAdapter extends RecyclerView.Adapter<YourEventsAdapter.Vi
                 }
             }
 
+            /**
+             * Sets a fallback image on failure to retrieve the event image.
+             *
+             * @param e the exception that occurred
+             */
             @Override
             public void onRetrieveFailure(Exception e) {
                 Log.e(TAG, "Failed to retrieve image for event: " + eventName, e);

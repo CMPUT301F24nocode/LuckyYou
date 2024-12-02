@@ -25,6 +25,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * LocationActivity displays the locations of participants in an event on a map.
+ * It fetches the locations of participants from Firestore and maps them to the organizer's map.
+ */
 public class LocationActivity extends AppCompatActivity {
 
     private static final String TAG = "LocationActivity";
@@ -34,6 +38,11 @@ public class LocationActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private String eventId; // Event ID passed from intent
 
+    /**
+     * Called when the activity is created. Initializes the map view and fetches participant locations.
+     *
+     * @param savedInstanceState Bundle containing the activity's previously saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,24 +174,36 @@ public class LocationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when the activity is resumed. Resumes the map view.
+     */
     @Override
     public void onResume() {
         super.onResume();
         if (mapView != null) mapView.onResume();
     }
 
+    /**
+     * Called when the activity is paused. Pauses the map view.
+     */
     @Override
     public void onPause() {
         super.onPause();
         if (mapView != null) mapView.onPause();
     }
 
+    /**
+     * Called when the activity is destroyed. Destroys the map view.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (mapView != null) mapView.onDestroy();
     }
 
+    /**
+     * Called when the activity is low on memory. Notifies the map view.
+     */
     @Override
     public void onLowMemory() {
         super.onLowMemory();

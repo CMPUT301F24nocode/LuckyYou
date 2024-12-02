@@ -19,6 +19,10 @@ import com.example.projectv2.R;
 
 import java.util.List;
 
+/**
+ * Adapter for displaying a list of event images in a RecyclerView. Each item displays an image
+ * and a delete button to remove the image from the event.
+ */
 public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.ImageViewHolder> {
 
     private static final String TAG = "EventImageAdapter";
@@ -26,12 +30,25 @@ public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.Im
     private final List<String> imageFilenames; // List of filenames
     private final ImageController imageController;
 
+    /**
+     * Constructs an EventImageAdapter with the specified context and list of image filenames.
+     *
+     * @param context        the context in which the adapter is operating
+     * @param imageFilenames the list of image filenames to display
+     */
     public EventImageAdapter(Context context, List<String> imageFilenames) {
         this.context = context;
         this.imageFilenames = imageFilenames; // Assume placeholders are already filtered
         this.imageController = new ImageController(); // Initialize ImageController
     }
 
+    /**
+     * Inflates the layout for each image item in the RecyclerView.
+     *
+     * @param parent   the ViewGroup into which the new view will be added
+     * @param viewType the view type of the new view
+     * @return a new ImageViewHolder that holds the view for each image item
+     */
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -39,6 +56,12 @@ public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.Im
         return new ImageViewHolder(view);
     }
 
+    /**
+     * Binds data to the view elements of each item in the RecyclerView.
+     *
+     * @param holder   the ImageViewHolder containing view elements to bind data to
+     * @param position the position of the item in the RecyclerView
+     */
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, @SuppressLint("RecyclerView") int position) {
         String filename = imageFilenames.get(position);
@@ -93,11 +116,20 @@ public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.Im
         });
     }
 
+    /**
+     * Returns the total number of images in the list.
+     *
+     * @return the total number of images
+     */
     @Override
     public int getItemCount() {
         return imageFilenames.size();
     }
 
+    /**
+     * ViewHolder class for each image item in the RecyclerView.
+     * Holds references to the UI elements within each image item.
+     */
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         ImageView deleteButton;

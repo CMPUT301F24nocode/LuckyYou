@@ -21,6 +21,10 @@ import com.example.projectv2.Controller.ImageController;
 import com.example.projectv2.Utils.topBarUtils;
 import com.example.projectv2.R;
 
+/**
+ * EventEditActivity allows users to edit the poster image for an event.
+ * The user can select a new image from their device and upload it to Firebase Storage.
+ */
 public class EventEditActivity extends AppCompatActivity {
 
     private static final String TAG = "EventEditActivity";
@@ -32,6 +36,11 @@ public class EventEditActivity extends AppCompatActivity {
     private ImageController imageController;
     private ProgressDialog progressDialog;
 
+    /**
+     * Called when the activity is created. Initializes the UI elements, sets the top bar, and loads the existing event poster.
+     *
+     * @param savedInstanceState if the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +92,8 @@ public class EventEditActivity extends AppCompatActivity {
         progressDialog.show();
 
         imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
+
+            // Callbacks for image retrieval
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
                 progressDialog.dismiss();
@@ -94,6 +105,7 @@ public class EventEditActivity extends AppCompatActivity {
                 Log.d(TAG, "Event poster loaded successfully: " + downloadUrl);
             }
 
+            // If the poster does not exist, allow the user to edit and upload a new image
             @Override
             public void onRetrieveFailure(Exception e) {
                 progressDialog.dismiss();
@@ -162,6 +174,8 @@ public class EventEditActivity extends AppCompatActivity {
 
         // Upload the new image and overwrite the existing file
         imageController.uploadImage(selectedImageUri, filePath, new ImageController.ImageUploadCallback() {
+
+            // Callbacks for image upload
             @Override
             public void onUploadSuccess(String downloadUrl) {
                 progressDialog.dismiss();
@@ -178,6 +192,7 @@ public class EventEditActivity extends AppCompatActivity {
                 finish();
             }
 
+            // If the upload fails, display an error message
             @Override
             public void onUploadFailure(Exception e) {
                 progressDialog.dismiss();
@@ -188,6 +203,9 @@ public class EventEditActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Called when the activity is paused. Dismisses the progress dialog if it is showing.
+     */
     @Override
     protected void onPause() {
         super.onPause();

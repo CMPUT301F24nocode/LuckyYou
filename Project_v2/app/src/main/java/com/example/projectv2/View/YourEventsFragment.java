@@ -26,6 +26,13 @@ import com.example.projectv2.R;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment class for displaying the user's events in a RecyclerView.
+ *
+ * <p>This fragment displays the events created by the user in a RecyclerView
+ * using the YourEventsAdapter. It fetches the events from Firebase using the
+ * EventController and updates the adapter with the fetched events.</p>
+ */
 public class YourEventsFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -33,10 +40,22 @@ public class YourEventsFragment extends Fragment {
     private EventController eventController;
     private ArrayList<Event> eventList;
 
+    /**
+     * Default constructor for the YourEventsFragment.
+     */
     public YourEventsFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Called when the fragment is created.
+     * Initializes the fragment layout, RecyclerView, and fetches the user's events.
+     *
+     * @param inflater           LayoutInflater to inflate the view.
+     * @param container          ViewGroup container for the view.
+     * @param savedInstanceState Bundle containing the fragment's previously saved state.
+     * @return The inflated view for the fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

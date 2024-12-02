@@ -18,8 +18,17 @@ import com.example.projectv2.View.SignUpActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+/**
+ * MyFirebaseMessagingService is a service that extends FirebaseMessagingService to handle
+ * incoming Firebase Cloud Messaging (FCM) messages.
+ */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    /**
+     * Called when a message is received.
+     *
+     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
+     */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // Handle the received message
@@ -32,6 +41,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
+    /**
+     * Create and show a simple notification containing the received FCM message.
+     *
+     * @param messageBody The body of the FCM message received.
+     * @param eventID     The event ID to redirect the user to when the notification is clicked.
+     */
     private void sendNotification(String messageBody, String eventID) {
         Intent intent = getIntent(eventID);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
@@ -60,6 +75,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationManager.notify(0, notificationBuilder.build());
     }
 
+    /**
+     * Get the Intent to redirect the user to the appropriate activity based on the eventID.
+     *
+     * @param eventID The event ID to redirect the user to.
+     * @return The Intent to redirect the user to the appropriate activity.
+     */
     @NonNull
     private Intent getIntent(String eventID) {
         Intent intent;

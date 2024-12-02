@@ -168,7 +168,9 @@ public class FacilityListActivity extends AppCompatActivity {
         }
     }
 
-    // Method to handle refresh logic
+    /**
+     * Refreshes the content of the facility list based on the current user's mode (admin or user).
+     */
     private void refreshContent() {
         boolean isAdminMode = preferences.getBoolean("AdminMode", false);
         if (isAdminMode) {

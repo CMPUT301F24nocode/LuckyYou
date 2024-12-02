@@ -10,10 +10,16 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller class for handling image operations in Firebase Storage.
+ */
 public class ImageController {
     private static final String TAG = "ImageController";
     private final StorageReference storageReference;
 
+    /**
+     * Constructs an ImageController and initializes the Firebase Storage reference.
+     */
     public ImageController() {
         storageReference = FirebaseStorage.getInstance().getReference();
     }
@@ -22,16 +28,25 @@ public class ImageController {
         void onFailure(Exception e);
     }
 
-
+    /**
+     * Callback interface for image upload operations.
+     */
     public interface ImageUploadCallback {
         void onUploadSuccess(String downloadUrl);
         void onUploadFailure(Exception e);
     }
 
+    /**
+     * Callback interface for image retrieval operations.
+     */
     public interface ImageRetrieveCallback {
         void onRetrieveSuccess(String downloadUrl);
         void onRetrieveFailure(Exception e);
     }
+
+    /**
+     * Callback interface for image deletion operations.
+     */
     public interface ImageDeleteCallback {
         void onDeleteSuccess();
         void onDeleteFailure(Exception e);
@@ -98,6 +113,7 @@ public class ImageController {
                     callback.onRetrieveFailure(new Exception("No image found for event: " + eventName));
                 });
     }
+
     /**
      * Deletes an image and replaces it with the placeholder image.
      */
@@ -128,6 +144,13 @@ public class ImageController {
                     callback.onDeleteFailure(new Exception("File does not exist: " + filename));
                 });
     }
+
+    /**
+     * Retrieves the download URL of an image based on the filename.
+     *
+     * @param filename The name of the file.
+     * @param callback  Callback for success or failure.
+     */
     public void getDownloadUrl(String filename, ImageRetrieveCallback callback) {
         StorageReference imageRef = storageReference.child(filename);
 
@@ -168,8 +191,4 @@ public class ImageController {
                     callback.onFailure(e);
                 });
     }
-
-
 }
-
-

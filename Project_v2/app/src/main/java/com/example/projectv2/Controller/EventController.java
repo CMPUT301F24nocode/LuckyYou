@@ -120,64 +120,63 @@ public class EventController {
         }
     }
 
-    /**
-     * Saves the event details to Firestore.
-     *
-     * @param owner                the owner of the event
-     * @param name                 the name of the event
-     * @param detail               details of the event
-     * @param rules                rules of the event
-     * @param deadline             deadline of the event
-     * @param attendees            number of attendees
-     * @param entrants             number of entrants allowed
-     * @param startDate            start date of the event
-     * @param ticketPrice          ticket price of the event
-     * @param geolocationEnabled   if geolocation is enabled for the event
-     * @param imageUrl             URL of the event image (if uploaded)
-     * @param facility             facility information for the event
-     * @param eventID              the unique ID of the event
-     * @param callback             callback to handle success or error
-     */
-    private void saveEventToFirestore(String owner, String name, String detail, String rules, String deadline,
-                                      String attendees, String entrants, String startDate, String ticketPrice,
-                                      boolean geolocationEnabled, String imageUrl,
-                                      String facility, String eventID, EventCallback callback) {
+/**
+ * Saves the event details to Firestore.
+ *
+ * @param owner                the owner of the event
+ * @param name                 the name of the event
+ * @param detail               details of the event
+ * @param rules                rules of the event
+ * @param deadline             deadline of the event
+ * @param attendees            number of attendees
+ * @param entrants             number of entrants allowed
+ * @param startDate            start date of the event
+ * @param ticketPrice          ticket price of the event
+ * @param geolocationEnabled   if geolocation is enabled for the event
+ * @param imageUrl             URL of the event image (if uploaded)
+ * @param facility             facility information for the event
+ * @param eventID              the unique ID of the event
+ * @param callback             callback to handle success or error
+ */
+private void saveEventToFirestore(String owner, String name, String detail, String rules, String deadline,
+                                  String attendees, String entrants, String startDate, String ticketPrice,
+                                  boolean geolocationEnabled, String imageUrl,
+                                  String facility, String eventID, EventCallback callback) {
 
-        Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put("owner", owner);
-        eventMap.put("name", name);
-        eventMap.put("detail", detail);
-        eventMap.put("rules", rules);
-        eventMap.put("deadline", deadline);
-        eventMap.put("attendees", attendees);
-        eventMap.put("entrants", entrants);
-        eventMap.put("startDate", startDate);
-        eventMap.put("ticketPrice", ticketPrice);
-        eventMap.put("geolocationEnabled", geolocationEnabled);
-        eventMap.put("imageUri", imageUrl);
-        eventMap.put("facility", facility);
-        eventMap.put("eventID", eventID);
+    Map<String, Object> eventMap = new HashMap<>();
+    eventMap.put("owner", owner);
+    eventMap.put("name", name);
+    eventMap.put("detail", detail);
+    eventMap.put("rules", rules);
+    eventMap.put("deadline", deadline);
+    eventMap.put("attendees", attendees);
+    eventMap.put("entrants", entrants);
+    eventMap.put("startDate", startDate);
+    eventMap.put("ticketPrice", ticketPrice);
+    eventMap.put("geolocationEnabled", geolocationEnabled);
+    eventMap.put("imageUri", imageUrl);
+    eventMap.put("facility", facility);
+    eventMap.put("eventID", eventID);
 
-        // Add entrant list structure
-        Map<String, Object> entrantListMap = new HashMap<>();
-        entrantListMap.put("Waiting", new ArrayList<>());
-        entrantListMap.put("Selected", new ArrayList<>());
-        entrantListMap.put("Cancelled", new ArrayList<>());
-        entrantListMap.put("Attendee", new ArrayList<>());
-        eventMap.put("entrantList", entrantListMap);
+    // Add entrant list structure
+    Map<String, Object> entrantListMap = new HashMap<>();
+    entrantListMap.put("Waiting", new ArrayList<>());
+    entrantListMap.put("Selected", new ArrayList<>());
+    entrantListMap.put("Cancelled", new ArrayList<>());
+    entrantListMap.put("Attendee", new ArrayList<>());
+    eventMap.put("entrantList", entrantListMap);
 
-        db.collection("events").document(eventID)
-                .set(eventMap)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("EventController", "Event created successfully: " + eventID);
-                    callback.onEventCreated(eventID);
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("EventController", "Error creating event: " + e.getMessage());
-                    callback.onError(e);
-                });
-    }
-
+    db.collection("events").document(eventID)
+            .set(eventMap)
+            .addOnSuccessListener(aVoid -> {
+                Log.d("EventController", "Event created successfully: " + eventID);
+                callback.onEventCreated(eventID);
+            })
+            .addOnFailureListener(e -> {
+                Log.e("EventController", "Error creating event: " + e.getMessage());
+                callback.onError(e);
+            });
+}
 
     /**
      * Updates the event image in Firestore.

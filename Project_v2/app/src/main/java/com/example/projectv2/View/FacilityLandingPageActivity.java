@@ -97,6 +97,12 @@ public class FacilityLandingPageActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Deletes the facility from Firestore and closes the dialog.
+     *
+     * @param facilityID the ID of the facility to delete
+     * @param dialog     the dialog to close after deletion
+     */
     private void deleteFacility(String facilityID, Dialog dialog) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("facilities").document(facilityID)

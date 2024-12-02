@@ -24,6 +24,10 @@ import com.example.projectv2.View.EventLandingPageUserActivity;
 
 import java.util.List;
 
+/**
+ * Adapter class for displaying a list of available events in a RecyclerView on the home screen.
+ * Handles loading event data, including images, and navigating to the appropriate event detail page based on the user's role.
+ */
 public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEventsAdapter.ViewHolder> {
 
     private static final String TAG = "AvailableEventsAdapter";
@@ -31,6 +35,12 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
     private final Context context;
     private final String userRole;
 
+    /**
+     * Constructor for initializing the AvailableEventsAdapter with the context and list of events.
+     *
+     * @param context   the context in which the RecyclerView is being used
+     * @param eventList the list of events to display
+     */
     public AvailableEventsAdapter(Context context, List<Event> eventList) {
         this.context = context;
         this.eventList = eventList;
@@ -39,6 +49,13 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
         this.userRole = preferences.getString("userRole", "user"); // Default to "user" if role not found
     }
 
+    /**
+     * Inflates the layout for each RecyclerView item and creates a ViewHolder.
+     *
+     * @param parent   the parent ViewGroup
+     * @param viewType the view type of the new View
+     * @return a new ViewHolder instance for the inflated item layout
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,6 +64,13 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
         return new ViewHolder(view);
     }
 
+    /**
+     * Binds the data of an event to the corresponding views in the ViewHolder.
+     * Also handles loading the event's image and setting up a click listener for navigation.
+     *
+     * @param holder   the ViewHolder for the current item
+     * @param position the position of the item in the data list
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Event event = eventList.get(position);
@@ -83,6 +107,7 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
             }
         });
 
+        // Set up the click listener for navigation based on user role
         holder.itemView.setOnClickListener(v -> {
             Intent intent = "organizer".equals(userRole) ?
                     new Intent(context, EventLandingPageOrganizerActivity.class) :
@@ -103,22 +128,39 @@ public class AvailableEventsAdapter extends RecyclerView.Adapter<AvailableEvents
         });
     }
 
-
+    /**
+     * Returns the total number of events in the data list.
+     *
+     * @return the size of the event list
+     */
     @Override
     public int getItemCount() {
         return eventList.size();
     }
 
+    /**
+     * Updates the event list in the adapter and refreshes the RecyclerView.
+     *
+     * @param newEvents the new list of events to display
+     */
     public void updateEventList(List<Event> newEvents) {
         this.eventList.clear();
         this.eventList.addAll(newEvents);
         notifyDataSetChanged();
     }
 
+    /**
+     * ViewHolder class that holds the views for displaying an event's details in the RecyclerView.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView eventName, eventDate, eventPrice, eventDescription;
         public ImageView backgroundImage;
 
+        /**
+         * Constructor for initializing the ViewHolder with the corresponding views.
+         *
+         * @param view the item view for the ViewHolder
+         */
         public ViewHolder(View view) {
             super(view);
             eventName = view.findViewById(R.id.available_event_name_text);

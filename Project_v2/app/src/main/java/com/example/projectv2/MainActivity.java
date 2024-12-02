@@ -276,6 +276,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when the activity is resumed. Checks if the user is an organizer and updates the
+     * floating action button visibility accordingly.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -320,6 +324,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Navigates to the event landing page using the event ID obtained from the QR code.
+     *
+     * @param qrResult the event ID obtained from the QR code
+     */
     private void navigateToEventLandingPage(String qrResult) {
         if (qrResult == null || qrResult.trim().isEmpty()) {
             Toast.makeText(this, "Invalid QR Code: Empty event ID", Toast.LENGTH_SHORT).show();
@@ -364,39 +373,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Checks if the user is an organizer. This method is asynchronous and uses a callback to handle
-     * the result, which is passed back to the caller.
-     *
-     * @param userID   the unique identifier of the user (device ID) used to retrieve the user document
-     * @param callback the callback interface for handling the result of the organizer check
-     */
-    private void checkOrganizer(String userID, OnOrganizerCheckComplete callback) {
-        if (db == null) {
-            db = FirebaseFirestore.getInstance();
-        }
-
-        db.collection("Users").document(userID)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            User user = document.toObject(User.class);
-                            if (user != null) {
-                                callback.onComplete(user.isOrganizer());
-                            } else {
-                                callback.onComplete(false);
-                            }
-                        } else {
-                            callback.onComplete(false);
-                        }
-                    } else {
-                        callback.onComplete(false);
-                    }
-                });
-    }
-
     // Method to handle refresh logic
     private void refreshContent(NavigationView navigationView, String userId) {
         // Reload your data or update UI
@@ -404,17 +380,5 @@ public class MainActivity extends AppCompatActivity {
         EventsPagerAdapter adapter = new EventsPagerAdapter(this);
         viewPager.setAdapter(adapter);
         fetchAndDisplayUserNameAndImage(navigationView, userId);
-    }
-
-    /**
-     * Interface for a callback to handle the result of checking if a user is an organizer.
-     */
-    interface OnOrganizerCheckComplete {
-        /**
-         * Called when the organizer check completes.
-         *
-         * @param isOrganizer true if the user is an organizer, false otherwise
-         */
-        void onComplete(boolean isOrganizer);
     }
 }

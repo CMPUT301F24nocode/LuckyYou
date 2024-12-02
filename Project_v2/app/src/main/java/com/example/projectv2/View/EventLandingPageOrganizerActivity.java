@@ -157,15 +157,17 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
         ImageButton moreButton = findViewById(R.id.more_settings_button);
         moreButton.setOnClickListener(v -> showPopup(eventID, eventName));
     }
+
     /**
      * Load the event poster using the ImageController.
      *
      * @param eventName The name of the event.
      */
-
     private void loadEventPoster(String eventName) {
         ImageController imageController = new ImageController();
         imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
+
+            // Callbacks for image retrieval
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
                 // Use Glide to load the image into the ImageView
@@ -176,6 +178,8 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
                         .centerCrop()
                         .into(eventImageView);
             }
+
+            // If the image retrieval fails, log the error and show the placeholder image
             @Override
             public void onRetrieveFailure(Exception e) {
                 // Log the error and show the placeholder image
@@ -184,6 +188,7 @@ public class EventLandingPageOrganizerActivity extends AppCompatActivity {
             }
         });
     }
+
     /**
      * Displays a popup dialog with additional event options.
      */

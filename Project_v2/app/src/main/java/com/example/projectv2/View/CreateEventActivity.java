@@ -115,6 +115,13 @@ public class CreateEventActivity extends AppCompatActivity {
                     });
         });
     }
+
+    /**
+     * Uploads the selected image to Firebase Storage and proceeds to the next activity with the event name and image URL.
+     *
+     * @param eventName  the name of the event
+     * @param imageUri   the URI of the selected image
+     */
     private void uploadImageAndProceed(String eventName, Uri imageUri) {
         ImageController imageController = new ImageController();
 
@@ -129,12 +136,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         imageController.uploadImage(imageUri, filePath, new ImageController.ImageUploadCallback() {
+            // Handle image upload success
             @Override
             public void onUploadSuccess(String downloadUrl) {
                 // On successful upload, proceed to the next activity with the download URL
                 proceedToNextActivity(eventName, downloadUrl);
             }
 
+            // Handle image upload failure
             @Override
             public void onUploadFailure(Exception e) {
                 // Handle upload failure gracefully
@@ -142,6 +151,13 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Proceeds to the next activity with the event name and image URL (if available).
+     *
+     * @param eventName the name of the event
+     * @param imageUrl  the URL of the event image, or null if no image was selected
+     */
     private void proceedToNextActivity(String eventName, @Nullable String imageUrl) {
         Intent intent = new Intent(CreateEventActivity.this, CreateEventOptionsActivity.class);
         intent.putExtra("name", eventName);
@@ -153,9 +169,6 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         startActivityForResult(intent, REQUEST_CODE_EVENT_OPTIONS);
     }
-
-
-
 
     /**
      * Loads the list of available facilities from Firebase Firestore and populates the facility spinner.

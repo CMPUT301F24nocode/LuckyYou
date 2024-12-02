@@ -73,8 +73,6 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
     String eventID, name, details, rules, deadline, startDate, price, imageUriString,userID;
     DBUtils dbUtils = new DBUtils();
 
-
-
     /**
      * Called when the activity is created. Initializes views with event data and configures buttons
      * for joining and leaving the event. Checks geolocation settings and sets up additional options.
@@ -199,6 +197,12 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         void onOwnerResult(boolean isOwner);
     }
 
+    /**
+     * Checks if the device ID is an entrant for the event.
+     *
+     * @param deviceID the device ID to check
+     * @param callback the callback to return the result
+     */
     private void isEntrant(String deviceID, EntrantCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -230,6 +234,12 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Checks if the device ID is selected for the event.
+     *
+     * @param deviceID the device ID to check
+     * @param callback the callback to return the result
+     */
     private void isSelected(String deviceID, SelectedCallback callback) {
         db.collection("events").document(eventID).get()
                 .addOnSuccessListener(document -> {
@@ -249,6 +259,12 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Checks if the device ID is waiting for the event.
+     *
+     * @param deviceID the device ID to check
+     * @param callback the callback to return the result
+     */
     private void isWaiting(String deviceID, WaitingCallback callback) {
         db.collection("events").document(eventID).get()
                 .addOnSuccessListener(document -> {
@@ -268,6 +284,12 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Checks if the device ID is the owner of the event.
+     *
+     * @param deviceID the device ID to check
+     * @param callback the callback to return the result
+     */
     private void isOwner(String deviceID, OwnerCallback callback) {
         db.collection("events").document(eventID).get()
                 .addOnSuccessListener(document -> {
@@ -287,6 +309,12 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Checks if the user ID is an attendee of the event.
+     *
+     * @param userID the device ID to check
+     * @param eventID the event ID to check in
+     */
     private void addAttendee(String eventID, String userID) {
         Log.d("Selected", "addAttendee: " + userID);
 
@@ -309,6 +337,12 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         decline_button.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Adds the user to the Cancelled list and selects a new user from the Waiting list.
+     *
+     * @param eventID the event ID
+     * @param userID  the user ID
+     */
     private void addCancelled(String eventID, String userID) {
         Log.d("Selected", "addCancelled: " + userID);
 
@@ -393,10 +427,11 @@ public class EventLandingPageUserActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
+    /**
+     * Fetches the details of an event.
+     *
+     * @param eventid unique id of the event
+     */
     private void fetchEventDetails(String eventid) {
         dbUtils.fetchEvent(eventid, eventDetails -> {
             if (eventDetails != null) {

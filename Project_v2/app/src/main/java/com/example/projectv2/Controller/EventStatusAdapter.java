@@ -36,12 +36,25 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
     private final Context context;
     private final FirebaseFirestore db;
 
+    /**
+     * Constructs an EventStatusAdapter with the specified context and list of events.
+     *
+     * @param context   the context in which the adapter is operating
+     * @param eventList the list of events to display
+     */
     public EventStatusAdapter(Context context, List<Event> eventList) {
         this.context = context;
         this.eventList = eventList;
         db = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * Inflates the layout for each event item in the RecyclerView.
+     *
+     * @param parent   the ViewGroup into which the new view will be added
+     * @param viewType the view type of the new view
+     * @return a new ViewHolder that holds the view for each event item
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -50,6 +63,12 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
         return new ViewHolder(view);
     }
 
+    /**
+     * Binds data to the view elements of each item in the RecyclerView.
+     *
+     * @param holder   the ViewHolder containing view elements to bind data to
+     * @param position the position of the item in the RecyclerView
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Event event = eventList.get(position);
@@ -77,6 +96,11 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
         holder.itemView.setOnClickListener(v -> navigateToEventDetails(event));
     }
 
+    /**
+     * Returns the total number of events in the list.
+     *
+     * @return the total number of events
+     */
     @Override
     public int getItemCount() {
         return eventList.size();
@@ -93,10 +117,19 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
         notifyDataSetChanged();
     }
 
+    /**
+     * Callback interface for fetching the status of an event.
+     */
     public interface StatusCallback {
         void onStatusFetched(int status);
     }
 
+    /**
+     * Fetches the status of the current device for the specified event.
+     *
+     * @param eventID  the ID of the event to fetch the status for
+     * @param callback the callback to pass the status back to
+     */
     private void setTextStatus(String eventID, StatusCallback callback) {
         @SuppressLint("HardwareIds")
         String deviceID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -127,11 +160,22 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
                 });
     }
 
+    /**
+     * Loads the image for the specified event into the provided ImageView.
+     *
+     * @param event      the event to load the image for
+     * @param eventImage the ImageView to load the image into
+     */
     private void loadEventImage(Event event, ImageView eventImage) {
         ImageController imageController = new ImageController();
         String eventName = event.getName();
 
         imageController.retrieveImage(eventName, new ImageController.ImageRetrieveCallback() {
+            /**
+             * Loads the image into the ImageView if the image retrieval is successful.
+             *
+             * @param downloadUrl the download URL of the image
+             */
             @Override
             public void onRetrieveSuccess(String downloadUrl) {
                 if (context instanceof FragmentActivity) {
@@ -149,6 +193,11 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
                 }
             }
 
+            /**
+             * Sets a fallback image if the image retrieval fails.
+             *
+             * @param e the exception that occurred during image retrieval
+             */
             @Override
             public void onRetrieveFailure(Exception e) {
                 Log.e(TAG, "Failed to retrieve image for event: " + eventName, e);
@@ -156,8 +205,6 @@ public class EventStatusAdapter extends RecyclerView.Adapter<EventStatusAdapter.
             }
         });
     }
-
-
 
     /**
      * Navigates to EventLandingPageUserActivity with the provided event details.

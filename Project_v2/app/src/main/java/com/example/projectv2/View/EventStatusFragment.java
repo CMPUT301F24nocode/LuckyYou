@@ -20,6 +20,10 @@ import com.example.projectv2.R;
 
 import java.util.ArrayList;
 
+/**
+ * EventStatusFragment displays a list of events created by the user.
+ * Users can view the status of each event and access additional details.
+ */
 public class EventStatusFragment extends Fragment {
 
     private RecyclerView recyclerView;
@@ -27,10 +31,21 @@ public class EventStatusFragment extends Fragment {
     private EventController eventController;
     private ArrayList<Event> eventList;
 
+    /**
+     * Default constructor for the fragment.
+     */
     public EventStatusFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Called when the fragment is created. Initializes the UI elements and fetches events from Firebase.
+     *
+     * @param inflater           the LayoutInflater object that can be used to inflate any views in the fragment
+     * @param container          the parent view that the fragment's UI should be attached to
+     * @param savedInstanceState a Bundle object containing the activity's previously saved state
+     * @return the View for the fragment's UI
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

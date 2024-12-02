@@ -28,6 +28,11 @@ public class AdminEventListActivity extends AppCompatActivity {
     private EventController eventController;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    /**
+     * Initializes the UI layout and sets up the top bar with the title "Browse Events."
+     * Initializes the RecyclerView and SwipeRefreshLayout.
+     * Fetches and displays the list of events.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,19 +65,26 @@ public class AdminEventListActivity extends AppCompatActivity {
         fetchEvents();
     }
 
+    /**
+     * Fetches the list of events from the database and updates the RecyclerView adapter.
+     */
     private void fetchEvents() {
         eventController.fetchEvents(new EventController.EventCallback() {
+
+            // Callback methods for handling event list loading
             @Override
             public void onEventListLoaded(ArrayList<Event> events) {
                 Log.d("AdminFacilityListActivity", "Fetched " + events.size() + " events.");
                 adapter.updateEventList(events);
             }
 
+            // Not needed in this activity
             @Override
             public void onEventCreated(String eventId) {
                 // Not needed in this activity
             }
 
+            // Not needed in this activity
             @Override
             public void onError(Exception e) {
                 Log.e("AdminFacilityListActivity", "Error fetching events", e);

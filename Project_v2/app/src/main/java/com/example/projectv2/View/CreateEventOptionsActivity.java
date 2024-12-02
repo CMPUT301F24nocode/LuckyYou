@@ -27,6 +27,11 @@ import com.example.projectv2.R;
 
 import java.util.ArrayList;
 
+/**
+ * Activity for configuring additional options for an event, such as date, attendee limits,
+ * ticket price, geolocation, and notifications. The collected data is passed back to the
+ * EventController to create the event in Firestore.
+ */
 public class CreateEventOptionsActivity extends AppCompatActivity {
 
     private EditText eventDeadline, eventAttendees, eventEntrants, eventStartDate, eventTicketPrice;
@@ -115,11 +120,13 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
                 imageUri != null ? Uri.parse(imageUri) : null,
                 facility,
                 new EventController.EventCallback() {
+                    // Callbacks for event creation
                     @Override
                     public void onEventListLoaded(ArrayList<Event> events) {
                         // Not used in this context
                     }
 
+                    // Callbacks for event creation
                     @Override
                     public void onEventCreated(String eventId) {
                         Log.d("CreateEventOptions", "Event created with ID: " + eventId);
@@ -135,6 +142,7 @@ public class CreateEventOptionsActivity extends AppCompatActivity {
                         finish();
                     }
 
+                    // Callbacks for event creation
                     @Override
                     public void onError(Exception e) {
                         Log.e("CreateEventOptions", "Error creating event", e);

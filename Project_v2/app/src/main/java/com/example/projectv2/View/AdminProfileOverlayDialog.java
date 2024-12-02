@@ -30,6 +30,13 @@ public class AdminProfileOverlayDialog extends DialogFragment {
     private static final String ARG_USER_ID = "user_id";
     private static final String ARG_IS_ADMIN = "is_admin";
 
+    /**
+     * Creates a new instance of the AdminProfileOverlayDialog.
+     *
+     * @param userID The ID of the user profile to display.
+     * @param isAdmin Whether the user is an admin.
+     * @return A new instance of AdminProfileOverlayDialog.
+     */
     public static AdminProfileOverlayDialog newInstance(String userID, boolean isAdmin) {
         AdminProfileOverlayDialog dialog = new AdminProfileOverlayDialog();
         Bundle args = new Bundle();
@@ -39,6 +46,11 @@ public class AdminProfileOverlayDialog extends DialogFragment {
         return dialog;
     }
 
+    /**
+     * Initializes the UI layout for the AdminProfileOverlayDialog.
+     * Sets up the delete profile, delete image, and admin mode checkbox buttons.
+     * Deletes the user profile, profile image, and updates the admin status when the buttons are clicked.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -141,6 +153,9 @@ public class AdminProfileOverlayDialog extends DialogFragment {
         return view;
     }
 
+    /**
+     * Sets the dialog window size to wrap content.
+     */
     @Override
     public void onStart() {
         super.onStart();

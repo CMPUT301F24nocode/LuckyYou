@@ -19,12 +19,21 @@ import com.example.projectv2.R;
 
 import java.util.ArrayList;
 
+/**
+ * Dialog fragment for sending notifications to users.
+ *
+ * <p>This class provides a dialog fragment for sending notifications to users
+ * with a specified content message and event ID.</p>
+ */
 public class SendNotificationOverlay extends DialogFragment {
 
     private ArrayList<String> documentIds;
     private String eventId;
     private Activity parentActivity;
 
+    /**
+     * Default constructor for the SendNotificationOverlay dialog fragment.
+     */
     public static SendNotificationOverlay newInstance(Activity activity, ArrayList<String> documentIds, String eventId) {
         SendNotificationOverlay fragment = new SendNotificationOverlay();
         fragment.parentActivity = activity;
@@ -35,6 +44,15 @@ public class SendNotificationOverlay extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * Called when the dialog fragment is created.
+     * Initializes the dialog fragment layout and sets up the send notification button click listener.
+     *
+     * @param inflater           LayoutInflater to inflate the view.
+     * @param container          ViewGroup container for the view.
+     * @param savedInstanceState Bundle containing the fragment's previously saved state.
+     * @return The inflated view for the dialog fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -1,7 +1,5 @@
 package com.example.projectv2.Utils;
 
-
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,9 +9,18 @@ import android.graphics.Typeface;
 
 import com.example.projectv2.Controller.ProfileImageController;
 
+/**
+ * Utility class for generating profile pictures with initials and random background colors.
+ */
 public class ProfilePictureGenerator {
 
-    // Generate a profile picture bitmap with initials and random background color
+    /**
+     * Generates a profile picture bitmap with initials and random background color.
+     *
+     * @param name     the name of the user
+     * @param imageSize the size of the image in pixels
+     * @return the generated profile picture bitmap
+     */
     public static Bitmap generateProfilePicture( String name, int imageSize) {
         // Split the name to get initials
         String[] nameParts = name.split(" ");
