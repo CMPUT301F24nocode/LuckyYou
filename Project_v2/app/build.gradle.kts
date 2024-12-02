@@ -45,6 +45,11 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.espresso.intents)
     implementation(libs.fragment.testing)
+    implementation(fileTree(mapOf(
+        "dir" to "/Users/prabhjotsingh/Library/Android/sdk/platforms/android-34",
+        "include" to listOf("*.aar", "*.jar")
+
+    )))
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.gms:play-services-maps:18.0.2")
