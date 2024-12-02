@@ -66,9 +66,6 @@ public class QrOrganiserActivityTest {
 
         // Simulate a click on the "Save to Gallery" button
         onView(withId(R.id.saveQrCodeButton)).perform(click());
-
-        // Verify the action (mock Toast behavior or bitmap saving, as Espresso does not handle these directly)
-        // Example (requires ToastMatcher): onView(withText("Image saved to gallery")).inRoot(withDecorView(not(is(getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     @Test

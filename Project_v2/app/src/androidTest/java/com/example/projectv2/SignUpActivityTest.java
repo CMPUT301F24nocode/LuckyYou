@@ -56,8 +56,6 @@ public class SignUpActivityTest {
         onView(withId(R.id.signup_firstname)).perform(replaceText("John"));
         onView(withId(R.id.signup_secondname)).perform(replaceText("Doe"));
         onView(withId(R.id.signup_button)).perform(click());
-
-        // Check if MainActivity is started (mock Intent validation can be used here)
     }
 
     @Test

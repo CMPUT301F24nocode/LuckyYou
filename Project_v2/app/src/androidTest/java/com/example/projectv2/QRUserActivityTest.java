@@ -7,14 +7,20 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.example.projectv2.View.QRUserActivity;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class QRUserActivityTest {
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(
+            android.Manifest.permission.CAMERA
+    );
 
     @Test
     public void testBarcodeScannerIsDisplayed() {
@@ -59,8 +65,5 @@ public class QRUserActivityTest {
         // Verify all critical layout elements are present
         onView(withId(R.id.zxing_barcode_scanner))
                 .check(matches(isDisplayed()));
-
-        // Since the transparent square and dimmed background are overlaid,
-        // we assume the parent FrameLayout ensures visibility.
     }
 }

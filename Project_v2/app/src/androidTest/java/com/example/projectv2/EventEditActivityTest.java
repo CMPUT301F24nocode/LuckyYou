@@ -5,7 +5,6 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import android.content.Intent;
 
@@ -34,10 +33,6 @@ public class EventEditActivityTest {
 
         // Perform a click on the "Edit Poster" button
         onView(withId(R.id.create_event_next_button)).perform(click());
-
-        // Verify that the button click triggers expected behavior
-        // This could be a navigation or a state change. Add assertions based on expected results.
-        // For example, if the button opens a new activity, check for elements in the new activity.
     }
 
     /**

@@ -17,7 +17,6 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.projectv2.R;
 import com.example.projectv2.View.FacilityEditActivity;
 
 import org.junit.Test;

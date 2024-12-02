@@ -9,7 +9,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-import android.content.Context;
 import android.content.Intent;
 
 import androidx.test.core.app.ActivityScenario;

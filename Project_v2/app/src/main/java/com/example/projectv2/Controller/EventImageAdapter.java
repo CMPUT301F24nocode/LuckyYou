@@ -1,6 +1,7 @@
 package com.example.projectv2.Controller;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +41,13 @@ public class EventImageAdapter extends RecyclerView.Adapter<EventImageAdapter.Im
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        String filename = imageFilenames.get(position); // Get the filename
+        String filename = imageFilenames.get(position);
+
+        // Check if context is a valid Activity and not destroyed before loading images
+        if (context instanceof Activity && ((Activity) context).isDestroyed()) {
+            Log.w(TAG, "Activity is destroyed. Skipping image load.");
+            return;
+        }
 
         // Fetch and display the image
         imageController.getDownloadUrl(filename, new ImageController.ImageRetrieveCallback() {

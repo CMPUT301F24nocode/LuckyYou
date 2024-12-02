@@ -1,11 +1,5 @@
 package com.example.projectv2;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -80,7 +74,6 @@ public class AvailableEventsFragmentTest {
         scenario.onFragment(fragment -> {
             // Spy on the method to verify it's called
             fragment.refreshEventsFromFirestore();
-            // Additional verification can be added based on your specific implementation
         });
     }
 }

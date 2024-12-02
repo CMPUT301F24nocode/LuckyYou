@@ -1,7 +1,6 @@
 package com.example.projectv2;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -16,7 +15,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.projectv2.View.NotificationActivity;
-import com.example.projectv2.View.ProfileActivity;
 
 import org.junit.After;
 import org.junit.Before;

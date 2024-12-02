@@ -1,9 +1,5 @@
 package com.example.projectv2;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -13,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.example.projectv2.R;
 import com.example.projectv2.View.YourEventsFragment;
 
 import org.junit.Before;
@@ -109,8 +104,6 @@ public class YourEventsFragmentTest {
     @Test
     public void testFetchEventsMethodCall() {
         scenario.onFragment(fragment -> {
-            // This test verifies that the fetchEvents method is called during fragment creation
-            // Note: This is a basic test and might need more sophisticated mocking
             try {
                 java.lang.reflect.Method fetchEventsMethod =
                         YourEventsFragment.class.getDeclaredMethod("fetchEvents");

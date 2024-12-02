@@ -66,6 +66,12 @@ public class ProfileImageController {
             Log.d("HUHUUUUU", "Invalid imageUrl or imageView");
             return;
         }
+
+        // Ensure context is valid and Activity is not destroyed
+        if (context instanceof Activity && ((Activity) context).isDestroyed()) {
+            Log.e("ProfileImageController", "Activity is destroyed. Skipping image load.");
+            return;
+        }
         String filePath = "user_" + userID + ".jpg";
         StorageReference fileRef = storageRef.child(filePath);
         fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
