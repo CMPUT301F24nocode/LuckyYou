@@ -17,9 +17,8 @@ firebaseFirestore = "25.1.1"
 swiperefreshlayout = "1.1.0"
 zxingAndroidEmbedded = "4.1.0"
 activity = "1.8.0"
-rules = "1.5.0"
-fragmentTesting = "1.8.5"
 espressoIntents = "3.6.1"
+fragmentTesting = "1.8.5"
 
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
@@ -41,11 +40,9 @@ firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espressoIntents" }
 fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTesting" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
-

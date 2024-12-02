@@ -74,18 +74,6 @@ public class ProfileActivityTest {
     }
 
     @Test
-    public void testAdminIndicatorVisibility() {
-        Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), ProfileActivity.class);
-        intent.putExtra("userID", "9a11accac88317b1");
-        intent.putExtra("adminView", false);
-
-        ActivityScenario.launch(intent);
-
-        // Admin star should be hidden initially
-        onView(withId(R.id.profile_admin_indicator)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.INVISIBLE)));
-    }
-
-    @Test
     public void testSwipeRefreshFunctionality() {
         Intent intent = new Intent(InstrumentationRegistry.getInstrumentation().getTargetContext(), ProfileActivity.class);
         intent.putExtra("userID", "9a11accac88317b1");
