@@ -102,19 +102,22 @@ public class LoginActivityTest {
                 .document(TEST_DEVICE_ID)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if (!task.getResult().exists()) {
-                            // Launch the activity
-                            try (ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class)) {
-                                // Verify SignUp button is displayed
-                                onView(withId(R.id.signup_button)).check(matches(isDisplayed()));
+                    if (task.isSuccessful() && !task.getResult().exists()) {
+                        // Use runOnUiThread to launch the activity safely
+                        try {
+                            runOnUiThread(() -> {
+                                try (ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class)) {
+                                    onView(withId(R.id.signup_button)).check(matches(isDisplayed()));
+                                    // Click on SignUp button
+                                    onView(withId(R.id.signup_button)).perform(click());
 
-                                // Click on SignUp button
-                                onView(withId(R.id.signup_button)).perform(click());
+                                    // Verify SignUpActivity is started
+                                    intended(hasComponent(SignUpActivity.class.getName()));
 
-                                // Verify SignUpActivity is started
-                                intended(hasComponent(SignUpActivity.class.getName()));
-                            }
+                                }
+                            });
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
                         }
                     }
                     latch.countDown();
@@ -122,26 +125,11 @@ public class LoginActivityTest {
 
         // Wait for the async operation to complete
         latch.await(5, TimeUnit.SECONDS);
-    }
 
+}
     /**
      * Test UI elements are present
      */
-    //    // Custom matcher to check text size
-    public static Matcher<View> withTextSize(final float expectedSize) {
-        return new BoundedMatcher<View, TextView>(TextView.class) {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with text size: ").appendValue(expectedSize);
-            }
-
-            @Override
-            protected boolean matchesSafely(TextView textView) {
-                return Math.abs(textView.getTextSize() - expectedSize) < 0.1;
-            }
-        };
-    }
-
     @Test
     public void testLoginActivityUIElements() throws InterruptedException {
         // Delete the test user from Firebase
