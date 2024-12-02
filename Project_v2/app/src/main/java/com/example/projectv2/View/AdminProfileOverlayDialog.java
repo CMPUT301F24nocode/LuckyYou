@@ -98,27 +98,29 @@ public class AdminProfileOverlayDialog extends DialogFragment {
             notificationService.sendNotification(requireActivity(), notification, "-2");
 
             // Step 1: Delete all events with owner = userID
-            db.collection("Events")
+            db.collection("events")
                     .whereEqualTo("owner", userID)
                     .get()
                     .addOnSuccessListener(eventSnapshot -> {
                         for (DocumentSnapshot document : eventSnapshot.getDocuments()) {
-                            db.collection("Events").document(document.getId()).delete();
+                            db.collection("events").document(document.getId()).delete();
                         }
 
                         // Step 2: Delete all facilities with owner = userID
-                        db.collection("Facilities")
+                        db.collection("facilities")
                                 .whereEqualTo("owner", userID)
                                 .get()
                                 .addOnSuccessListener(facilitySnapshot -> {
                                     for (DocumentSnapshot document : facilitySnapshot.getDocuments()) {
-                                        db.collection("Facilities").document(document.getId()).delete();
+                                        db.collection("facilities").document(document.getId()).delete();
                                     }
 
                                     // Step 3: Delete the user profile
+//                                    assert userID != null;
                                     db.collection("Users").document(userID)
                                             .delete()
                                             .addOnSuccessListener(aVoid -> {
+                                                deleteImage(userID);
                                                 Toast.makeText(requireContext(), "User, related events, and facilities have been removed", Toast.LENGTH_SHORT).show();
                                                 dismiss();
                                             })
@@ -153,6 +155,25 @@ public class AdminProfileOverlayDialog extends DialogFragment {
         return view;
     }
 
+    /**
+     * Deletes the profile image of the user with the given userID.
+     *
+     * @param userID The ID of the user whose profile image is to be deleted.
+     */
+    private void deleteImage(String userID) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+
+        String imagePath = "profile_pictures/user_" + userID + ".jpg";
+        StorageReference imageRef = storage.getReference().child(imagePath);
+
+        imageRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(requireContext(), "Profile image has been removed", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Failed to remove profile image. Please try again", Toast.LENGTH_SHORT).show();
+                });
+    }
     /**
      * Sets the dialog window size to wrap content.
      */
